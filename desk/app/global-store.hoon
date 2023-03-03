@@ -60,8 +60,8 @@
         :-  %team       %r
         :-  %me         %w
     ==
-    :_  this(perms new-perms)
-        ~
+    :-  ~
+        this(perms new-perms)
   ::
   ++  on-save
     ^-  vase
