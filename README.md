@@ -43,3 +43,16 @@ right now you can set perms by:
 2. `%team` - by default your team can `%w` write
 3. `%whitelist` - you can add ships to a whitelist to `%r` read or `%w` write
 4. `%public` - or you can let everyone `%r` read
+
+###### some useful snippets
+
+```hoon
+=global -build-file /=global-store=/sur/global-store/hoon
+:global-store &global-action [%let %example]
+:global-store &global-action [%put %example %message !>('hello world')]
+:global-store +dbug
+.^((map key:global value:global) %gx /=global-store=/example/noun)
+.^(? %gx /=global-store=/example/message/noun)
+:global-store &global-action [%lie %example]
+:global-store +dbug
+```
