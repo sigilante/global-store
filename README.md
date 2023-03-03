@@ -56,3 +56,9 @@ right now you can set perms by:
 :global-store &global-action [%lie %example]
 :global-store +dbug
 ```
+
+###### status (wip ~2023.3.3)
+
+- state is either getting clobbered or dbug is lying
+- peek types are funky still
+- need to write generators to use pokes
