@@ -3,6 +3,7 @@
 ::    a simple key-value storage solution for ship-global values
 ::    with a straightforward permissions model
 ::
+/+  *mip
 |%
 ::
 +$  desk   @tas
@@ -21,9 +22,13 @@
       [%lie =desk]
       [%put =desk =key =value]
       [%del =desk =key]
-      [%mode =arena =perms]
+      [%mode =arena =perm]
       [%whitelist =ship =perm]
       [%blacklist =ship]
       [%lockdown ~]
+  ==
++$  update
+  $%  [%desk (unit (map key value))]
+      [%value (unit value)]
   ==
 --

@@ -53,14 +53,14 @@
   ++  on-init
     ^-  (quip card _this)
     ~>  %bout.[0 '%global-store +on-init']
-    =/  new-arena  %-  malt
+    =/  new-perms  ^-  perms:global  %-  malt
     ^-  (list (pair arena:global perm:global))
-    :~  :-  %public     *perm
-        :-  %whitelist  *perm
+    :~  :-  %public     *perm:global
+        :-  %whitelist  *perm:global
         :-  %team       %r
         :-  %me         %w
     ==
-    :_  this(arena new-arena)
+    :_  this(perms new-perms)
         ~
   ::
   ++  on-save
@@ -84,49 +84,49 @@
         %noun
       (on-poke:def mar vaz)
         %global-action
-      =+  !<(axn=action vaz)
+      =+  !<(axn=action:global vaz)
       ?-    -.axn
           %let
         ::  when we produce a new desk key-value store, we "bunt" it w/ its name
         :_  this(store (~(put bi store) desk.axn %name !>(desk)))
         :~  :*  %give  %fact
-                ~[`path`~[desk]]
+                ~[`path`~[desk.axn]]
                 %global-update
-                !>(desk+(~(get by store) desk))
+                !>(desk+(~(get by store) desk.axn))
             ==
         ==
         ::
           %lie
-        =/  desk  +.axn
-        =/  keys  ~(tap in (~(key bi store) desk))
+        =/  keys  ~(tap in (~(key bi store) desk.axn))
         =/  new-store  store
         =/  idx   0
         ::  recursively delete all entries for the desk
-        :_  %=  store
+        :_  %=  this
+            store
               |-  ?:  =((lent keys) idx)  new-store
               =/  key  (snag idx keys)
-              $(idx +(idx), new-store (~(del bi store) desk key))
+              $(idx +(idx), new-store (~(del bi store) desk.axn key))
             ==
         :~  :*  %give  %fact
-                ~[`path`~[desk]]
+                ~[`path`~[desk.axn]]
                 %global-update
                 !>(desk+~)
             ==
         ==
         ::
           %put
-        :_  this((~(put bi store) desk.axn key.axn value.axn))
+        :_  this(store (~(put bi store) desk.axn key.axn value.axn))
         :~  :*  %give  %fact
-                ~[`path`~[desk key]]
+                ~[`path`~[desk.axn key.axn]]
                 %global-update
-                !>(desk+(~(get by store) desk))
+                !>(desk+(~(get by store) desk.axn))
             ==
         ==
         ::
           %del
         :_  this(store (~(del bi store) desk.axn key.axn))
         :~  :*  %give  %fact
-                ~[`path`~[desk key]]
+                ~[`path`~[desk.axn key.axn]]
                 %global-update
                 !>(value+~)
             ==
@@ -145,25 +145,34 @@
             this(whitelist (~(del by whitelist) ship.axn))
         ::
           %lockdown
-        =/  emptylist  %-  malt
+        =/  empty-perms  ^-  perms:global  %-  malt
         ^-  (list (pair arena:global perm:global))
-        :~  :-  %public     *perm
-            :-  %whitelist  *perm
-            :-  %team       *perm
+        :~  :-  %public     *perm:global
+            :-  %whitelist  *perm:global
+            :-  %team       *perm:global
             :-  %me         %w
         ==
         :-  ~
-            this(whitelist emptylist)
+            this(perms empty-perms, whitelist *(map ship:global perm:global))
         ::
       ==  :: head tag
     ==  :: poke type
   ::
   ++  on-peek
-    :: just let %opal handle all peeks
     |=  =path
     ~>  %bout.[0 '%global-store +on-peek']
     ^-  (unit (unit cage))
-    [~ ~]
+    ?+    path  (on-peek:def path)
+        [%x @ ~]
+      :: desk peek
+      =/  =desk:global  (slav %tas i.t.path)
+      [~ ~ global-update+!>(desk+(~(get by store) desk))]
+        [%x @ @ ~]
+      :: key peek
+      =/  =desk:global  (slav %tas i.t.path)
+      =/  =key:global   (slav %tas i.t.t.path)
+      [~ ~ global-update+!>(value+(~(get bi store) desk key))]
+    ==  :: path
   ::
   ++  on-agent
     |=  [wir=wire sig=sign:agent:gall]
@@ -185,17 +194,17 @@
     ?+    path  (on-watch:def path)
         [@ ~]
       :: desk subscription (not common), send all values in (unitized) desk ksv
-      =/  =desk  (slav %tas i.path)
+      =/  =desk:global  (slav %tas i.path)
       :_  this
       :~  [%give %fact ~ %global-update !>(desk+(~(get by store) desk))]
       ==
       ::
         [@ @ ~]
       :: key subscription, just send the (unitized) value
-      =/  =desk  (slav %tas i.path)
-      =/  =key   (slav %tas t.path)
+      =/  =desk:global  (slav %tas i.path)
+      =/  =key:global   (slav %tas i.t.path)
       :_  this
-      :~  [%give %fact ~ %global-update !>(desk+(~(get by store) desk key))]
+      :~  [%give %fact ~ %global-update !>(value+(~(get bi store) desk key))]
       ==
     ==  :: path
   ::
