@@ -50,6 +50,7 @@ right now you can set perms by:
 =global -build-file /=global-store=/sur/global-store/hoon
 :global-store &global-action [%let %example]
 :global-store &global-action [%put %example %message !>('hello world')]
+:global-store &global-action [%put %example %locale !>('en-US-Dsrt')]
 :global-store +dbug
 .^((map key:global value:global) %gx /=global-store=/example/noun)
 .^(? %gx /=global-store=/example/message/noun)

@@ -51,6 +51,7 @@
 ++  on-init
   ^-  (quip card _this)
   ~>  %bout.[0 '%global-store +on-init']
+  ~&  >>  store
   =/  new-perms  ^-  perms:global  %-  malt
   ^-  (list (pair arena:global perm:global))
   :~  :-  %public     *perm:global
@@ -64,11 +65,13 @@
 ++  on-save
   ^-  vase
   ~>  %bout.[0 '%global-store +on-save']
+  ~&  >>  store
   !>(state)
 ::
 ++  on-load
   |=  ole=vase
   ^-  (quip card _this)
+  ~&  >>  store
   =/  old  !<(versioned-state ole)
   ?-  -.old
     %zero  `this(state old)
@@ -77,6 +80,7 @@
 ++  on-poke
   |=  [mar=mark vaz=vase]
   ~>  %bout.[0 '%global-store +on-poke']
+  ~&  >>  store
   ^-  (quip card _this)
   ?+    mar  (on-poke:def mar vaz)
       %noun
@@ -86,7 +90,7 @@
     ?-    -.axn
         %let
       ::  when we produce a new desk key-value store, we "bunt" it w/ its name
-      :_  this(store (~(put bi store) desk.axn %name !>(desk)))
+      :_  this(store (~(put bi store) desk.axn %name !>(desk.axn)))
       :~  :*  %give  %fact
               ~[`path`~[desk.axn]]
               %global-store-update
@@ -159,6 +163,7 @@
 ++  on-peek
   |=  =path
   ~>  %bout.[0 '%global-store +on-peek']
+  ~&  >>  store
   ^-  (unit (unit cage))
   ?+    path  (on-peek:def path)
       [%x @ ~]
@@ -187,6 +192,7 @@
 ++  on-watch
   |=  =path
   ~>  %bout.[0 '%global-store +on-watch']
+  ~&  >>  store
   ^-  (quip card _this)
   :: on-watch, send them the value as a gift
   ?+    path  (on-watch:def path)
