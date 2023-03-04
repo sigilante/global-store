@@ -29,9 +29,17 @@ just set and scry
 
 ###### peeks
 
-you can peek for a value at `/[desk]/[key]`
+you can peek for a value at `/[desk]/[key]` which returns a `(unit vase)`
 
-it comes back as `(unit (unit (%global-update vase)))`
+you can peek for all of a desk's values at `/[desk]` which returns a
+`(unit (map @tas vase))`
+
+###### subscriptions
+
+you can subscribe to a value at `/[desk]/[key]` for a gift every time it changes
+
+you can subscribe to all of a desk's values at `/[desk]` for a gift every time
+any value changes
 
 ###### perms
 
@@ -52,14 +60,15 @@ right now you can set perms by:
 :global-store &global-action [%put %example %message !>('hello world')]
 :global-store &global-action [%put %example %locale !>('en-US-Dsrt')]
 :global-store +dbug
-.^((map key:global value:global) %gx /=global-store=/example/noun)
-.^(? %gx /=global-store=/example/message/noun)
+.^((unit (map @tas vase)) %gx /=global-store=/example/noun)
+.^((unit vase) %gx /=global-store=/example/message/noun)
 :global-store &global-action [%lie %example]
 :global-store +dbug
 ```
 
-###### status (wip ~2023.3.3)
+###### status (wip ~2023.3.4)
 
-- state is either getting clobbered or dbug is lying
-- peek types are funky still
-- need to write generators to use pokes
+- [x] main code (pokes, peeks) works
+- [ ] test subs
+- [ ] decide about return marks/units
+- [ ] write generators to use pokes

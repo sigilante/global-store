@@ -168,13 +168,14 @@
   ?+    path  (on-peek:def path)
       [%x @ ~]
     :: desk peek
+    ~&  >>>  'desk scry'
     =/  =desk:global  (slav %tas i.t.path)
-    [~ ~ global-store-update+!>(desk+(~(get by store) desk))]
+    [~ ~ noun+!>((~(get by store) desk))]
       [%x @ @ ~]
     :: key peek
     =/  =desk:global  (slav %tas i.t.path)
     =/  =key:global   (slav %tas i.t.t.path)
-    [~ ~ global-store-update+!>(value+(~(get bi store) desk key))]
+    [~ ~ noun+!>((~(get bi store) desk key))]
   ==  :: path
 ::
 ++  on-agent
@@ -200,7 +201,7 @@
     :: desk subscription (not common), send all values in (unitized) desk ksv
     =/  =desk:global  (slav %tas i.path)
     :_  this
-    :~  [%give %fact ~ %global-store-update !>(desk+(~(get by store) desk))]
+    :~  [%give %fact ~ %noun !>((~(get by store) desk))]
     ==
     ::
       [@ @ ~]
@@ -208,7 +209,7 @@
     =/  =desk:global  (slav %tas i.path)
     =/  =key:global   (slav %tas i.t.path)
     :_  this
-    :~  [%give %fact ~ %global-store-update !>(value+(~(get bi store) desk key))]
+    :~  [%give %fact ~ %noun !>((~(get bi store) desk key))]
     ==
   ==  :: path
 ::
