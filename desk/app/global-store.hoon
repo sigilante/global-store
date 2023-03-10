@@ -88,7 +88,7 @@
   ?+    mar  (on-poke:def mar vaz)
       %noun
     (on-poke:def mar vaz)
-      %global-action
+      %global-store-action
     =+  !<(axn=action:global vaz)
     ?-    -.axn
         %let

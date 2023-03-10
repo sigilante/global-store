@@ -2,6 +2,8 @@
 
 _a simple key-value storage solution for ship-global values_
 
+_"making people behave like they care about integration by giving them easier inroads" (~rabsef-bicrym)_
+
 `%global-store` intends to solve the problem of ship-wide configuration and
 settings without any json compatibility overhead
 
