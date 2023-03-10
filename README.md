@@ -72,3 +72,6 @@ right now you can set perms by:
 - [ ] test subs
 - [ ] decide about return marks/units
 - [ ] write generators to use pokes
+- [ ] use whitelist for real tho
+
+- [ ] version `%one` should rework perms to be per-desk instead of global

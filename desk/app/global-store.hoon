@@ -18,10 +18,13 @@
 ::
 ::    your basic use pattern will be to put important global
 ::    values into your desk's store with `%put`
-::    or to read out an important value by subscribing and
+::    or to read out an important value by peeking or subscribing and
 ::    receiving a gift in return
-::    you'll subscribe to /[desk]/[key] for a value
 ::
+::    you'll either peek to /x/[desk]/[key] for a value or
+::    subscribe to /[desk]/[key] for a value
+::
+::    the advantage of subscribing is that you receive changes to the value
 ::
 /-  global=global-store
 /+  verb, dbug, default-agent, *mip
