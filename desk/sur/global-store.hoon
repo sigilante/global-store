@@ -13,7 +13,7 @@
 +$  arena  ?(%public %whitelist %team %me)
 +$  perms  (map arena perm)
 +$  ship   @p
-+$  whitelist  (map ship perm)
++$  whitelist  (set ship)
 ::
 +$  store  (mip =desk =key =value)
 ::
@@ -23,8 +23,8 @@
       [%put =desk =key =value]
       [%del =desk =key]
       [%mode =arena =perm]
-      [%whitelist =ship =perm]
-      [%blacklist =ship]
+      [%whitelist =ship]
+      [%whitewash =ship]
       [%lockdown ~]
   ==
 +$  update

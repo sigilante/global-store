@@ -33,7 +33,12 @@
 ::
 +$  versioned-state  $%(state-zero)
 ::
-+$  state-zero  [%zero =store:global =perms:global =whitelist:global]
++$  state-zero
+  $:  %zero
+      =store:global
+      =perms:global
+      =whitelist:global
+  ==
 ::
 ::
 ::  boilerplate
@@ -48,9 +53,11 @@
 ::
 ^-  agent:gall
 ::
+=<
 |_  =bowl:gall
 +*  this  .
     def   ~(. (default-agent this %|) bowl)
+    aux   ~(. +> bowl)
 ++  on-init
   ^-  (quip card _this)
   ~>  %bout.[0 '%global-store +on-init']
@@ -93,63 +100,81 @@
     ?-    -.axn
         %let
       ::  when we produce a new desk key-value store, we "bunt" it w/ its name
-      :_  this(store (~(put bi store) desk.axn %name !>(desk.axn)))
+      ?>  =(%w (what-perm:aux src:bowl))
+      =.  store  (~(put bi store) desk.axn %name !>(desk.axn))
+      :_  this
       :~  :*  %give  %fact
               ~[`path`~[desk.axn]]
               %global-store-update
               !>(desk+(~(get by store) desk.axn))
-          ==
-      ==
+      ==  ==
       ::
         %lie
+      ?>  =(%w (what-perm:aux src:bowl))
       =/  keys  ~(tap in (~(key bi store) desk.axn))
       =/  new-store  store
       =/  idx   0
       ::  recursively delete all entries for the desk
-      :_  %=  this
-          store
-            |-  ?:  =((lent keys) idx)  new-store
-            =/  key  (snag idx keys)
-            $(idx +(idx), new-store (~(del bi store) desk.axn key))
-          ==
+      :_  this(store (~(del by store) desk.axn))
       :~  :*  %give  %fact
               ~[`path`~[desk.axn]]
               %global-store-update
               !>(desk+~)
-          ==
-      ==
+      ==  ==
       ::
         %put
-      :_  this(store (~(put bi store) desk.axn key.axn value.axn))
+      ?>  =(%w (what-perm:aux src:bowl))
+      =.  store  (~(put bi store) desk.axn key.axn value.axn)
+      :_  this
       :~  :*  %give  %fact
               ~[`path`~[desk.axn key.axn]]
               %global-store-update
               !>(desk+(~(get by store) desk.axn))
-          ==
-      ==
+      ==  ==
       ::
         %del
-      :_  this(store (~(del bi store) desk.axn key.axn))
+      ?>  =(%w (what-perm:aux src:bowl))
+      =.  store  (~(del bi store) desk.axn key.axn)
+      :_  this
       :~  :*  %give  %fact
               ~[`path`~[desk.axn key.axn]]
               %global-store-update
               !>(value+~)
-          ==
-      ==
+      ==  ==
       ::
         %mode
-      :-  ~
+      ?>  =(our.bowl src:bowl)
+      ::  not removing access or just myself
+      ?:  ?|  !=(%$ perm.axn)
+              =(%me arena.axn)
+          ==
+        `this(pems (~(put by perms) arena.axn perm.axn))
+      ::  %$ for %team, %whitelist, %public
+      |^
+      :-  (murn ~(val by sup.bowl) kick-card)
           this(perms (~(put by perms) arena.axn perm.axn))
+      ++  kick-card
+        |=  [=ship =path]
+        ?:  ?|  &(=(%team arena.axn) (moon:sein ship))
+                &(=(%whitelist arena.axn) (~(has in whitelist) ship))
+                =(%public arena.axn)
+            ==
+          `[%give %kick ~[path] ~[ship]]
+        ~
+      --
       ::
         %whitelist
+      ?>  =(%w (what-perm:aux src:bowl))
       :-  ~
-          this(whitelist (~(put by whitelist) ship.axn perm.axn))
+          this(whitelist (~(put in whitelist) ship.axn))
       ::
-        %blacklist
-      :-  ~
-          this(whitelist (~(del by whitelist) ship.axn))
+        %whitewash
+      ?>  =(%w (what-perm:aux src:bowl))
+      :-  ~ :: XXX kick
+          this(whitelist (~(del in whitelist) ship.axn))
       ::
         %lockdown
+      ?>  =(%w (what-perm:aux src:bowl))
       =/  empty-perms  ^-  perms:global  %-  malt
       ^-  (list (pair arena:global perm:global))
       :~  :-  %public     *perm:global
@@ -157,7 +182,7 @@
           :-  %team       *perm:global
           :-  %me         %w
       ==
-      :-  ~
+      :-  ~ :: XXX kick
           this(perms empty-perms, whitelist *(map ship:global perm:global))
       ::
     ==  :: head tag
@@ -168,6 +193,7 @@
   ~>  %bout.[0 '%global-store +on-peek']
   ~&  >>  store
   ^-  (unit (unit cage))
+  ?>  =(%r (what-perm:aux src:bowl))
   ?+    path  (on-peek:def path)
       [%x @ ~]
     :: desk peek
@@ -199,6 +225,7 @@
   ~&  >>  store
   ^-  (quip card _this)
   :: on-watch, send them the value as a gift
+  ?>  =(%r (what-perm:aux src:bowl))
   ?+    path  (on-watch:def path)
       [@ ~]
     :: desk subscription (not common), send all values in (unitized) desk ksv
@@ -223,4 +250,24 @@
 ++  on-leave
   ~>  %bout.[0 '%global-store +on-leave']
   on-leave:def
+--
+|_  =bowl:gall
++$  perm   ?(%w %r %$)
++$  arena  ?(%public %whitelist %team %me)
+::  We check against the entire arena.
+::
+++  what-perm
+  |=  =ship
+  ^-  perm
+  ?:  =(our.bowl ship)
+    (~(get by perms) %me)
+  ?:  (moon:title our.bowl ship)
+    (~(get by perms) %team)
+  ?:  (~(has in whitelist) ship)
+    (~(get by perms) %whitelist)
+  (~(get by perms) %public)
+++  get-subs-paths
+  ^-  (set (pair ship path))
+  
+
 --
