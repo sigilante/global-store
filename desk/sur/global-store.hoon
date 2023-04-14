@@ -5,14 +5,11 @@
 ::
 /+  *mip
 |%
-::
-+$  desk   @tas
 +$  key    @tas
 +$  value  vase
 +$  perm   ?(%w %r %$)
 +$  arena  ?(%public %whitelist %team %me)
 +$  perms  (map arena perm)
-+$  ship   @p
 +$  whitelist  (set ship)
 ::
 +$  store  (mip =desk =key =value)
