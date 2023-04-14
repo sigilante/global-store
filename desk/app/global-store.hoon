@@ -152,10 +152,12 @@
         `this(whitelist (~(put in whitelist) ship.axn))
       ::
           %whitewash
+        ::  XX kick
         ?>  =(%w (what-perm:aux src:bowl))
         `this(whitelist (~(del in whitelist) ship.axn))
       ::
           %lockdown
+        ::  XX kick
         ?>  =(%w (what-perm:aux src:bowl))
         =/  empty-perms  
           ^-  perms:gs
