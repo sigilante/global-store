@@ -92,7 +92,7 @@
         =.  store  (~(put bi store) desk.axn %name !>(desk.axn))
         :_  this  :_  ~
         :*  %give  %fact
-            ~[`path`~[desk.axn]]
+            [[desk.axn ~] ~]
             %global-store-update
             !>(desk+(~(get by store) desk.axn))
         ==
@@ -101,7 +101,7 @@
         ?>  =(%w (what-perm:aux src.bowl))
         :_  this(store (~(del by store) desk.axn))
         :~  :*  %give  %fact
-                ~[`path`~[desk.axn]]
+                [[desk.axn ~] ~]
                 %global-store-update
                 !>(desk+(~(get by store) desk.axn))
         ==  ==
@@ -111,7 +111,7 @@
         =.  store  (~(put bi store) desk.axn key.axn value.axn)
         :_  this  :_  ~
         :*  %give  %fact
-            ~[`path`~[desk.axn key.axn]]
+            [[desk.axn key.axn ~] ~]
             %global-store-update
             !>(desk+(~(get by store) desk.axn))
         ==
@@ -121,7 +121,7 @@
         =.  store  (~(del bi store) desk.axn key.axn)
         :_  this  :_  ~
         :*  %give  %fact
-            ~[`path`~[desk.axn key.axn]]
+            [[desk.axn key.axn ~] ~]
             %global-store-update
             !>(value+~)
         ==
