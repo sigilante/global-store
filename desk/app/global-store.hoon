@@ -54,15 +54,7 @@
     ^-  (quip card _this)
     ~>  %bout.[0 '%global-store +on-init']
     ~&  >>  store
-    =/  new-perms=perms:gs
-      %-  malt
-      ^-  (list [arena:gs perm:gs])
-      :~  :-  %public     *perm:gs
-          :-  %whitelist  *perm:gs
-          :-  %moon       %r
-          :-  %me         %w
-      ==
-    `this(perms new-perms)
+    `this(perms default-perms)
   ::
   ++  on-save  !>(state)
   ++  on-load
@@ -143,14 +135,6 @@
       ::
           %lockdown
         ?>  =(%w (what-perm:aux src.bowl))
-        =/  empty-perms=perms:gs
-          %-  malt
-          ^-  (list [arena:gs perm:gs])
-          :~  :-  %public     *perm:gs
-              :-  %whitelist  *perm:gs
-              :-  %moon       *perm:gs
-              :-  %me         %w
-          ==
         :_  this(perms empty-perms, whitelist *whitelist:gs)
         ^-  (list card)
         %+  murn  ~(val by sup.bowl)
@@ -224,4 +208,22 @@
   ?:  (~(has in whitelist) ship)
     (~(got by perms) %whitelist)
   (~(got by perms) %public)
+++  default-perms
+  ^-  perms:gs
+  %-  malt
+  ^-  (list [arena:gs perm:gs])
+  :~  :-  %public     *perm:gs
+      :-  %whitelist  *perm:gs
+      :-  %moon       %r
+      :-  %me         %w
+  ==
+++  empty-perms
+  ^-  perms:gs
+  %-  malt
+  ^-  (list [arena:gs perm:gs])
+  :~  :-  %public     *perm:gs
+      :-  %whitelist  *perm:gs
+      :-  %moon       *perm:gs
+      :-  %me         %w
+  ==
 --
