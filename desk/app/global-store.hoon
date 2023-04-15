@@ -173,47 +173,47 @@
     ==  :: poke type
   ::
   ++  on-peek
-    |=  =path
+    |=  =(pole knot)
     ~>  %bout.[0 '%global-store +on-peek']
     ~&  >>  store
     ^-  (unit (unit cage))
     ?>  =(?(%r %w) (what-perm:aux src.bowl))
-    ?+    path  (on-peek:def path)
+    ?+    pole  (on-peek:def pole)
     :: desk peek
     ::
-        [%x @ ~]
+        [%x desk=@ ~]
       ~&  >>>  'desk scry'
-      =/  =desk  (slav %tas i.t.path)
+      =/  =desk  (slav %tas desk.pole)
       ``noun+!>((~(get by store) desk))
     :: key peek
     ::
-        [%x @ @ ~]
-      =/  =desk    (slav %tas i.t.path)
-      =/  =key:gs  (slav %tas i.t.t.path)
+        [%x desk=@ key=@ ~]
+      =/  =desk    (slav %tas desk.pole)
+      =/  =key:gs  (slav %tas key.pole)
       ``noun+!>((~(get bi store) desk key))
     ==
   ::
   ++  on-agent  on-agent:def
   ++  on-arvo   on-arvo:def
   ++  on-watch
-    |=  =path
+    |=  =(pole knot)
     ~>  %bout.[0 '%global-store +on-watch']
     ~&  >>  store
     ^-  (quip card _this)
     :: on-watch, send them the value as a gift
     ?>  =(?(%r %w) (what-perm:aux src.bowl))
-    ?+    path  (on-watch:def path)
+    ?+    pole  (on-watch:def pole)
     :: desk subscription (not common), send all values in (unitized) desk ksv
     ::
-        [@ ~]
-      =/  =desk  (slav %tas i.path)
+        [desk=@ ~]
+      =/  =desk  (slav %tas desk.pole)
       :_  this  :_  ~
       [%give %fact ~ %noun !>((~(get by store) desk))]
     :: key subscription, just send the (unitized) value
     ::
-        [@ @ ~]
-      =/  =desk    (slav %tas i.path)
-      =/  =key:gs  (slav %tas i.t.path)
+        [desk=@ key=@ ~]
+      =/  =desk    (slav %tas desk.pole)
+      =/  =key:gs  (slav %tas key.pole)
       :_  this  :_  ~
       [%give %fact ~ %noun !>((~(get bi store) desk key))]
     ==
