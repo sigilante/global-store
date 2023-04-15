@@ -14,7 +14,7 @@
 ::    %mode - change access perms for the specified group
 ::    %whitelist - put a ship on the whitelist
 ::    %blacklist - remove a ship from the whitelist
-::    %lockdown - set only self to read-write perms (by default team)
+::    %lockdown - set only self to read-write perms (by default moon)
 ::
 ::    your basic use pattern will be to put important global
 ::    values into your desk's store with `%put`
@@ -61,7 +61,7 @@
       ^-  (list (pair arena:gs perm:gs))
       :~  :-  %public     *perm:gs
           :-  %whitelist  *perm:gs
-          :-  %team       %r
+          :-  %moon       %r
           :-  %me         %w
       ==
     `this(perms new-perms)
@@ -134,13 +134,13 @@
                 =(%me arena.axn)
             ==
           `this(perms (~(put by perms) arena.axn perm.axn))
-        ::  %$ for %team, %whitelist, %public
+        ::  %$ for %moon, %whitelist, %public
         :_  this(perms (~(put by perms) arena.axn perm.axn))
         ^-  (list card)
         %+  murn  ~(val by sup.bowl)
         |=  [=ship =path]
         ^-  (unit card)
-        ?.  ?|  &(=(%team arena.axn) (moon:title our.bowl ship))
+        ?.  ?|  &(=(%moon arena.axn) (moon:title our.bowl ship))
                 &(=(%whitelist arena.axn) (~(has in whitelist) ship))
                 =(%public arena.axn)
             ==
@@ -165,7 +165,7 @@
           ^-  (list (pair arena:gs perm:gs))
           :~  :-  %public     *perm:gs
               :-  %whitelist  *perm:gs
-              :-  %team       *perm:gs
+              :-  %moon       *perm:gs
               :-  %me         %w
           ==
         `this(perms empty-perms, whitelist *whitelist:gs)
@@ -218,7 +218,7 @@
       [%give %fact ~ %noun !>((~(get bi store) desk key))]
     ==
   ::
-  ++  on-fail  on-fail:def
+  ++  on-fail   on-fail:def
   ++  on-leave  on-leave:def
   --
 |_  =bowl:gall
@@ -230,7 +230,7 @@
   ?:  =(our.bowl ship)
     (~(got by perms) %me)
   ?:  (moon:title our.bowl ship)
-    (~(got by perms) %team)
+    (~(got by perms) %moon)
   ?:  (~(has in whitelist) ship)
     (~(got by perms) %whitelist)
   (~(got by perms) %public)
