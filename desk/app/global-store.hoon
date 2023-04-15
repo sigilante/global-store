@@ -142,7 +142,6 @@
         this(whitelist (~(del in whitelist) ship.act))
       ::
           %lockdown
-        ::  XX kick
         ?>  =(%w (what-perm:aux src.bowl))
         =/  empty-perms=perms:gs
           %-  malt
@@ -152,7 +151,14 @@
               :-  %moon       *perm:gs
               :-  %me         %w
           ==
-        `this(perms empty-perms, whitelist *whitelist:gs)
+        :_  this(perms empty-perms, whitelist *whitelist:gs)
+        ^-  (list card)
+        %+  murn  ~(val by sup.bowl)
+        |=  [=ship =path]
+        ^-  (unit card)
+        ?:  =(ship our.bowl)
+          ~
+        `[%give %kick ~[path] `ship]
       ==  ::  head tag
     ==    ::  poke type
   ::
