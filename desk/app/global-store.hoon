@@ -89,7 +89,7 @@
       ::  when we produce a new desk key-value store, we "bunt" it w/ its name
       ::
           %let
-        ?>  =(%w (what-perm:aux src:bowl))
+        ?>  =(%w (what-perm:aux src.bowl))
         =.  store  (~(put bi store) desk.axn %name !>(desk.axn))
         :_  this  :_  ~
         :*  %give  %fact
@@ -99,7 +99,7 @@
         ==
       ::
           %lie
-        ?>  =(%w (what-perm:aux src:bowl))
+        ?>  =(%w (what-perm:aux src.bowl))
         :_  this(store (~(del by store) desk.axn))
         :~  :*  %give  %fact
                 ~[`path`~[desk.axn]]
@@ -108,7 +108,7 @@
         ==  ==
       ::
           %put
-        ?>  =(%w (what-perm:aux src:bowl))
+        ?>  =(%w (what-perm:aux src.bowl))
         =.  store  (~(put bi store) desk.axn key.axn value.axn)
         :_  this  :_  ~
         :*  %give  %fact
@@ -118,7 +118,7 @@
         ==
       ::
           %del
-        ?>  =(%w (what-perm:aux src:bowl))
+        ?>  =(%w (what-perm:aux src.bowl))
         =.  store  (~(del bi store) desk.axn key.axn)
         :_  this  :_  ~
         :*  %give  %fact
@@ -148,17 +148,17 @@
         `[%give %kick ~[path] `ship]
       ::
           %whitelist
-        ?>  =(%w (what-perm:aux src:bowl))
+        ?>  =(%w (what-perm:aux src.bowl))
         `this(whitelist (~(put in whitelist) ship.axn))
       ::
           %whitewash
         ::  XX kick
-        ?>  =(%w (what-perm:aux src:bowl))
+        ?>  =(%w (what-perm:aux src.bowl))
         `this(whitelist (~(del in whitelist) ship.axn))
       ::
           %lockdown
         ::  XX kick
-        ?>  =(%w (what-perm:aux src:bowl))
+        ?>  =(%w (what-perm:aux src.bowl))
         =/  empty-perms  
           ^-  perms:gs
           %-  malt
@@ -177,7 +177,7 @@
     ~>  %bout.[0 '%global-store +on-peek']
     ~&  >>  store
     ^-  (unit (unit cage))
-    ?>  =(?(%r %w) (what-perm:aux src:bowl))
+    ?>  =(?(%r %w) (what-perm:aux src.bowl))
     ?+    path  (on-peek:def path)
     :: desk peek
     ::
@@ -201,7 +201,7 @@
     ~&  >>  store
     ^-  (quip card _this)
     :: on-watch, send them the value as a gift
-    ?>  =(?(%r %w) (what-perm:aux src:bowl))
+    ?>  =(?(%r %w) (what-perm:aux src.bowl))
     ?+    path  (on-watch:def path)
     :: desk subscription (not common), send all values in (unitized) desk ksv
     ::
