@@ -77,32 +77,20 @@
           %lie
         ?>  =(%w (what-perm:aux src.bowl))
         =.  store  (~(del by store) desk.act)
-        :_  this  :_  ~
-        :*  %give  %fact
-            [[desk.act ~] ~]
-            %global-store-update
-            !>(desk+(~(get by store) desk.act))
-        ==
+        :_  this
+        (give-update desk.act)^~
       ::
           %put
         ?>  =(%w (what-perm:aux src.bowl))
         =.  store  (~(put bi store) desk.act key.act value.act)
-        :_  this  :_  ~
-        :*  %give  %fact
-            [[desk.act key.act ~] ~]
-            %global-store-update
-            !>(desk+(~(get by store) desk.act))
-        ==
+        :_  this
+        (give-update desk.act key.act)^~
       ::
           %del
         ?>  =(%w (what-perm:aux src.bowl))
         =.  store  (~(del bi store) desk.act key.act)
-        :_  this  :_  ~
-        :*  %give  %fact
-            [[desk.act key.act ~] ~]
-            %global-store-update
-            !>(value+(~(get bi store) desk.act key.act))
-        ==
+        :_  this
+        (give-update desk.act key.act)^~
       ::
           %mode
         ?>  =(our src):bowl
@@ -227,5 +215,24 @@
       :-  %whitelist  *perm:gs
       :-  %moon       *perm:gs
       :-  %me         %w
+  ==
+::
+++  give-update
+  |=  arg=$@(=desk [=desk =key:gs])
+  ^-  card
+  ?@  arg
+    ::  desk update
+    ::
+    :*  %give  %fact
+        [[desk.arg ~] ~]
+        %global-store-update
+        !>(desk+(~(get by store) desk.arg))
+    ==
+  ::  value update
+  ::
+  :*  %give  %fact
+      [[desk.arg key.arg ~] ~]
+      %global-store-update
+      !>(value+(~(get bi store) desk.arg key.arg))
   ==
 --
