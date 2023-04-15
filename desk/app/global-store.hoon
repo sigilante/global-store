@@ -115,13 +115,13 @@
           %mode
         ?>  =(our src):bowl
         ::  not removing access, or just myself
+        :_  this(perms (~(put by perms) arena.act perm.act))
+        ^-  (list card)
         ?:  ?|  !=(%$ perm.act)
                 =(%me arena.act)
             ==
-          `this(perms (~(put by perms) arena.act perm.act))
+          ~
         ::  %$ for %moon, %whitelist, %public
-        :_  this(perms (~(put by perms) arena.act perm.act))
-        ^-  (list card)
         %+  murn  ~(val by sup.bowl)
         |=  [=ship =path]
         ^-  (unit card)
