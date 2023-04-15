@@ -79,8 +79,6 @@
     ~&  >>  store
     ^-  (quip card _this)
     ?+    mark  (on-poke:def mark vase)
-        %noun  (on-poke:def mark vase)
-    ::
         %global-store-action
       =+  !<(act=action:gs vase)
       ?-    -.act
@@ -111,7 +109,7 @@
         :*  %give  %fact
             [[desk.act key.act ~] ~]
             %global-store-update
-            !>(value+~)
+            !>(value+(~(get bi store) desk.act key.act))
         ==
       ::
           %mode
@@ -139,9 +137,9 @@
         `this(whitelist (~(put in whitelist) ship.act))
       ::
           %whitewash
-        ::  XX kick
         ?>  =(%w (what-perm:aux src.bowl))
-        `this(whitelist (~(del in whitelist) ship.act))
+        :-  [%give %kick ~ `ship.act]~
+        this(whitelist (~(del in whitelist) ship.act))
       ::
           %lockdown
         ::  XX kick
