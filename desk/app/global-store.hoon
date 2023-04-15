@@ -99,12 +99,13 @@
       ::
           %lie
         ?>  =(%w (what-perm:aux src.bowl))
-        :_  this(store (~(del by store) desk.act))
-        :~  :*  %give  %fact
-                [[desk.act ~] ~]
-                %global-store-update
-                !>(desk+(~(get by store) desk.act))
-        ==  ==
+        =.  store  (~(del by store) desk.act)
+        :_  this  :_  ~
+        :*  %give  %fact
+            [[desk.act ~] ~]
+            %global-store-update
+            !>(desk+(~(get by store) desk.act))
+        ==
       ::
           %put
         ?>  =(%w (what-perm:aux src.bowl))
