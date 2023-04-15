@@ -55,10 +55,9 @@
     ^-  (quip card _this)
     ~>  %bout.[0 '%global-store +on-init']
     ~&  >>  store
-    =/  new-perms
-      ^-  perms:gs
+    =/  new-perms=perms:gs
       %-  malt
-      ^-  (list (pair arena:gs perm:gs))
+      ^-  (list [arena:gs perm:gs])
       :~  :-  %public     *perm:gs
           :-  %whitelist  *perm:gs
           :-  %moon       %r
@@ -159,10 +158,9 @@
           %lockdown
         ::  XX kick
         ?>  =(%w (what-perm:aux src.bowl))
-        =/  empty-perms  
-          ^-  perms:gs
+        =/  empty-perms=perms:gs
           %-  malt
-          ^-  (list (pair arena:gs perm:gs))
+          ^-  (list [arena:gs perm:gs])
           :~  :-  %public     *perm:gs
               :-  %whitelist  *perm:gs
               :-  %moon       *perm:gs
