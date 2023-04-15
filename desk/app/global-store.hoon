@@ -128,7 +128,7 @@
       ::
           %mode
         ?>  =(our src):bowl
-        ::  not removing access or just myself
+        ::  not removing access, or just myself
         ?:  ?|  !=(%$ perm.act)
                 =(%me arena.act)
             ==
@@ -167,8 +167,8 @@
               :-  %me         %w
           ==
         `this(perms empty-perms, whitelist *whitelist:gs)
-      ==  :: head tag
-    ==  :: poke type
+      ==  ::  head tag
+    ==    ::  poke type
   ::
   ++  on-peek
     |=  =(pole knot)
@@ -177,13 +177,13 @@
     ^-  (unit (unit cage))
     ?>  =(?(%r %w) (what-perm:aux src.bowl))
     ?+    pole  (on-peek:def pole)
-    :: desk peek
+    ::  desk peek
     ::
         [%x desk=@ ~]
       ~&  >>>  'desk scry'
       =/  =desk  (slav %tas desk.pole)
       ``noun+!>((~(get by store) desk))
-    :: key peek
+    ::  key peek
     ::
         [%x desk=@ key=@ ~]
       =/  =desk    (slav %tas desk.pole)
@@ -198,16 +198,16 @@
     ~>  %bout.[0 '%global-store +on-watch']
     ~&  >>  store
     ^-  (quip card _this)
-    :: on-watch, send them the value as a gift
+    ::  on-watch, send them the value as a gift
     ?>  =(?(%r %w) (what-perm:aux src.bowl))
     ?+    pole  (on-watch:def pole)
-    :: desk subscription (not common), send all values in (unitized) desk ksv
+    ::  desk subscription (not common), send all values in (unitized) desk ksv
     ::
         [desk=@ ~]
       =/  =desk  (slav %tas desk.pole)
       :_  this  :_  ~
       [%give %fact ~ %noun !>((~(get by store) desk))]
-    :: key subscription, just send the (unitized) value
+    ::  key subscription, just send the (unitized) value
     ::
         [desk=@ key=@ ~]
       =/  =desk    (slav %tas desk.pole)
@@ -220,7 +220,7 @@
   ++  on-leave  on-leave:def
   --
 |_  =bowl:gall
-::  We check against the entire arena.
+::  we check against the entire arena
 ::
 ++  what-perm
   |=  =ship
