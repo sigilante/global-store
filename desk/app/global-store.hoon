@@ -12,7 +12,7 @@
 ::    %del - delete a key in a desk's kvs
 ::    %mode - change access perms for the specified group
 ::    %whitelist - put a ship on the whitelist
-::    %blacklist - remove a ship from the whitelist
+::    %whitewash - remove a ship from the whitelist
 ::    %lockdown - set only self to read-write perms (by default moon)
 ::
 ::    your basic use pattern will be to put important global
@@ -106,9 +106,9 @@
       ::
           %mode
         ?>  =(our src):bowl
-        ::  not removing access, or just myself
         :_  this(perms (~(put by perms) arena.act perm.act))
         ^-  (list card)
+        ::  not removing access, or just myself
         ?:  ?|  !=(%$ perm.act)
                 =(%me arena.act)
             ==
@@ -192,8 +192,8 @@
       [%give %fact ~ %noun !>((~(get bi store) desk key))]
     ==
   ::
-  ++  on-fail   on-fail:def
   ++  on-leave  on-leave:def
+  ++  on-fail   on-fail:def
   --
 |_  =bowl:gall
 ::  we check against the entire arena
@@ -208,6 +208,7 @@
   ?:  (~(has in whitelist) ship)
     (~(got by perms) %whitelist)
   (~(got by perms) %public)
+::
 ++  default-perms
   ^-  perms:gs
   %-  malt
@@ -217,6 +218,7 @@
       :-  %moon       %r
       :-  %me         %w
   ==
+::
 ++  empty-perms
   ^-  perms:gs
   %-  malt
