@@ -177,7 +177,7 @@
     ~>  %bout.[0 '%global-store +on-peek']
     ~&  >>  store
     ^-  (unit (unit cage))
-    ?>  =(%r (what-perm:aux src:bowl))
+    ?>  =(?(%r %w) (what-perm:aux src:bowl))
     ?+    path  (on-peek:def path)
     :: desk peek
     ::
