@@ -83,45 +83,45 @@
         %noun  (on-poke:def mark vase)
     ::
         %global-store-action
-      =+  !<(axn=action:gs vase)
-      ?-    -.axn
+      =+  !<(act=action:gs vase)
+      ?-    -.act
       ::  when we produce a new desk key-value store, we "bunt" it w/ its name
       ::
           %let
         ?>  =(%w (what-perm:aux src.bowl))
-        =.  store  (~(put bi store) desk.axn %name !>(desk.axn))
+        =.  store  (~(put bi store) desk.act %name !>(desk.act))
         :_  this  :_  ~
         :*  %give  %fact
-            [[desk.axn ~] ~]
+            [[desk.act ~] ~]
             %global-store-update
-            !>(desk+(~(get by store) desk.axn))
+            !>(desk+(~(get by store) desk.act))
         ==
       ::
           %lie
         ?>  =(%w (what-perm:aux src.bowl))
-        :_  this(store (~(del by store) desk.axn))
+        :_  this(store (~(del by store) desk.act))
         :~  :*  %give  %fact
-                [[desk.axn ~] ~]
+                [[desk.act ~] ~]
                 %global-store-update
-                !>(desk+(~(get by store) desk.axn))
+                !>(desk+(~(get by store) desk.act))
         ==  ==
       ::
           %put
         ?>  =(%w (what-perm:aux src.bowl))
-        =.  store  (~(put bi store) desk.axn key.axn value.axn)
+        =.  store  (~(put bi store) desk.act key.act value.act)
         :_  this  :_  ~
         :*  %give  %fact
-            [[desk.axn key.axn ~] ~]
+            [[desk.act key.act ~] ~]
             %global-store-update
-            !>(desk+(~(get by store) desk.axn))
+            !>(desk+(~(get by store) desk.act))
         ==
       ::
           %del
         ?>  =(%w (what-perm:aux src.bowl))
-        =.  store  (~(del bi store) desk.axn key.axn)
+        =.  store  (~(del bi store) desk.act key.act)
         :_  this  :_  ~
         :*  %give  %fact
-            [[desk.axn key.axn ~] ~]
+            [[desk.act key.act ~] ~]
             %global-store-update
             !>(value+~)
         ==
@@ -129,31 +129,31 @@
           %mode
         ?>  =(our src):bowl
         ::  not removing access or just myself
-        ?:  ?|  !=(%$ perm.axn)
-                =(%me arena.axn)
+        ?:  ?|  !=(%$ perm.act)
+                =(%me arena.act)
             ==
-          `this(perms (~(put by perms) arena.axn perm.axn))
+          `this(perms (~(put by perms) arena.act perm.act))
         ::  %$ for %moon, %whitelist, %public
-        :_  this(perms (~(put by perms) arena.axn perm.axn))
+        :_  this(perms (~(put by perms) arena.act perm.act))
         ^-  (list card)
         %+  murn  ~(val by sup.bowl)
         |=  [=ship =path]
         ^-  (unit card)
-        ?.  ?|  &(=(%moon arena.axn) (moon:title our.bowl ship))
-                &(=(%whitelist arena.axn) (~(has in whitelist) ship))
-                =(%public arena.axn)
+        ?.  ?|  &(=(%moon arena.act) (moon:title our.bowl ship))
+                &(=(%whitelist arena.act) (~(has in whitelist) ship))
+                =(%public arena.act)
             ==
           ~
         `[%give %kick ~[path] `ship]
       ::
           %whitelist
         ?>  =(%w (what-perm:aux src.bowl))
-        `this(whitelist (~(put in whitelist) ship.axn))
+        `this(whitelist (~(put in whitelist) ship.act))
       ::
           %whitewash
         ::  XX kick
         ?>  =(%w (what-perm:aux src.bowl))
-        `this(whitelist (~(del in whitelist) ship.axn))
+        `this(whitelist (~(del in whitelist) ship.act))
       ::
           %lockdown
         ::  XX kick
