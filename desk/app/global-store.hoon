@@ -7,7 +7,6 @@
 ::    returns values as (unit vase)
 ::
 ::    pokes:
-::    %let - create a desk key-value store (kvs)
 ::    %lie - delete a desk kvs
 ::    %put - put a value with a key onto a desk's kvs
 ::    %del - delete a key in a desk's kvs
@@ -85,18 +84,6 @@
         %global-store-action
       =+  !<(act=action:gs vase)
       ?-    -.act
-      ::  when we produce a new desk key-value store, we "bunt" it w/ its name
-      ::
-          %let
-        ?>  =(%w (what-perm:aux src.bowl))
-        =.  store  (~(put bi store) desk.act %name !>(desk.act))
-        :_  this  :_  ~
-        :*  %give  %fact
-            [[desk.act ~] ~]
-            %global-store-update
-            !>(desk+(~(get by store) desk.act))
-        ==
-      ::
           %lie
         ?>  =(%w (what-perm:aux src.bowl))
         =.  store  (~(del by store) desk.act)

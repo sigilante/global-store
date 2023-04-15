@@ -17,8 +17,7 @@
 +$  store  (mip =desk =key =value)
 ::
 +$  action
-  $%  [%let =desk]
-      [%lie =desk]
+  $%  [%lie =desk]
       [%put =desk =key =value]
       [%del =desk =key]
       [%mode =arena =perm]
