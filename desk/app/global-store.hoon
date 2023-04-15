@@ -201,7 +201,7 @@
     ~&  >>  store
     ^-  (quip card _this)
     :: on-watch, send them the value as a gift
-    ?>  =(%r (what-perm:aux src:bowl))
+    ?>  =(?(%r %w) (what-perm:aux src:bowl))
     ?+    path  (on-watch:def path)
     :: desk subscription (not common), send all values in (unitized) desk ksv
     ::
