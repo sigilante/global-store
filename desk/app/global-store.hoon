@@ -147,13 +147,13 @@
         [%x desk=@ ~]
       ~&  >>>  'desk scry'
       =/  =desk  (slav %tas desk.pole)
-      ``noun+!>(`update:gs`desk+(~(get by store) desk))
+      ``noun+!>((~(get by store) desk))
     ::  key peek
     ::
         [%x desk=@ key=@ ~]
       =/  =desk    (slav %tas desk.pole)
       =/  =key:gs  (slav %tas key.pole)
-      ``noun+!>(`update:gs`value+(~(get bi store) desk key))
+      ``noun+!>((~(get bi store) desk key))
     ==
   ::
   ++  on-agent  on-agent:def
@@ -171,14 +171,14 @@
         [desk=@ ~]
       =/  =desk  (slav %tas desk.pole)
       :_  this  :_  ~
-      [%give %fact ~ %noun !>(`update:gs`desk+(~(get by store) desk))]
+      [%give %fact ~ %noun !>((~(get by store) desk))]
     ::  key subscription, just send the (unitized) value
     ::
         [desk=@ key=@ ~]
       =/  =desk    (slav %tas desk.pole)
       =/  =key:gs  (slav %tas key.pole)
       :_  this  :_  ~
-      [%give %fact ~ %noun !>(`update:gs`value+(~(get bi store) desk key))]
+      [%give %fact ~ %noun !>((~(get bi store) desk key))]
     ==
   ::
   ++  on-leave  on-leave:def
