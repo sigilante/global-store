@@ -226,13 +226,13 @@
     :*  %give  %fact
         [[desk.arg ~] ~]
         %global-store-update
-        !>(desk+(~(get by store) desk.arg))
+        !>(`update:gs`desk+(~(get by store) desk.arg))
     ==
   ::  value update
   ::
   :*  %give  %fact
       [[desk.arg key.arg ~] ~]
       %global-store-update
-      !>(value+(~(get bi store) desk.arg key.arg))
+      !>(`update:gs`value+(~(get bi store) desk.arg key.arg))
   ==
 --
