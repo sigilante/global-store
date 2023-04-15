@@ -78,6 +78,7 @@
         ?>  =(%w (what-perm:aux src.bowl))
         =.  store  (~(del by store) desk.act)
         :_  this
+        ::  XX  update /desk/key subs too?
         (give-update desk.act)^~
       ::
           %put
@@ -146,13 +147,13 @@
         [%x desk=@ ~]
       ~&  >>>  'desk scry'
       =/  =desk  (slav %tas desk.pole)
-      ``noun+!>((~(get by store) desk))
+      ``noun+!>(`update:gs`desk+(~(get by store) desk))
     ::  key peek
     ::
         [%x desk=@ key=@ ~]
       =/  =desk    (slav %tas desk.pole)
       =/  =key:gs  (slav %tas key.pole)
-      ``noun+!>((~(get bi store) desk key))
+      ``noun+!>(`update:gs`value+(~(get bi store) desk key))
     ==
   ::
   ++  on-agent  on-agent:def
