@@ -228,38 +228,35 @@
 ++  give-updates
   |=  arg=$@(=desk [=desk =key:gs])
   |^  ^+  aux
-      ?@  arg
-        ::  desk update
-        ::    /desk and /desk/*
+      ?^  arg
+        ::  value update
+        ::    /desk and /desk/key
         ::
         =.  aux  (emit (desk-update desk.arg))
-        ::
-        %-  emil
-        ::  XX  deduplicate paths
+        (emit (value-update desk.arg key.arg))
+      ::  desk update
+      ::    /desk and /desk/*
+      ::
+      =.  aux  (emit (desk-update desk.arg))
+      ::  keys for this desk
+      ::
+      =/  keys=(set key:gs)
+        %-  sy
         %+  murn  ~(val by sup.bowl)
         |=  [* =(pole knot)]
         ?+    pole  ~
             [desk=@ key=@ ~]
-          =/  d=desk    (slav %tas desk.pole)
-          =/  k=key:gs  (slav %tas key.pole)
+          =/  d=desk  (slav %tas desk.pole)
           ?.  =(d desk.arg)
             ~
-          `(value-update desk.arg k)
+          `(slav %tas key.pole)
         ==
-      ::  value update
-      ::    /desk and /desk/key
+      ::  value update cards
       ::
-      =.  aux  (emit (desk-update desk.arg))
-      (emit (value-update desk.arg key.arg))
-  ::
-  ++  value-update
-    |=  [=desk =key:gs]
-    ^-  card
-    :*  %give  %fact
-        [[desk key ~] ~]
-        %global-store-update
-        !>(`update:gs`value+(~(get bi store) desk key))
-    ==
+      %-  emil
+      %+  turn  ~(tap in keys)
+      |=  =key:gs
+      (value-update desk.arg key)
   ::
   ++  desk-update
     |=  =desk
@@ -268,6 +265,15 @@
         [[desk ~] ~]
         %global-store-update
         !>(`update:gs`desk+(~(get by store) desk))
+    ==
+  ::
+  ++  value-update
+    |=  [=desk =key:gs]
+    ^-  card
+    :*  %give  %fact
+        [[desk key ~] ~]
+        %global-store-update
+        !>(`update:gs`value+(~(get bi store) desk key))
     ==
   --
 --
