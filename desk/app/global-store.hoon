@@ -201,8 +201,8 @@
   ^-  perms:gs
   %-  malt
   ^-  (list [arena:gs perm:gs])
-  :~  :-  %public     *perm:gs
-      :-  %whitelist  *perm:gs
+  :~  :-  %public     ~
+      :-  %whitelist  ~
       :-  %moon       `%r
       :-  %me         `%w
   ==
@@ -211,9 +211,9 @@
   ^-  perms:gs
   %-  malt
   ^-  (list [arena:gs perm:gs])
-  :~  :-  %public     *perm:gs
-      :-  %whitelist  *perm:gs
-      :-  %moon       *perm:gs
+  :~  :-  %public     ~
+      :-  %whitelist  ~
+      :-  %moon       ~
       :-  %me         `%w
   ==
 ::
