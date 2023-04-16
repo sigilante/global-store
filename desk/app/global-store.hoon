@@ -244,13 +244,11 @@
         %-  sy
         %+  murn  ~(val by sup.bowl)
         |=  [* =(pole knot)]
-        ?+    pole  ~
-            [desk=@ key=@ ~]
-          =/  d=desk  (slav %tas desk.pole)
-          ?.  =(d desk.arg)
-            ~
-          `(slav %tas key.pole)
-        ==
+        ?.  ?&  ?=([desk=@ key=@ ~] pole)
+                =(desk.pole desk.arg)
+            ==
+          ~
+        `key.pole
       ::  value update cards
       ::
       %-  emil
