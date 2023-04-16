@@ -77,21 +77,23 @@
           %lie
         ?>  =(%w (what-perm:aux src.bowl))
         =.  store  (~(del by store) desk.act)
-        :_  this
-        ::  XX  update /desk/key subs too?
-        (give-update desk.act)^~
+        =^  cards  state
+          abet:(give-updates:aux desk.act)
+        [cards this]
       ::
           %put
         ?>  =(%w (what-perm:aux src.bowl))
         =.  store  (~(put bi store) desk.act key.act value.act)
-        :_  this
-        (give-update desk.act key.act)^~
+        =^  cards  state
+          abet:(give-updates:aux desk.act key.act)
+        [cards this]
       ::
           %del
         ?>  =(%w (what-perm:aux src.bowl))
         =.  store  (~(del bi store) desk.act key.act)
-        :_  this
-        (give-update desk.act key.act)^~
+        =^  cards  state
+          abet:(give-updates:aux desk.act key.act)
+        [cards this]
       ::
           %mode
         ?>  =(our src):bowl
@@ -184,7 +186,12 @@
   ++  on-leave  on-leave:def
   ++  on-fail   on-fail:def
   --
+=|  cards=(list card)
 |_  =bowl:gall
++*  aux   .
+++  abet  [(flop cards) state]
+++  emit  |=(=card aux(cards [card cards]))
+++  emil  |=(caz=(list card) aux(cards (welp (flop caz) cards)))
 ::  we check against the entire arena
 ::
 ++  what-perm
@@ -218,22 +225,48 @@
       :-  %me         %w
   ==
 ::
-++  give-update
+++  give-updates
   |=  arg=$@(=desk [=desk =key:gs])
-  ^-  card
-  ?@  arg
-    ::  desk update
-    ::
-    :*  %give  %fact
-        [[desk.arg ~] ~]
-        %global-store-update
-        !>(`update:gs`desk+(~(get by store) desk.arg))
-    ==
-  ::  value update
+  |^  ^+  aux
+      ?@  arg
+        ::  desk update
+        ::    /desk and /desk/*
+        ::
+        =.  aux  (emit (desk-update desk.arg))
+        ::
+        %-  emil
+        %+  murn  ~(val by sup.bowl)
+        |=  [* =(pole knot)]
+        ?+    pole  ~
+            [desk=@ key=@ ~]
+          =/  d=desk    (slav %tas desk.pole)
+          =/  k=key:gs  (slav %tas key.pole)
+          ?.  =(d desk.arg)
+            ~
+          `(value-update desk.arg k)
+        ==
+      ::  value update
+      ::    /desk and /desk/key
+      ::
+      =.  aux  (emit (desk-update desk.arg))
+      (emit (value-update desk.arg key.arg))
   ::
-  :*  %give  %fact
-      [[desk.arg key.arg ~] ~]
-      %global-store-update
-      !>(`update:gs`value+(~(get bi store) desk.arg key.arg))
-  ==
+  ++  value-update
+    |=  [=desk =key:gs]
+    ^-  card
+    :*  %give  %fact
+        [[desk key ~] ~]
+        %global-store-update
+        !>(`update:gs`value+(~(get bi store) desk key))
+    ==
+  ::
+  ++  desk-update
+    |=  =desk
+    ^-  card
+    :*  %give  %fact
+        [[desk ~] ~]
+        %global-store-update
+        !>(`update:gs`desk+(~(get by store) desk))
+    ==
+  --
 --
