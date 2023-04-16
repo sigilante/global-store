@@ -235,6 +235,7 @@
         =.  aux  (emit (desk-update desk.arg))
         ::
         %-  emil
+        ::  XX  deduplicate paths
         %+  murn  ~(val by sup.bowl)
         |=  [* =(pole knot)]
         ?+    pole  ~
