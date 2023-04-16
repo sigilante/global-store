@@ -8,21 +8,20 @@
 +$  key    @tas
 +$  value  vase
 +$  perm  (unit ?(%r %w))
-::  XX remove %me?
-+$  arena  ?(%public %whitelist %moon %me)
-+$  perms  (map arena perm)
-+$  whitelist  (set ship)
++$  arena  ?(%moon %public)
 ::
-+$  store  (mip =desk =key =value)
++$  store      (mip =desk =key =value)
++$  perms      (map [=desk =arena] =perm)
++$  whitelist  (map [=desk =ship] =perm)
 ::
 +$  action
   $%  [%lie =desk]
       [%put =desk =key =value]
       [%del =desk =key]
-      [%mode =arena =perm]
-      [%whitelist =ship]
-      [%whitewash =ship]
-      [%lockdown ~]
+      [%mode =desk =arena =perm]
+      [%whitelist =desk =ship =perm]
+      [%whitewash =desk =ship]
+      [%lockdown =desk]
   ==
 +$  update
   $%  [%desk (unit (map key value))]

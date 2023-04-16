@@ -50,12 +50,7 @@
   +*  this  .
       def   ~(. (default-agent this %|) bowl)
       aux   ~(. +> bowl)
-  ++  on-init
-    ^-  (quip card _this)
-    ~>  %bout.[0 '%global-store +on-init']
-    ~&  >>  store
-    `this(perms default-perms)
-  ::
+  ++  on-init  on-init:def
   ++  on-save  !>(state)
   ++  on-load
     |=  =vase
@@ -75,26 +70,27 @@
       =+  !<(act=action:gs vase)
       ?-    -.act
           %lie
-        ?>  =(%w (what-perm:aux src.bowl))
+        ?>  (can-write desk.act src.bowl)
         =.  store  (~(del by store) desk.act)
         :_  this
         (give-updates:aux desk.act)
       ::
           %put
-        ?>  =(%w (what-perm:aux src.bowl))
+        ?>  (can-write desk.act src.bowl)
         =.  store  (~(put bi store) desk.act key.act value.act)
         :_  this
         (give-updates:aux desk.act key.act)
       ::
           %del
-        ?>  =(%w (what-perm:aux src.bowl))
+        ?>  (can-write desk.act src.bowl)
         =.  store  (~(del bi store) desk.act key.act)
         :_  this
         (give-updates:aux desk.act key.act)
+      ::  XX probably wrong
       ::
           %mode
         ?>  =(our src):bowl
-        :_  this(perms (~(put by perms) arena.act perm.act))
+        :_  this(perms (~(put by perms) [desk.act arena.act] perm.act))
         ^-  (list card)
         ::  not removing access, or just myself
         ?:  ?|  !=(~ perm.act)
@@ -106,24 +102,27 @@
         |=  [=ship =path]
         ^-  (unit card)
         ?.  ?|  &(=(%moon arena.act) (moon:title our.bowl ship))
-                &(=(%whitelist arena.act) (~(has in whitelist) ship))
+                &(=(%whitelist arena.act) (~(has by whitelist) [desk.act ship]))
                 =(%public arena.act)
             ==
           ~
         `[%give %kick ~[path] `ship]
       ::
           %whitelist
-        ?>  =(%w (what-perm:aux src.bowl))
-        `this(whitelist (~(put in whitelist) ship.act))
+        ?>  (can-write desk.act src.bowl)
+        `this(whitelist (~(put by whitelist) [desk.act ship.act] perm.act))
       ::
           %whitewash
-        ?>  =(%w (what-perm:aux src.bowl))
-        :-  [%give %kick ~ `ship.act]~
-        this(whitelist (~(del in whitelist) ship.act))
+        ?>  (can-write desk.act src.bowl)
+        ::  XX all paths
+        :-  [%give %kick [[desk.act ~] ~] `ship.act]~
+        this(whitelist (~(del by whitelist) desk.act ship.act))
       ::
           %lockdown
-        ?>  =(%w (what-perm:aux src.bowl))
-        :_  this(perms empty-perms, whitelist *whitelist:gs)
+        ?>  (can-write desk.act src.bowl)
+        =.  perms  (~(del by perms) desk.act)
+        =.  whitelist  (~(del by whitelist) desk.act)
+        :_  this
         ^-  (list card)
         %+  murn  ~(val by sup.bowl)
         |=  [=ship =path]
@@ -139,18 +138,19 @@
     ~>  %bout.[0 '%global-store +on-peek']
     ~&  >>  store
     ^-  (unit (unit cage))
-    ?>  =(?(%r %w) (what-perm:aux src.bowl))
     ?+    pole  (on-peek:def pole)
     ::  desk peek
     ::
         [%x desk=@ ~]
       ~&  >>>  'desk scry'
       =/  =desk  (slav %tas desk.pole)
+      ?>  (can-read desk src.bowl)
       ``noun+!>((~(get by store) desk))
     ::  key peek
     ::
         [%x desk=@ key=@ ~]
       =/  =desk    (slav %tas desk.pole)
+      ?>  (can-read desk src.bowl)
       =/  =key:gs  (slav %tas key.pole)
       ``noun+!>((~(get bi store) desk key))
     ==
@@ -163,18 +163,19 @@
     ~&  >>  store
     ^-  (quip card _this)
     ::  on-watch, send them the value as a gift
-    ?>  =(?(%r %w) (what-perm:aux src.bowl))
     ?+    pole  (on-watch:def pole)
     ::  desk subscription (not common), send all values in (unitized) desk ksv
     ::
         [desk=@ ~]
       =/  =desk  (slav %tas desk.pole)
+      ?>  (can-read desk src.bowl)
       :_  this  :_  ~
       [%give %fact ~ %noun !>((~(get by store) desk))]
     ::  key subscription, just send the (unitized) value
     ::
         [desk=@ key=@ ~]
       =/  =desk    (slav %tas desk.pole)
+      ?>  (can-read desk src.bowl)
       =/  =key:gs  (slav %tas key.pole)
       :_  this  :_  ~
       [%give %fact ~ %noun !>((~(get bi store) desk key))]
@@ -184,32 +185,29 @@
   ++  on-fail   on-fail:def
   --
 |_  =bowl:gall
+++  can-read
+  |=  [=desk =ship]
+  ^-  ?
+  =(?(%r %w) (what-perm desk ship))
+::
+++  can-write
+  |=  [=desk =ship]
+  ^-  ?
+  =(%w (what-perm desk ship))
 ::  we check against the entire arena
+::    our, whitelist, moon, public
 ::
 ++  what-perm
-  |=  =ship
+  |=  [=desk =ship]
   ^-  perm:gs
-  ?:  =(our.bowl ship)
-    (~(got by perms) %me)
-  ?:  (~(has in whitelist) ship)
-    (~(got by perms) %whitelist)
-  ?:  (moon:title our.bowl ship)
-    (~(got by perms) %moon)
-  (~(got by perms) %public)
-::
-++  default-perms
-  ^-  perms:gs
-  ^-  perms:gs
-  =|  =perms:gs
-  =.  perms  (~(put by perms) %me `%w)
-  =.  perms  (~(put by perms) %moon `%r)
-  perms
-::
-++  empty-perms
-  ^-  perms:gs
-  =|  =perms:gs
-  =.  perms  (~(put by perms) %me `%w)
-  perms
+  ?:  =(our.bowl ship)  `%w
+  ?:  (~(has by whitelist) [desk ship])
+    (~(got by whitelist) [desk ship])
+  ?:  ?&  (moon:title our.bowl ship)
+          (~(has by perms) [desk %moon])
+      ==
+    (~(got by perms) [desk %moon])
+  (~(gut by perms) [desk %public] ~)
 ::
 ++  give-updates
   |=  arg=$@(=desk [=desk =key:gs])
