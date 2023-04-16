@@ -77,23 +77,20 @@
           %lie
         ?>  =(%w (what-perm:aux src.bowl))
         =.  store  (~(del by store) desk.act)
-        =^  cards  state
-          abet:(give-updates:aux desk.act)
-        [cards this]
+        :_  this
+        (give-updates:aux desk.act)
       ::
           %put
         ?>  =(%w (what-perm:aux src.bowl))
         =.  store  (~(put bi store) desk.act key.act value.act)
-        =^  cards  state
-          abet:(give-updates:aux desk.act key.act)
-        [cards this]
+        :_  this
+        (give-updates:aux desk.act key.act)
       ::
           %del
         ?>  =(%w (what-perm:aux src.bowl))
         =.  store  (~(del bi store) desk.act key.act)
-        =^  cards  state
-          abet:(give-updates:aux desk.act key.act)
-        [cards this]
+        :_  this
+        (give-updates:aux desk.act key.act)
       ::
           %mode
         ?>  =(our src):bowl
@@ -186,12 +183,7 @@
   ++  on-leave  on-leave:def
   ++  on-fail   on-fail:def
   --
-=|  cards=(list card)
 |_  =bowl:gall
-+*  aux   .
-++  abet  [(flop cards) state]
-++  emit  |=(=card aux(cards [card cards]))
-++  emil  |=(caz=(list card) aux(cards (welp (flop caz) cards)))
 ::  we check against the entire arena
 ::
 ++  what-perm
@@ -227,17 +219,17 @@
 ::
 ++  give-updates
   |=  arg=$@(=desk [=desk =key:gs])
-  |^  ^+  aux
+  |^  ^-  (list card)
       ?^  arg
         ::  value update
         ::    /desk and /desk/key
         ::
-        =.  aux  (emit (desk-update desk.arg))
-        (emit (value-update desk.arg key.arg))
+        :~  (desk-update desk.arg)
+            (value-update desk.arg key.arg)
+        ==
       ::  desk update
       ::    /desk and /desk/*
       ::
-      =.  aux  (emit (desk-update desk.arg))
       ::  keys for this desk
       ::
       =/  keys=(set key:gs)
@@ -249,9 +241,11 @@
             ==
           ~
         `key.pole
+      ::  desk update card
+      ::
+      :-  (desk-update desk.arg)
       ::  value update cards
       ::
-      %-  emil
       %+  turn  ~(tap in keys)
       |=  =key:gs
       (value-update desk.arg key)
