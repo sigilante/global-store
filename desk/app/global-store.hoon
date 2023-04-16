@@ -97,11 +97,11 @@
         :_  this(perms (~(put by perms) arena.act perm.act))
         ^-  (list card)
         ::  not removing access, or just myself
-        ?:  ?|  !=(%$ perm.act)
+        ?:  ?|  !=(~ perm.act)
                 =(%me arena.act)
             ==
           ~
-        ::  %$ for %moon, %whitelist, %public
+        ::  ~ for %moon, %whitelist, %public
         %+  murn  ~(val by sup.bowl)
         |=  [=ship =path]
         ^-  (unit card)
