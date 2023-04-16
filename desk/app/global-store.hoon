@@ -203,8 +203,8 @@
   ^-  (list [arena:gs perm:gs])
   :~  :-  %public     *perm:gs
       :-  %whitelist  *perm:gs
-      :-  %moon       %r
-      :-  %me         %w
+      :-  %moon       `%r
+      :-  %me         `%w
   ==
 ::
 ++  empty-perms
@@ -214,7 +214,7 @@
   :~  :-  %public     *perm:gs
       :-  %whitelist  *perm:gs
       :-  %moon       *perm:gs
-      :-  %me         %w
+      :-  %me         `%w
   ==
 ::
 ++  give-updates

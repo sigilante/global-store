@@ -7,9 +7,7 @@
 |%
 +$  key    @tas
 +$  value  vase
-+$  perm
-  $~  %$
-  ?(%w %r %$)
++$  perm  (unit ?(%r %w))
 +$  arena  ?(%public %whitelist %moon %me)
 +$  perms  (map arena perm)
 +$  whitelist  (set ship)
