@@ -191,31 +191,25 @@
   ^-  perm:gs
   ?:  =(our.bowl ship)
     (~(got by perms) %me)
-  ?:  (moon:title our.bowl ship)
-    (~(got by perms) %moon)
   ?:  (~(has in whitelist) ship)
     (~(got by perms) %whitelist)
+  ?:  (moon:title our.bowl ship)
+    (~(got by perms) %moon)
   (~(got by perms) %public)
 ::
 ++  default-perms
   ^-  perms:gs
-  %-  malt
-  ^-  (list [arena:gs perm:gs])
-  :~  :-  %public     ~
-      :-  %whitelist  ~
-      :-  %moon       `%r
-      :-  %me         `%w
-  ==
+  ^-  perms:gs
+  =|  =perms:gs
+  =.  perms  (~(put by perms) %me `%w)
+  =.  perms  (~(put by perms) %moon `%r)
+  perms
 ::
 ++  empty-perms
   ^-  perms:gs
-  %-  malt
-  ^-  (list [arena:gs perm:gs])
-  :~  :-  %public     ~
-      :-  %whitelist  ~
-      :-  %moon       ~
-      :-  %me         `%w
-  ==
+  =|  =perms:gs
+  =.  perms  (~(put by perms) %me `%w)
+  perms
 ::
 ++  give-updates
   |=  arg=$@(=desk [=desk =key:gs])
