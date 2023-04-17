@@ -31,9 +31,9 @@
 =>
   |%
   +$  card  card:agent:gall
-  +$  versioned-state  $%(state-zero)
-  +$  state-zero
-    $:  %zero
+  +$  versioned-state  $%(state-0)
+  +$  state-0
+    $:  %0
         =store:gs
         =roll:gs
     ==
@@ -41,7 +41,7 @@
 ::
 %+  verb  &
 %-  agent:dbug
-=|  state-zero
+=|  state-0
 =*  state  -
 ^-  agent:gall
 =<
@@ -56,13 +56,11 @@
     ^-  (quip card _this)
     =+  !<(old=versioned-state vase)
     ?-  -.old
-      %zero  `this(state old)
+      %0  `this(state old)
     ==
   ::
   ++  on-poke
     |=  [=mark =vase]
-    ~>  %bout.[0 '%global-store +on-poke']
-    ~&  >>  store
     ^-  (quip card _this)
     ?+    mark  (on-poke:def mark vase)
         %global-store-action
@@ -91,10 +89,8 @@
         ?>  =(our src):bowl
         :_  this(roll (~(put by roll) [desk.act arena.act] perm.act))
         ^-  (list card)
-        ::  not removing access, or just myself
-        ?:  ?|  !=(~ perm.act)
-                =(%me arena.act)
-            ==
+        ::  not removing access
+        ?.  =(~ perm.act)
           ~
         ::  ~ for %moon, %roll, %public
         %+  murn  ~(val by sup.bowl)
@@ -131,7 +127,6 @@
       ::
           %lockdown
         ?>  (can-write:aux desk.act src.bowl)
-        =.  roll  (~(del by roll) desk.act)
         =.  roll  (~(del by roll) desk.act)
         :_  this
         ^-  (list card)
@@ -192,15 +187,8 @@
   ++  on-fail   on-fail:def
   --
 |_  =bowl:gall
-++  can-read
-  |=  [=desk =ship]
-  ^-  ?
-  !=(~ (what-perm desk ship))
-::
-++  can-write
-  |=  [=desk =ship]
-  ^-  ?
-  =(`%w (what-perm desk ship))
+++  can-read   |=([=desk =ship] !=(~ (what-perm desk ship)))
+++  can-write  |=([=desk =ship] =(`%w (what-perm desk ship)))
 ::  we check against the entire arena
 ::    our, roll, moon, public
 ::
