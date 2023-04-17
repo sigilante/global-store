@@ -7,21 +7,21 @@
 ::    returns values as (unit vase)
 ::
 ::    pokes:
-::    %lie - delete a desk kvs
 ::    %put - put a value with a key onto a desk's kvs
 ::    %del - delete a key in a desk's kvs
-::    %mode - change access perms for the specified group
-::    %enroll - put a ship on the roll
-::    %unroll - remove a ship from the roll
-::    %lockdown - set only self to read-write perms for a desk (by default moon)
+::    %lie - delete a desk kvs
+::    %enroll - put a ?(ship arena) on the roll
+::    %unroll - remove a ?(ship arena) from the roll
+::    %lockdown - set only self to read-write perms for a desk
 ::
 ::    your basic use pattern will be to put important global
 ::    values into your desk's store with `%put`
 ::    or to read out an important value by peeking or subscribing and
 ::    receiving a gift in return
 ::
-::    you'll either peek to /x/[desk]/[key] for a value or
-::    subscribe to /[desk]/[key] for a value
+::    for a value you'll peek to
+::    /x/desk/[desk] or /x/desk/key/[desk]/[key]
+::    or subscribe to /[desk] or /[desk]/[key]
 ::
 ::    the advantage of subscribing is that you receive changes to the value
 ::
@@ -87,25 +87,25 @@
       ::
           %enroll
         ?>  =(our src):bowl
+        =.  roll  (~(put by roll) [desk.act wut.act] perm.act)
+        :_  this
+        ^-  (list card)
         ::  give kicks if perm is ~
-        `this(roll (~(put by roll) [desk.act wut.act] perm.act))
+        ?.  =(~ perm.act)
+          ~
+        (give-kicks desk.act)
       ::
           %unroll
         ?>  =(our src):bowl
-        ::  XX give kicks
-        `this(roll (~(del by roll) [desk.act wut.act]))
+        =.  roll  (~(del by roll) [desk.act wut.act])
+        :_  this
+        (give-kicks desk.act)
       ::
           %lockdown
         ?>  =(our src):bowl
         =.  roll  (~(del by roll) desk.act)
         :_  this
-        ^-  (list card)
-        %+  murn  ~(val by sup.bowl)
-        |=  [=ship =path]
-        ^-  (unit card)
-        ?:  =(ship our.bowl)
-          ~
-        `[%give %kick ~[path] `ship]
+        (give-kicks desk.act)
       ==  ::  head tag
     ==    ::  poke type
   ::
@@ -174,6 +174,20 @@
     (~(got by roll) [desk %moon])
   (~(gut by roll) [desk %public] ~)
 ::
+++  give-kicks
+  |=  =desk
+  ^-  (list card)
+  %+  murn  ~(val by sup.bowl)
+  |=  [=ship =(pole knot)]
+  ^-  (unit card)
+  ?.  ?&  ?=([desk=@ *] pole)
+          =(desk.pole desk)
+      ==
+    ~
+  ?:  (can-read desk ship)
+    ~
+  `[%give %kick [pole ~] `ship]
+
 ++  give-updates
   |=  arg=$@(=desk [=desk =key:gs])
   |^  ^-  (list card)
