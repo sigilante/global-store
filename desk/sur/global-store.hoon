@@ -10,17 +10,16 @@
 +$  perm  (unit ?(%r %w))
 +$  arena  ?(%moon %public)
 ::
-+$  store      (mip =desk =key =value)
-+$  perms      (map [=desk =arena] =perm)
-+$  whitelist  (map [=desk =ship] =perm)
++$  store  (mip =desk =key =value)
++$  roll   (map [=desk ?(=ship =arena)] =perm)
 ::
 +$  action
   $%  [%lie =desk]
       [%put =desk =key =value]
       [%del =desk =key]
       [%mode =desk =arena =perm]
-      [%whitelist =desk =ship =perm]
-      [%whitewash =desk =ship]
+      [%enroll =desk =ship =perm]
+      [%unroll =desk =ship]
       [%lockdown =desk]
   ==
 +$  update

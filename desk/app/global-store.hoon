@@ -11,9 +11,9 @@
 ::    %put - put a value with a key onto a desk's kvs
 ::    %del - delete a key in a desk's kvs
 ::    %mode - change access perms for the specified group
-::    %whitelist - put a ship on the whitelist
-::    %whitewash - remove a ship from the whitelist
-::    %lockdown - set only self to read-write perms (by default moon)
+::    %enroll - put a ship on the roll
+::    %unroll - remove a ship from the roll
+::    %lockdown - set only self to read-write perms for a desk (by default moon)
 ::
 ::    your basic use pattern will be to put important global
 ::    values into your desk's store with `%put`
@@ -35,8 +35,7 @@
   +$  state-zero
     $:  %zero
         =store:gs
-        =perms:gs
-        =whitelist:gs
+        =roll:gs
     ==
   --
 ::
@@ -90,38 +89,38 @@
       ::
           %mode
         ?>  =(our src):bowl
-        :_  this(perms (~(put by perms) [desk.act arena.act] perm.act))
+        :_  this(roll (~(put by roll) [desk.act arena.act] perm.act))
         ^-  (list card)
         ::  not removing access, or just myself
         ?:  ?|  !=(~ perm.act)
                 =(%me arena.act)
             ==
           ~
-        ::  ~ for %moon, %whitelist, %public
+        ::  ~ for %moon, %roll, %public
         %+  murn  ~(val by sup.bowl)
         |=  [=ship =path]
         ^-  (unit card)
         ?.  ?|  &(=(%moon arena.act) (moon:title our.bowl ship))
-                &(=(%whitelist arena.act) (~(has by whitelist) [desk.act ship]))
+                &(=(%enroll arena.act) (~(has by roll) [desk.act ship]))
                 =(%public arena.act)
             ==
           ~
         `[%give %kick ~[path] `ship]
       ::
-          %whitelist
+          %enroll
         ?>  (can-write desk.act src.bowl)
-        `this(whitelist (~(put by whitelist) [desk.act ship.act] perm.act))
+        `this(roll (~(put by roll) [desk.act ship.act] perm.act))
       ::
-          %whitewash
+          %unroll
         ?>  (can-write desk.act src.bowl)
         ::  XX all paths
         :-  [%give %kick [[desk.act ~] ~] `ship.act]~
-        this(whitelist (~(del by whitelist) desk.act ship.act))
+        this(roll (~(del by roll) desk.act ship.act))
       ::
           %lockdown
         ?>  (can-write desk.act src.bowl)
-        =.  perms  (~(del by perms) desk.act)
-        =.  whitelist  (~(del by whitelist) desk.act)
+        =.  roll  (~(del by roll) desk.act)
+        =.  roll  (~(del by roll) desk.act)
         :_  this
         ^-  (list card)
         %+  murn  ~(val by sup.bowl)
@@ -188,26 +187,26 @@
 ++  can-read
   |=  [=desk =ship]
   ^-  ?
-  =(?(%r %w) (what-perm desk ship))
+  !=(~ (what-perm desk ship))
 ::
 ++  can-write
   |=  [=desk =ship]
   ^-  ?
-  =(%w (what-perm desk ship))
+  =(`%w (what-perm desk ship))
 ::  we check against the entire arena
-::    our, whitelist, moon, public
+::    our, roll, moon, public
 ::
 ++  what-perm
   |=  [=desk =ship]
   ^-  perm:gs
   ?:  =(our.bowl ship)  `%w
-  ?:  (~(has by whitelist) [desk ship])
-    (~(got by whitelist) [desk ship])
+  ?:  (~(has by roll) [desk ship])
+    (~(got by roll) [desk ship])
   ?:  ?&  (moon:title our.bowl ship)
-          (~(has by perms) [desk %moon])
+          (~(has by roll) [desk %moon])
       ==
-    (~(got by perms) [desk %moon])
-  (~(gut by perms) [desk %public] ~)
+    (~(got by roll) [desk %moon])
+  (~(gut by roll) [desk %public] ~)
 ::
 ++  give-updates
   |=  arg=$@(=desk [=desk =key:gs])
