@@ -17,7 +17,6 @@
   $%  [%lie =desk]
       [%put =desk =key =value]
       [%del =desk =key]
-      [%mode =desk =arena =perm]
       [%enroll =desk wut=?(=ship =arena) =perm]
       [%unroll =desk wut=?(=ship =arena)]
       [%lockdown =desk]

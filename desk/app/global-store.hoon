@@ -83,50 +83,20 @@
         =.  store  (~(del bi store) desk.act key.act)
         :_  this
         (give-updates:aux desk.act key.act)
-      ::  XX probably wrong
-      ::
-          %mode
-        ?>  =(our src):bowl
-        :_  this(roll (~(put by roll) [desk.act arena.act] perm.act))
-        ^-  (list card)
-        ::  not removing access
-        ?.  =(~ perm.act)
-          ~
-        ::  ~ for %moon, %roll, %public
-        %+  murn  ~(val by sup.bowl)
-        |=  [=ship =path]
-        ^-  (unit card)
-        ?.  ?|  &(=(%moon arena.act) (moon:title our.bowl ship))
-                &(=(%enroll arena.act) (~(has by roll) [desk.act ship]))
-                =(%public arena.act)
-            ==
-          ~
-        `[%give %kick ~[path] `ship]
       ::  ship or arena
       ::
           %enroll
-        ?>  (can-write:aux desk.act src.bowl)
-        ?:  ?=(arena:gs wut.act)
-           ~&  >>  %arena
-          `this(roll (~(put by roll) [desk.act wut.act] perm.act))
-        ?>  ?=(ship wut.act)
-        ~&  >>  %ship
+        ?>  =(our src):bowl
+        ::  give kicks if perm is ~
         `this(roll (~(put by roll) [desk.act wut.act] perm.act))
-      ::  ship or arena
-      ::    XX all paths
       ::
           %unroll
-        ?>  (can-write:aux desk.act src.bowl)
-        ?:  ?=(arena:gs wut.act)
-           ~&  >>  %arena
-          `this(roll (~(del by roll) [desk.act wut.act]))
-        ?>  ?=(ship wut.act)
-        ~&  >>  %ship
-        :-  [%give %kick [[desk.act ~] ~] `wut.act]~
-        this(roll (~(del by roll) [desk.act wut.act]))
+        ?>  =(our src):bowl
+        ::  XX give kicks
+        `this(roll (~(del by roll) [desk.act wut.act]))
       ::
           %lockdown
-        ?>  (can-write:aux desk.act src.bowl)
+        ?>  =(our src):bowl
         =.  roll  (~(del by roll) desk.act)
         :_  this
         ^-  (list card)
