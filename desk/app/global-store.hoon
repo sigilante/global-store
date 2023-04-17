@@ -39,10 +39,10 @@
     ==
   --
 ::
-%+  verb  &
-%-  agent:dbug
 =|  state-0
 =*  state  -
+%+  verb  &
+%-  agent:dbug
 ^-  agent:gall
 =<
   |_  =bowl:gall
@@ -145,13 +145,13 @@
     ?+    pole  (on-peek:def pole)
     ::  desk peek
     ::
-        [%x desk=@ ~]
+        [%x %desk desk=@ ~]
       =/  =desk  (slav %tas desk.pole)
       ?>  (can-read:aux desk src.bowl)
       ``noun+!>((~(get by store) desk))
     ::  key peek
     ::
-        [%x desk=@ key=@ ~]
+        [%x %key desk=@ key=@ ~]
       =/  =desk    (slav %tas desk.pole)
       ?>  (can-read:aux desk src.bowl)
       =/  =key:gs  (slav %tas key.pole)
