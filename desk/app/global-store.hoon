@@ -66,12 +66,6 @@
         %global-store-action
       =+  !<(act=action:gs vase)
       ?-    -.act
-          %lie
-        ?>  (can-write:aux desk.act src.bowl)
-        =.  store  (~(del by store) desk.act)
-        :_  this
-        (give-updates:aux desk.act)
-      ::
           %put
         ?>  (can-write:aux desk.act src.bowl)
         =.  store  (~(put bi store) desk.act key.act value.act)
@@ -83,17 +77,18 @@
         =.  store  (~(del bi store) desk.act key.act)
         :_  this
         (give-updates:aux desk.act key.act)
-      ::  ship or arena
+      ::
+          %lie
+        ?>  (can-write:aux desk.act src.bowl)
+        =.  store  (~(del by store) desk.act)
+        :_  this
+        (give-updates:aux desk.act)
       ::
           %enroll
         ?>  =(our src):bowl
         =.  roll  (~(put by roll) [desk.act wut.act] perm.act)
         :_  this
-        ^-  (list card)
-        ::  give kicks if perm is ~
-        ?.  =(~ perm.act)
-          ~
-        (give-kicks:aux desk.act)
+        ?~(perm.act (give-kicks:aux desk.act) ~)
       ::
           %unroll
         ?>  =(our src):bowl
@@ -106,20 +101,20 @@
         =.  roll  (~(del by roll) desk.act)
         :_  this
         (give-kicks:aux desk.act)
-      ==  ::  head tag
-    ==    ::  poke type
+      ==
+    ==
   ::
   ++  on-peek
     |=  =(pole knot)
     ^-  (unit (unit cage))
     ?+    pole  (on-peek:def pole)
-    ::  desk peek
+    ::  /desk peek
     ::
         [%x %desk desk=@ ~]
       =/  =desk  (slav %tas desk.pole)
       ?>  (can-read:aux desk src.bowl)
       ``noun+!>((~(get by store) desk))
-    ::  key peek
+    ::  /desk/key peek
     ::
         [%x %desk %key desk=@ key=@ ~]
       =/  =desk    (slav %tas desk.pole)
@@ -159,8 +154,7 @@
 |_  =bowl:gall
 ++  can-read   |=([=desk =ship] !=(~ (what-perm desk ship)))
 ++  can-write  |=([=desk =ship] =(`%w (what-perm desk ship)))
-::  we check against the entire arena
-::    our, roll, moon, public
+::  check perms for our, roll, moon, then public
 ::
 ++  what-perm
   |=  [=desk =ship]
@@ -182,7 +176,6 @@
   ^-  (unit card)
   ?.  ?&  ?=([desk=@ *] pole)
           =(desk.pole desk)
-          !=(our.bowl ship)
       ==
     ~
   ?:  (can-read desk ship)
