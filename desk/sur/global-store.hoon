@@ -18,8 +18,8 @@
       [%put =desk =key =value]
       [%del =desk =key]
       [%mode =desk =arena =perm]
-      [%enroll =desk =ship =perm]
-      [%unroll =desk =ship]
+      [%enroll =desk wut=?(=ship =arena) =perm]
+      [%unroll =desk wut=?(=ship =arena)]
       [%lockdown =desk]
   ==
 +$  update

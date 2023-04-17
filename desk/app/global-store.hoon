@@ -67,21 +67,22 @@
     ?+    mark  (on-poke:def mark vase)
         %global-store-action
       =+  !<(act=action:gs vase)
+      ~&  >>>  act
       ?-    -.act
           %lie
-        ?>  (can-write desk.act src.bowl)
+        ?>  (can-write:aux desk.act src.bowl)
         =.  store  (~(del by store) desk.act)
         :_  this
         (give-updates:aux desk.act)
       ::
           %put
-        ?>  (can-write desk.act src.bowl)
+        ?>  (can-write:aux desk.act src.bowl)
         =.  store  (~(put bi store) desk.act key.act value.act)
         :_  this
         (give-updates:aux desk.act key.act)
       ::
           %del
-        ?>  (can-write desk.act src.bowl)
+        ?>  (can-write:aux desk.act src.bowl)
         =.  store  (~(del bi store) desk.act key.act)
         :_  this
         (give-updates:aux desk.act key.act)
@@ -106,19 +107,31 @@
             ==
           ~
         `[%give %kick ~[path] `ship]
+      ::  ship or arena
       ::
           %enroll
-        ?>  (can-write desk.act src.bowl)
-        `this(roll (~(put by roll) [desk.act ship.act] perm.act))
+        ?>  (can-write:aux desk.act src.bowl)
+        ?:  ?=(arena:gs wut.act)
+           ~&  >>  %arena
+          `this(roll (~(put by roll) [desk.act wut.act] perm.act))
+        ?>  ?=(ship wut.act)
+        ~&  >>  %ship
+        `this(roll (~(put by roll) [desk.act wut.act] perm.act))
+      ::  ship or arena
+      ::    XX all paths
       ::
           %unroll
-        ?>  (can-write desk.act src.bowl)
-        ::  XX all paths
-        :-  [%give %kick [[desk.act ~] ~] `ship.act]~
-        this(roll (~(del by roll) desk.act ship.act))
+        ?>  (can-write:aux desk.act src.bowl)
+        ?:  ?=(arena:gs wut.act)
+           ~&  >>  %arena
+          `this(roll (~(del by roll) [desk.act wut.act]))
+        ?>  ?=(ship wut.act)
+        ~&  >>  %ship
+        :-  [%give %kick [[desk.act ~] ~] `wut.act]~
+        this(roll (~(del by roll) [desk.act wut.act]))
       ::
           %lockdown
-        ?>  (can-write desk.act src.bowl)
+        ?>  (can-write:aux desk.act src.bowl)
         =.  roll  (~(del by roll) desk.act)
         =.  roll  (~(del by roll) desk.act)
         :_  this
@@ -192,7 +205,8 @@
 ++  can-write
   |=  [=desk =ship]
   ^-  ?
-  =(`%w (what-perm desk ship))
+  ~&  >  [desk ship src.bowl]
+  =(`perm:gs``%w (what-perm desk ship))
 ::  we check against the entire arena
 ::    our, roll, moon, public
 ::
