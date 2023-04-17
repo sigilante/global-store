@@ -151,7 +151,7 @@
       ``noun+!>((~(get by store) desk))
     ::  key peek
     ::
-        [%x %key desk=@ key=@ ~]
+        [%x %desk %key desk=@ key=@ ~]
       =/  =desk    (slav %tas desk.pole)
       ?>  (can-read:aux desk src.bowl)
       =/  =key:gs  (slav %tas key.pole)
