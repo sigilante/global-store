@@ -5,27 +5,22 @@
 ::
 /+  *mip
 |%
-::
-+$  desk   @tas
 +$  key    @tas
 +$  value  vase
-+$  perm   ?(%w %r %$)
-+$  arena  ?(%public %whitelist %team %me)
-+$  perms  (map arena perm)
-+$  ship   @p
-+$  whitelist  (set ship)
++$  perm  (unit ?(%r %w))
++$  arena  ?(%moon %public)
 ::
 +$  store  (mip =desk =key =value)
++$  roll   (map [=desk ?(=ship =arena)] =perm)
 ::
 +$  action
-  $%  [%let =desk]
-      [%lie =desk]
+  $%  [%lie =desk]
       [%put =desk =key =value]
       [%del =desk =key]
-      [%mode =arena =perm]
-      [%whitelist =ship]
-      [%whitewash =ship]
-      [%lockdown ~]
+      [%mode =desk =arena =perm]
+      [%enroll =desk wut=?(=ship =arena) =perm]
+      [%unroll =desk wut=?(=ship =arena)]
+      [%lockdown =desk]
   ==
 +$  update
   $%  [%desk (unit (map key value))]
