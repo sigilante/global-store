@@ -93,19 +93,19 @@
         ::  give kicks if perm is ~
         ?.  =(~ perm.act)
           ~
-        (give-kicks desk.act)
+        (give-kicks:aux desk.act)
       ::
           %unroll
         ?>  =(our src):bowl
         =.  roll  (~(del by roll) [desk.act wut.act])
         :_  this
-        (give-kicks desk.act)
+        (give-kicks:aux desk.act)
       ::
           %lockdown
         ?>  =(our src):bowl
         =.  roll  (~(del by roll) desk.act)
         :_  this
-        (give-kicks desk.act)
+        (give-kicks:aux desk.act)
       ==  ::  head tag
     ==    ::  poke type
   ::
