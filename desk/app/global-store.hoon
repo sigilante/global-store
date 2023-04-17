@@ -67,7 +67,6 @@
     ?+    mark  (on-poke:def mark vase)
         %global-store-action
       =+  !<(act=action:gs vase)
-      ~&  >>>  act
       ?-    -.act
           %lie
         ?>  (can-write:aux desk.act src.bowl)
@@ -147,47 +146,43 @@
   ::
   ++  on-peek
     |=  =(pole knot)
-    ~>  %bout.[0 '%global-store +on-peek']
-    ~&  >>  store
     ^-  (unit (unit cage))
     ?+    pole  (on-peek:def pole)
     ::  desk peek
     ::
         [%x desk=@ ~]
-      ~&  >>>  'desk scry'
       =/  =desk  (slav %tas desk.pole)
-      ?>  (can-read desk src.bowl)
+      ?>  (can-read:aux desk src.bowl)
       ``noun+!>((~(get by store) desk))
     ::  key peek
     ::
         [%x desk=@ key=@ ~]
       =/  =desk    (slav %tas desk.pole)
-      ?>  (can-read desk src.bowl)
+      ?>  (can-read:aux desk src.bowl)
       =/  =key:gs  (slav %tas key.pole)
       ``noun+!>((~(get bi store) desk key))
     ==
   ::
   ++  on-agent  on-agent:def
   ++  on-arvo   on-arvo:def
+  ::  +on-watch, send them the value as a gift
+  ::
   ++  on-watch
     |=  =(pole knot)
-    ~>  %bout.[0 '%global-store +on-watch']
-    ~&  >>  store
     ^-  (quip card _this)
-    ::  on-watch, send them the value as a gift
     ?+    pole  (on-watch:def pole)
     ::  desk subscription (not common), send all values in (unitized) desk ksv
     ::
         [desk=@ ~]
       =/  =desk  (slav %tas desk.pole)
-      ?>  (can-read desk src.bowl)
+      ?>  (can-read:aux desk src.bowl)
       :_  this  :_  ~
       [%give %fact ~ %noun !>((~(get by store) desk))]
     ::  key subscription, just send the (unitized) value
     ::
         [desk=@ key=@ ~]
       =/  =desk    (slav %tas desk.pole)
-      ?>  (can-read desk src.bowl)
+      ?>  (can-read:aux desk src.bowl)
       =/  =key:gs  (slav %tas key.pole)
       :_  this  :_  ~
       [%give %fact ~ %noun !>((~(get bi store) desk key))]
@@ -205,8 +200,7 @@
 ++  can-write
   |=  [=desk =ship]
   ^-  ?
-  ~&  >  [desk ship src.bowl]
-  =(`perm:gs``%w (what-perm desk ship))
+  =(`%w (what-perm desk ship))
 ::  we check against the entire arena
 ::    our, roll, moon, public
 ::
