@@ -182,6 +182,7 @@
   ^-  (unit card)
   ?.  ?&  ?=([desk=@ *] pole)
           =(desk.pole desk)
+          !=(our.bowl ship)
       ==
     ~
   ?:  (can-read desk ship)
