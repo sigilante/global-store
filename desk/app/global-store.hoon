@@ -191,10 +191,9 @@
   %+  murn  ~(val by sup.bowl)
   |=  [=ship =(pole knot)]
   ^-  (unit card)
-  ?.  ?&  ?=([desk=@ *] pole)
-          =(desk desk.pole)
-          (can-read desk ship)
-      ==
+  ?.  &(?=([desk=@ *] pole) =(desk desk.pole))
+    ~
+  ?:  (can-read desk ship)
     ~
   `[%give %kick [pole ~] `ship]
 ::
