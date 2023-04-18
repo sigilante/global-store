@@ -98,11 +98,7 @@
       ::
           %lockdown
         ?>  =(our src):bowl
-        ::  XX  fix
-        ::
-        =.  roll
-          roll
-        ::
+        =.  roll  (trim-roll desk.act)
         :_  this
         (give-kicks:aux desk.act)
       ==
@@ -195,6 +191,18 @@
       ==
     (~(got by roll) [desk %moon])
   (~(gut by roll) [desk %public] ~)
+::
+++  trim-roll
+  |=  =desk
+  ^+  roll
+  =/  keys=(list [=^desk ?(ship arena:gs)])
+    ~(tap in ~(key by roll))
+  |-
+  ?~  keys
+    roll
+  =?  roll  =(desk.i.keys desk)
+    (~(del by roll) i.keys)
+  $(keys t.keys)
 ::
 ++  give-kicks
   |=  =desk
