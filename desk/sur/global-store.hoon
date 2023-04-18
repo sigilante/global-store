@@ -22,7 +22,7 @@
       [%lockdown =desk]
   ==
 +$  update
-  $%  [%desk (unit (map key value))]
-      [%value (unit value)]
+  $%  [%desk res=(unit (map key value))]
+      [%value res=(unit value)]
   ==
 --
