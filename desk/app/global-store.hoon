@@ -85,19 +85,19 @@
         (give-updates:aux desk.act)
       ::
           %enroll
-        ?>  =(our src):bowl
+        ?>  (can-change-roll:aux src.bowl)
         =.  roll  (~(put bi roll) desk.act wut.act perm.act)
         :_  this
         ?~(perm.act (give-kicks:aux desk.act) ~)
       ::
           %unroll
-        ?>  =(our src):bowl
+        ?>  (can-change-roll:aux src.bowl)
         =.  roll  (~(del bi roll) desk.act wut.act)
         :_  this
         (give-kicks:aux desk.act)
       ::
           %lockdown
-        ?>  =(our src):bowl
+        ?>  (can-change-roll:aux src.bowl)
         =.  roll  (~(del by roll) desk.act)
         :_  this
         (give-kicks:aux desk.act)
@@ -173,6 +173,15 @@
 |_  =bowl:gall
 ++  can-read   |=([=desk =ship] !=(~ (what-perm desk ship)))
 ++  can-write  |=([=desk =ship] =(`%w (what-perm desk ship)))
+++  can-change-roll
+  |=  =ship
+  ^-  ?
+  ?:  =(our.bowl ship)
+    %&
+  ?&  =(%earl (clan:title our.bowl))
+      =(ship (sein:title [our now our]:bowl))
+  ==
+
 ::  check perms for our, our sponsor (if moon), roll, moon, then public
 ::
 ++  what-perm
