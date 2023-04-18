@@ -7,18 +7,18 @@
 |%
 +$  key    @tas
 +$  value  vase
-+$  perm  (unit ?(%r %w))
++$  perm   (unit ?(%r %w))
 +$  arena  ?(%moon %public)
 ::
-+$  store  (mip =desk =key =value)
-+$  roll   (map [=desk ?(=ship =arena)] =perm)
++$  store  (mip desk key value)
++$  roll   (map [=desk ?(ship arena)] =perm)
 ::
 +$  action
-  $%  [%lie =desk]
-      [%put =desk =key =value]
+  $%  [%put =desk =key =value]
       [%del =desk =key]
-      [%enroll =desk wut=?(=ship =arena) =perm]
-      [%unroll =desk wut=?(=ship =arena)]
+      [%lie =desk]
+      [%enroll =desk wut=?(ship arena) =perm]
+      [%unroll =desk wut=?(ship arena)]
       [%lockdown =desk]
   ==
 +$  update

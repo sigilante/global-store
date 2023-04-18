@@ -121,6 +121,19 @@
       ?>  (can-read:aux desk src.bowl)
       =/  =key:gs  (slav %tas key.pole)
       ``noun+!>((~(get bi store) desk key))
+    ::  permissions
+    ::
+        [%x %perm %desk %ship desk=@ ship=@ ~]
+      =/  =desk  (slav %tas desk.pole)
+      ?>  (can-read:aux desk src.bowl)
+      =/  =ship  (slav %p ship.pole)
+      ``noun+!>((what-perm desk ship))
+    ::
+        [%x %perm %desk %arena desk=@ arena=@ ~]
+      =/  =desk  (slav %tas desk.pole)
+      ?>  (can-read:aux desk src.bowl)
+      =/  arena  (slav %tas arena.pole)
+      ``noun+!>((~(get by roll) desk arena))
     ==
   ::
   ++  on-agent  on-agent:def
