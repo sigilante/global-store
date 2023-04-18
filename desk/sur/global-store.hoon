@@ -9,16 +9,17 @@
 +$  value  vase
 +$  perm   (unit ?(%r %w))
 +$  arena  ?(%moon %public)
++$  whom   ?(ship arena)
 ::
 +$  store  (mip desk key value)
-+$  roll   (mip desk ?(ship arena) perm)
++$  roll   (mip desk whom perm)
 ::
 +$  action
   $%  [%put =desk =key =value]
       [%del =desk =key]
       [%lie =desk]
-      [%enroll =desk wut=?(ship arena) =perm]
-      [%unroll =desk wut=?(ship arena)]
+      [%enroll =desk =whom =perm]
+      [%unroll =desk =whom]
       [%lockdown =desk]
   ==
 +$  update

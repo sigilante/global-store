@@ -1,4 +1,4 @@
-  ::  global-store.hoon
+  ::  global-store
 ::::
 ::    a simple key-value storage solution for ship-global values
 ::    with a straightforward permissions model
@@ -27,18 +27,11 @@
 ::
 /-  gs=global-store
 /+  verb, dbug, default-agent, *mip
-::
 =>
   |%
   +$  card  card:agent:gall
-  +$  versioned-state  $%(state-0)
-  +$  state-0
-    $:  %0
-        =store:gs
-        =roll:gs
-    ==
+  +$  state-0  [%0 =store:gs =roll:gs]
   --
-::
 =|  state-0
 =*  state  -
 %+  verb  &
@@ -54,54 +47,49 @@
   ++  on-load
     |=  =vase
     ^-  (quip card _this)
-    =+  !<(old=versioned-state vase)
-    ?-  -.old
-      %0  `this(state old)
-    ==
+    `this(state !<(state-0 vase))
   ::
   ++  on-poke
     |=  [=mark =vase]
     ^-  (quip card _this)
-    ?+    mark  (on-poke:def mark vase)
-        %global-store-action
-      =+  !<(act=action:gs vase)
-      ?-    -.act
-          %put
-        ?>  (can-write:aux desk.act src.bowl)
-        =.  store  (~(put bi store) desk.act key.act value.act)
-        :_  this
-        (give-updates:aux desk.act key.act)
-      ::
-          %del
-        ?>  (can-write:aux desk.act src.bowl)
-        =.  store  (~(del bi store) desk.act key.act)
-        :_  this
-        (give-updates:aux desk.act key.act)
-      ::
-          %lie
-        ?>  (can-write:aux desk.act src.bowl)
-        =.  store  (~(del by store) desk.act)
-        :_  this
-        (give-updates:aux desk.act)
-      ::
-          %enroll
-        ?>  (can-change-roll:aux src.bowl)
-        =.  roll  (~(put bi roll) desk.act wut.act perm.act)
-        :_  this
-        ?~(perm.act (give-kicks:aux desk.act) ~)
-      ::
-          %unroll
-        ?>  (can-change-roll:aux src.bowl)
-        =.  roll  (~(del bi roll) desk.act wut.act)
-        :_  this
-        (give-kicks:aux desk.act)
-      ::
-          %lockdown
-        ?>  (can-change-roll:aux src.bowl)
-        =.  roll  (~(del by roll) desk.act)
-        :_  this
-        (give-kicks:aux desk.act)
-      ==
+    ?.  =(%global-store-action mark)  (on-poke:def mark vase)
+    =+  !<(act=action:gs vase)
+    ?-    -.act
+        %put
+      ?>  (can-write:aux desk.act src.bowl)
+      =.  store  (~(put bi store) desk.act key.act value.act)
+      :_  this
+      (give-updates:aux desk.act key.act)
+    ::
+        %del
+      ?>  (can-write:aux desk.act src.bowl)
+      =.  store  (~(del bi store) desk.act key.act)
+      :_  this
+      (give-updates:aux desk.act key.act)
+    ::
+        %lie
+      ?>  (can-write:aux desk.act src.bowl)
+      =.  store  (~(del by store) desk.act)
+      :_  this
+      (give-updates:aux desk.act)
+    ::
+        %enroll
+      ?>  (can-change-roll:aux src.bowl)
+      =.  roll  (~(put bi roll) desk.act whom.act perm.act)
+      :_  this
+      ?~(perm.act (give-kicks:aux desk.act) ~)
+    ::
+        %unroll
+      ?>  (can-change-roll:aux src.bowl)
+      =.  roll  (~(del bi roll) desk.act whom.act)
+      :_  this
+      (give-kicks:aux desk.act)
+    ::
+        %lockdown
+      ?>  (can-change-roll:aux src.bowl)
+      =.  roll  (~(del by roll) desk.act)
+      :_  this
+      (give-kicks:aux desk.act)
     ==
   ::
   ++  on-peek
@@ -120,8 +108,7 @@
       ``noun+!>((~(get bi store) desk key))
     ::  permissions
     ::
-        [%x %roll ~]
-      ``noun+!>(roll)
+        [%x %roll ~]  ``noun+!>(roll)
     ::
         [%x %perm %desk %ship desk=@ ship=@ ~]
       =/  =desk  (slav %tas desk.pole)
@@ -133,16 +120,13 @@
       =/  arena  (slav %tas arena.pole)
       ``noun+!>((~(get bi roll) desk arena))
     ==
-  ::
-  ++  on-agent  on-agent:def
-  ++  on-arvo   on-arvo:def
   ::  +on-watch, send them the value as a gift
   ::
   ++  on-watch
     |=  =(pole knot)
     ^-  (quip card _this)
     ?+    pole  (on-watch:def pole)
-    ::  desk subscription (not common), send all values in (unitized) desk ksv
+    ::  desk subscription (not common), send all values in (unitized) desk kvs
     ::
         [desk=@ ~]
       =/  =desk  (slav %tas desk.pole)
@@ -167,6 +151,8 @@
       ==
     ==
   ::
+  ++  on-agent  on-agent:def
+  ++  on-arvo   on-arvo:def
   ++  on-leave  on-leave:def
   ++  on-fail   on-fail:def
   --
@@ -181,7 +167,6 @@
   ?&  =(%earl (clan:title our.bowl))
       =(ship (sein:title [our now our]:bowl))
   ==
-
 ::  check perms for our, our sponsor (if moon), roll, moon, then public
 ::
 ++  what-perm
@@ -208,12 +193,11 @@
   ^-  (unit card)
   ?.  ?&  ?=([desk=@ *] pole)
           =(desk desk.pole)
+          (can-read desk ship)
       ==
     ~
-  ?:  (can-read desk ship)
-    ~
   `[%give %kick [pole ~] `ship]
-
+::
 ++  give-updates
   |=  arg=$@(=desk [=desk =key:gs])
   |^  ^-  (list card)
