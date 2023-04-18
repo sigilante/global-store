@@ -149,7 +149,11 @@
       =/  =desk  (slav %tas desk.pole)
       ?>  (can-read:aux desk src.bowl)
       :_  this  :_  ~
-      [%give %fact ~ %noun !>((~(get by store) desk))]
+      :*  %give  %fact
+          ~
+          %global-store-update
+          !>(`update:gs`desk+(~(get by store) desk))
+      ==
     ::  key subscription, just send the (unitized) value
     ::
         [desk=@ key=@ ~]
@@ -157,7 +161,11 @@
       ?>  (can-read:aux desk src.bowl)
       =/  =key:gs  (slav %tas key.pole)
       :_  this  :_  ~
-      [%give %fact ~ %noun !>((~(get bi store) desk key))]
+      :*  %give  %fact
+          ~
+          %global-store-update
+          !>(`update:gs`value+(~(get bi store) desk key))
+      ==
     ==
   ::
   ++  on-leave  on-leave:def
