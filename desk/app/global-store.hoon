@@ -98,7 +98,11 @@
       ::
           %lockdown
         ?>  =(our src):bowl
-        =.  roll  (~(del by roll) desk.act)
+        ::  XX  fix
+        ::
+        =.  roll
+          roll
+        ::
         :_  this
         (give-kicks:aux desk.act)
       ==
@@ -174,12 +178,16 @@
 |_  =bowl:gall
 ++  can-read   |=([=desk =ship] !=(~ (what-perm desk ship)))
 ++  can-write  |=([=desk =ship] =(`%w (what-perm desk ship)))
-::  check perms for our, roll, moon, then public
+::  check perms for our, our sponsor (if moon), roll, moon, then public
 ::
 ++  what-perm
   |=  [=desk =ship]
   ^-  perm:gs
   ?:  =(our.bowl ship)  `%w
+  ?:  ?&  =(%earl (clan:title our.bowl))
+          =(ship (sein:title [our now our]:bowl))
+      ==
+    `%w
   ?:  (~(has by roll) [desk ship])
     (~(got by roll) [desk ship])
   ?:  ?&  (moon:title our.bowl ship)
