@@ -86,19 +86,19 @@
       ::
           %enroll
         ?>  =(our src):bowl
-        =.  roll  (~(put by roll) [desk.act wut.act] perm.act)
+        =.  roll  (~(put bi roll) desk.act wut.act perm.act)
         :_  this
         ?~(perm.act (give-kicks:aux desk.act) ~)
       ::
           %unroll
         ?>  =(our src):bowl
-        =.  roll  (~(del by roll) [desk.act wut.act])
+        =.  roll  (~(del bi roll) desk.act wut.act)
         :_  this
         (give-kicks:aux desk.act)
       ::
           %lockdown
         ?>  =(our src):bowl
-        =.  roll  (trim-roll desk.act)
+        =.  roll  (~(del by roll) desk.act)
         :_  this
         (give-kicks:aux desk.act)
       ==
@@ -111,8 +111,7 @@
     ::  /desk peek
     ::
         [%x %desk desk=@ ~]
-      =/  =desk  (slav %tas desk.pole)
-      ``noun+!>((~(get by store) desk))
+      ``noun+!>((~(get by store) (slav %tas desk.pole)))
     ::  /desk/key peek
     ::
         [%x %desk %key desk=@ key=@ ~]
@@ -132,7 +131,7 @@
         [%x %perm %desk %arena desk=@ arena=@ ~]
       =/  =desk  (slav %tas desk.pole)
       =/  arena  (slav %tas arena.pole)
-      ``noun+!>((~(get by roll) desk arena))
+      ``noun+!>((~(get bi roll) desk arena))
     ==
   ::
   ++  on-agent  on-agent:def
@@ -184,25 +183,13 @@
           =(ship (sein:title [our now our]:bowl))
       ==
     `%w
-  ?:  (~(has by roll) [desk ship])
-    (~(got by roll) [desk ship])
+  ?:  (~(has bi roll) desk ship)
+    (~(got bi roll) desk ship)
   ?:  ?&  (moon:title our.bowl ship)
-          (~(has by roll) [desk %moon])
+          (~(has bi roll) desk %moon)
       ==
-    (~(got by roll) [desk %moon])
-  (~(gut by roll) [desk %public] ~)
-::
-++  trim-roll
-  |=  =desk
-  ^+  roll
-  =/  keys=(list [=^desk ?(ship arena:gs)])
-    ~(tap in ~(key by roll))
-  |-
-  ?~  keys
-    roll
-  =?  roll  =(desk.i.keys desk)
-    (~(del by roll) i.keys)
-  $(keys t.keys)
+    (~(got bi roll) desk %moon)
+  (~(gut bi roll) desk %public ~)
 ::
 ++  give-kicks
   |=  =desk
@@ -211,7 +198,7 @@
   |=  [=ship =(pole knot)]
   ^-  (unit card)
   ?.  ?&  ?=([desk=@ *] pole)
-          =(desk.pole desk)
+          =(desk desk.pole)
       ==
     ~
   ?:  (can-read desk ship)

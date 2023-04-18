@@ -11,7 +11,7 @@
 +$  arena  ?(%moon %public)
 ::
 +$  store  (mip desk key value)
-+$  roll   (map [desk ?(ship arena)] perm)
++$  roll   (mip desk ?(ship arena) perm)
 ::
 +$  action
   $%  [%put =desk =key =value]
