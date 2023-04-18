@@ -118,7 +118,7 @@
         [%x %perm %desk %arena desk=@ arena=@ ~]
       =/  =desk  (slav %tas desk.pole)
       =/  arena  (slav %tas arena.pole)
-      ``noun+!>((~(get bi roll) desk arena))
+      ``noun+!>((~(gut bi roll) desk arena ~))
     ==
   ::  +on-watch, send them the value as a gift
   ::
