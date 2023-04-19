@@ -174,7 +174,7 @@
   ::  explicitly set
   ?:  (~(has bi roll) desk ship)
     (~(got bi roll) desk ship)
-  ::  a ship's moons
+  ::  our moons
   ?:  ?&  (moon:title our.bowl ship)
           (~(has bi roll) desk %moon)
       ==
