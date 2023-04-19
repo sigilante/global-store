@@ -109,7 +109,7 @@
         [%x %perm %desk %ship desk=@ ship=@ ~]
       =/  =desk  (slav %tas desk.pole)
       =/  =ship  (slav %p ship.pole)
-      ``noun+!>((what-perm desk ship))
+      ``noun+!>((what-perm:aux desk ship))
     ::
         [%x %perm %desk %arena desk=@ arena=@ ~]
       =/  =desk  (slav %tas desk.pole)
@@ -160,24 +160,32 @@
   ?&  =(%earl (clan:title our.bowl))
       =(ship (sein:title [our now our]:bowl))
   ==
-::  check perms for our, our sponsor (if moon), roll, moon, then public
 ::
 ++  what-perm
   |=  [=desk =ship]
   ^-  perm:gs
+  ::  our
   ?:  =(our.bowl ship)  `%w
+  ::  our parent planet, if moon
   ?:  ?&  =(%earl (clan:title our.bowl))
           =(ship (sein:title [our now our]:bowl))
       ==
     `%w
+  ::  explicitly set
   ?:  (~(has bi roll) desk ship)
     (~(got bi roll) desk ship)
+  ::  a planet's moons
   ?:  ?&  (moon:title our.bowl ship)
           (~(has bi roll) desk %moon)
       ==
     (~(got bi roll) desk %moon)
+  ::  fellow moons
+  ?:  ?&  =((sein:title [our now our]:bowl) (sein:title our.bowl now.bowl ship))
+          (~(has bi roll) desk %orbit)
+      ==
+    (~(got bi roll) desk %orbit)
+  ::  public
   (~(gut bi roll) desk %public ~)
-::  XX  give ~ %fact on kick?
 ::
 ++  give-kicks
   |=  =desk

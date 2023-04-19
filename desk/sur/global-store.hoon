@@ -8,7 +8,7 @@
 +$  key    @tas
 +$  value  vase
 +$  perm   (unit ?(%r %w))
-+$  arena  ?(%moon %public)
++$  arena  ?(%moon %public %orbit)
 +$  whom   ?(ship arena)
 ::
 +$  store  (mip desk key value)
