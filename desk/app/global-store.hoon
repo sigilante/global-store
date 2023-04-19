@@ -153,27 +153,27 @@
 ++  can-read   |=([=desk =ship] !=(~ (what-perm desk ship)))
 ++  can-write  |=([=desk =ship] =(`%w (what-perm desk ship)))
 ++  can-change-roll  |=(=ship |(=(our.bowl ship) (moon:title ship our.bowl)))
+++  our-moon     |=(=ship `?`(moon:title our.bowl ship))
+++  same-orbit   |=(=ship `?`(moon:title our-sponsor ship))
+++  are-we-moon  `?`=(%earl (clan:title our.bowl))
+++  our-sponsor  `ship`(sein:title [our now our]:bowl)
 ++  what-perm
   |=  [=desk =ship]
   ^-  perm:gs
   ::  our
   ?:  =(our.bowl ship)  `%w
   ::  our parent ship, if moon
-  ?:  ?&  =(%earl (clan:title our.bowl))
-          =(ship (sein:title [our now our]:bowl))
-      ==
+  ?:  &(are-we-moon =(ship our-sponsor))
     `%w
   ::  explicitly set
   ?:  (~(has bi roll) desk ship)
     (~(got bi roll) desk ship)
   ::  our moons
-  ?:  ?&  (moon:title our.bowl ship)
-          (~(has bi roll) desk %moon)
-      ==
+  ?:  &((our-moon ship) (~(has bi roll) desk %moon))
     (~(got bi roll) desk %moon)
   ::  fellow moons
-  ?:  ?&  =(%earl (clan:title our.bowl))
-          (moon:title (sein:title [our now our]:bowl) ship)
+  ?:  ?&  are-we-moon
+          (same-orbit ship)
           (~(has bi roll) desk %orbit)
       ==
     (~(got bi roll) desk %orbit)
