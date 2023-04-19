@@ -162,7 +162,7 @@
   |=  [=desk =ship]
   ^-  perm:gs
   ::  our
-  ?:  =(our.bowl ship)  `%w
+  ?:  =(our src):bowl  `%w
   ::  our parent ship, if moon
   ?:  &((is-moon our.bowl) =(ship our-sponsor))
     `%w
