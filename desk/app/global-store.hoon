@@ -3,25 +3,25 @@
 ::    a simple key-value storage solution for ship-global values
 ::    with a straightforward permissions model
 ::
-::    stores values as a (mip keep key vase)
+::    stores values as a (mip desk key vase)
 ::    returns values as (unit vase)
 ::
 ::    pokes:
-::    %put - put a value with a key onto a keep's kvs
-::    %del - delete a key in a keep's kvs
-::    %lie - delete a keep kvs
+::    %put - put a value with a key onto a desk's kvs
+::    %del - delete a key in a desk's kvs
+::    %lie - delete a desk kvs
 ::    %enroll - put a ?(ship arena) on the roll
 ::    %unroll - remove a ?(ship arena) from the roll
-::    %lockdown - set only self to read-write perms for a keep
+::    %lockdown - set only self to read-write perms for a desk
 ::
 ::    your basic use pattern will be to put important global
-::    values into your keep's store with `%put`
+::    values into your desk's store with `%put`
 ::    or to read out an important value by peeking or subscribing and
 ::    receiving a gift in return
 ::
 ::    for a value you'll peek to
-::    /x/keep/[keep] or /x/keep/key/[keep]/[key]
-::    or subscribe to /[keep] or /[keep]/[key]
+::    /x/desk/[desk] or /x/desk/key/[desk]/[key]
+::    or subscribe to /[desk] or /[desk]/[key]
 ::
 ::    the advantage of subscribing is that you receive changes to the value
 ::
@@ -52,95 +52,95 @@
     =+  !<(act=action:gs vase)
     ?-    -.act
         %put
-      ?>  (can-write:aux keep.act src.bowl)
-      =.  store  (~(put bi store) [keep key value]:act)
+      ?>  (can-write:aux desk.act src.bowl)
+      =.  store  (~(put bi store) [desk key value]:act)
       :_  this
-      (give-updates:aux keep.act key.act)
+      (give-updates:aux desk.act key.act)
     ::
         %del
-      ?>  (can-write:aux keep.act src.bowl)
-      =.  store  (~(del bi store) keep.act key.act)
+      ?>  (can-write:aux desk.act src.bowl)
+      =.  store  (~(del bi store) desk.act key.act)
       :_  this
-      (give-updates:aux keep.act key.act)
+      (give-updates:aux desk.act key.act)
     ::
         %lie
-      ?>  (can-write:aux keep.act src.bowl)
-      =.  store  (~(del by store) keep.act)
+      ?>  (can-write:aux desk.act src.bowl)
+      =.  store  (~(del by store) desk.act)
       :_  this
-      (give-updates:aux keep.act)
+      (give-updates:aux desk.act)
     ::
         %enroll
       ?>  (can-change-roll:aux src.bowl)
-      =.  roll  (~(put bi roll) [keep whom perm]:act)
+      =.  roll  (~(put bi roll) [desk whom perm]:act)
       :_  this
-      ?~(perm.act (give-kicks:aux keep.act) ~)
+      ?~(perm.act (give-kicks:aux desk.act) ~)
     ::
         %unroll
       ?>  (can-change-roll:aux src.bowl)
-      =.  roll  (~(del bi roll) keep.act whom.act)
+      =.  roll  (~(del bi roll) desk.act whom.act)
       :_  this
-      (give-kicks:aux keep.act)
+      (give-kicks:aux desk.act)
     ::
         %lockdown
       ?>  (can-change-roll:aux src.bowl)
-      =.  roll  (~(del by roll) keep.act)
+      =.  roll  (~(del by roll) desk.act)
       :_  this
-      (give-kicks:aux keep.act)
+      (give-kicks:aux desk.act)
     ==
   ::
   ++  on-peek
     |=  =(pole knot)
     ^-  (unit (unit cage))
     ?+    pole  (on-peek:def pole)
-    ::  /keep
+    ::  /desk
     ::
-        [%x %keep keep=@ ~]
-      ``noun+!>((~(get by store) (slav %tas keep.pole)))
-    ::  /keep/key
+        [%x %desk desk=@ ~]
+      ``noun+!>((~(get by store) (slav %tas desk.pole)))
+    ::  /desk/key
     ::
-        [%x %keep %key keep=@ key=@ ~]
-      =/  =keep:gs  (slav %tas keep.pole)
-      =/  =key:gs   (slav %tas key.pole)
-      ``noun+!>((~(get bi store) keep key))
+        [%x %desk %key desk=@ key=@ ~]
+      =/  =desk    (slav %tas desk.pole)
+      =/  =key:gs  (slav %tas key.pole)
+      ``noun+!>((~(get bi store) desk key))
     ::  permissions
     ::
         [%x %roll ~]  ``noun+!>(roll)
     ::
-        [%x %perm %keep %ship keep=@ ship=@ ~]
-      =/  =keep:gs  (slav %tas keep.pole)
-      =/  =ship     (slav %p ship.pole)
-      ``noun+!>((what-perm:aux keep ship))
+        [%x %perm %desk %ship desk=@ ship=@ ~]
+      =/  =desk  (slav %tas desk.pole)
+      =/  =ship  (slav %p ship.pole)
+      ``noun+!>((what-perm:aux desk ship))
     ::
-        [%x %perm %keep %arena keep=@ arena=@ ~]
-      =/  =keep:gs  (slav %tas keep.pole)
-      =/  arena     (slav %tas arena.pole)
-      ``noun+!>((~(gut bi roll) keep arena ~))
+        [%x %perm %desk %arena desk=@ arena=@ ~]
+      =/  =desk  (slav %tas desk.pole)
+      =/  arena  (slav %tas arena.pole)
+      ``noun+!>((~(gut bi roll) desk arena ~))
     ==
   ::
   ++  on-watch
     |=  =(pole knot)
     ^-  (quip card _this)
     ?+    pole  (on-watch:def pole)
-    ::  keep subscription (not common), send all values in (unitized) keep kvs
+    ::  desk subscription (not common), send all values in (unitized) desk kvs
     ::
-        [keep=@ ~]
-      =/  =keep:gs  (slav %tas keep.pole)
-      ?>  (can-read:aux keep src.bowl)
+        [desk=@ ~]
+      =/  =desk  (slav %tas desk.pole)
+      ?>  (can-read:aux desk src.bowl)
       :_  this  :_  ~
       :*  %give  %fact  ~
           %global-store-update
-          !>(keep+(~(get by store) keep))
+          !>(desk+(~(get by store) desk))
       ==
     ::  key subscription, just send the (unitized) value
     ::
-        [keep=@ key=@ ~]
-      =/  =keep:gs  (slav %tas keep.pole)
-      ?>  (can-read:aux keep src.bowl)
-      =/  =key:gs   (slav %tas key.pole)
+        [desk=@ key=@ ~]
+      =/  =desk    (slav %tas desk.pole)
+      ?>  (can-read:aux desk src.bowl)
+      =/  =key:gs  (slav %tas key.pole)
       :_  this  :_  ~
       :*  %give  %fact  ~
           %global-store-update
-          !>(value+(~(get bi store) keep key))
+          !>(value+(~(get bi store) desk key))
       ==
     ==
   ::
@@ -150,8 +150,8 @@
   ++  on-fail   on-fail:def
   --
 |_  =bowl:gall
-++  can-read   |=([=keep:gs =ship] !=(~ (what-perm keep ship)))
-++  can-write  |=([=keep:gs =ship] =(`%w (what-perm keep ship)))
+++  can-read   |=([=desk =ship] !=(~ (what-perm desk ship)))
+++  can-write  |=([=desk =ship] =(`%w (what-perm desk ship)))
 ++  can-change-roll  |=(=ship |(=(our.bowl ship) (moon:title ship our.bowl)))
 ++  is-moon   |=(=ship =(%earl (clan:title ship)))
 ++  our-moon  |=(=ship (moon:title our.bowl ship))
@@ -159,7 +159,7 @@
 ++  get-sponsor   |=(=ship (sein:title our.bowl now.bowl ship))
 ++  same-sponsor  |=([a=ship b=ship] =((get-sponsor a) (get-sponsor b)))
 ++  what-perm
-  |=  [=keep:gs =ship]
+  |=  [=desk =ship]
   ^-  perm:gs
   ::  our
   ?:  =(our.bowl ship)  `%w
@@ -167,74 +167,74 @@
   ?:  &((is-moon our.bowl) =(ship our-sponsor))
     `%w
   ::  explicitly set
-  ?:  (~(has bi roll) keep ship)
-    (~(got bi roll) keep ship)
+  ?:  (~(has bi roll) desk ship)
+    (~(got bi roll) desk ship)
   ::  our moons
-  ?:  &((our-moon ship) (~(has bi roll) keep %moon))
-    (~(got bi roll) keep %moon)
+  ?:  &((our-moon ship) (~(has bi roll) desk %moon))
+    (~(got bi roll) desk %moon)
   ::  fellow moons
   ?:  ?&  (is-moon our.bowl)
           (same-sponsor ship our.bowl)
-          (~(has bi roll) keep %orbit)
+          (~(has bi roll) desk %orbit)
       ==
-    (~(got bi roll) keep %orbit)
+    (~(got bi roll) desk %orbit)
   ::  public
-  (~(gut bi roll) keep %public ~)
+  (~(gut bi roll) desk %public ~)
 ::
 ++  give-kicks
-  |=  =keep:gs
+  |=  =desk
   ^-  (list card)
   %+  murn  ~(val by sup.bowl)
   |=  [=ship =(pole knot)]
   ^-  (unit card)
-  ?.  &(?=([keep=@ *] pole) =(keep keep.pole))
+  ?.  &(?=([desk=@ *] pole) =(desk desk.pole))
     ~
-  ?:  (can-read keep ship)
+  ?:  (can-read desk ship)
     ~
   `[%give %kick [pole ~] `ship]
 ::
 ++  give-updates
-  |=  arg=$@(=keep:gs [=keep:gs =key:gs])
+  |=  arg=$@(=desk [=desk =key:gs])
   |^  ^-  (list card)
       ?^  arg
         ::  value update
-        ::    /keep and /keep/key
+        ::    /desk and /desk/key
         ::
-        :~  (keep-update keep.arg)
-            (value-update keep.arg key.arg)
+        :~  (desk-update desk.arg)
+            (value-update desk.arg key.arg)
         ==
-      ::  keep update
-      ::    /keep and /keep/*
+      ::  desk update
+      ::    /desk and /desk/*
       ::
-      :-  (keep-update keep.arg)
-      %+  turn  ~(tap in (keep-keys keep.arg))
+      :-  (desk-update desk.arg)
+      %+  turn  ~(tap in (desk-keys desk.arg))
       |=  =key:gs
-      (value-update keep.arg key)
+      (value-update desk.arg key)
   ::
-  ++  keep-keys
-    |=  =keep:gs
+  ++  desk-keys
+    |=  =desk
     ^-  (set key:gs)
     %-  sy
     %+  murn  ~(val by sup.bowl)
     |=  [* =(pole knot)]
-    ?.  &(?=([keep=@ key=@ ~] pole) =(keep.pole keep))
+    ?.  &(?=([desk=@ key=@ ~] pole) =(desk.pole desk))
       ~
     `key.pole
   ::
-  ++  keep-update
-    |=  =keep:gs
+  ++  desk-update
+    |=  =desk
     ^-  card
-    :*  %give  %fact  [[keep ~] ~]
+    :*  %give  %fact  [[desk ~] ~]
         %global-store-update
-        !>(keep+(~(get by store) keep))
+        !>(desk+(~(get by store) desk))
     ==
   ::
   ++  value-update
-    |=  [=keep:gs =key:gs]
+    |=  [=desk =key:gs]
     ^-  card
-    :*  %give  %fact  [[keep key ~] ~]
+    :*  %give  %fact  [[desk key ~] ~]
         %global-store-update
-        !>(value+(~(get bi store) keep key))
+        !>(value+(~(get bi store) desk key))
     ==
   --
 --

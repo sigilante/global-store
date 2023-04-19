@@ -5,27 +5,26 @@
 ::
 /+  *mip
 |%
-+$  keep   @tas
 +$  key    @tas
 +$  value  vase
 +$  perm   (unit ?(%r %w))
 +$  arena  ?(%moon %orbit %public)
 +$  whom   ?(ship arena)
 ::
-+$  store  (mip keep key value)
-+$  roll   (mip keep whom perm)
++$  store  (mip desk key value)
++$  roll   (mip desk whom perm)
 ::
 +$  action
-  $%  [%put =keep =key =value]
-      [%del =keep =key]
-      [%lie =keep]
-      [%enroll =keep =whom =perm]
-      [%unroll =keep =whom]
-      [%lockdown =keep]
+  $%  [%put =desk =key =value]
+      [%del =desk =key]
+      [%lie =desk]
+      [%enroll =desk =whom =perm]
+      [%unroll =desk =whom]
+      [%lockdown =desk]
   ==
 ::
 +$  update
-  $%  [%keep res=(unit (map key value))]
+  $%  [%desk res=(unit (map key value))]
       [%value res=(unit value)]
   ==
 --
