@@ -166,7 +166,7 @@
   ^-  perm:gs
   ::  our
   ?:  =(our.bowl ship)  `%w
-  ::  our parent planet, if moon
+  ::  our parent ship, if moon
   ?:  ?&  =(%earl (clan:title our.bowl))
           =(ship (sein:title [our now our]:bowl))
       ==
@@ -174,7 +174,7 @@
   ::  explicitly set
   ?:  (~(has bi roll) desk ship)
     (~(got bi roll) desk ship)
-  ::  a planet's moons
+  ::  a ship's moons
   ?:  ?&  (moon:title our.bowl ship)
           (~(has bi roll) desk %moon)
       ==
