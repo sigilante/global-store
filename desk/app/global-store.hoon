@@ -152,15 +152,7 @@
 |_  =bowl:gall
 ++  can-read   |=([=desk =ship] !=(~ (what-perm desk ship)))
 ++  can-write  |=([=desk =ship] =(`%w (what-perm desk ship)))
-++  can-change-roll
-  |=  =ship
-  ^-  ?
-  ?:  =(our.bowl ship)
-    &
-  ?&  =(%earl (clan:title our.bowl))
-      =(ship (sein:title [our now our]:bowl))
-  ==
-::
+++  can-change-roll  |=(=ship |(=(our.bowl ship) (moon:title ship our.bowl)))
 ++  what-perm
   |=  [=desk =ship]
   ^-  perm:gs
