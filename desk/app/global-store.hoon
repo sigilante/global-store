@@ -57,7 +57,7 @@
     ?-    -.act
         %put
       ?>  (can-write:aux desk.act src.bowl)
-      =.  store  (~(put bi store) desk.act key.act value.act)
+      =.  store  (~(put bi store) [desk key value]:act)
       :_  this
       (give-updates:aux desk.act key.act)
     ::
@@ -75,7 +75,7 @@
     ::
         %enroll
       ?>  (can-change-roll:aux src.bowl)
-      =.  roll  (~(put bi roll) desk.act whom.act perm.act)
+      =.  roll  (~(put bi roll) [desk whom perm]:act)
       :_  this
       ?~(perm.act (give-kicks:aux desk.act) ~)
     ::
