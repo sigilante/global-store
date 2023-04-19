@@ -180,7 +180,8 @@
       ==
     (~(got bi roll) desk %moon)
   ::  fellow moons
-  ?:  ?&  =((sein:title [our now our]:bowl) (sein:title our.bowl now.bowl ship))
+  ?:  ?&  =(%earl (clan:title our.bowl))
+          =((sein:title [our now our]:bowl) (sein:title our.bowl now.bowl ship))
           (~(has bi roll) desk %orbit)
       ==
     (~(got bi roll) desk %orbit)
