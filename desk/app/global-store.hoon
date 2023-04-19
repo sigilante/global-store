@@ -44,11 +44,7 @@
       aux   ~(. +> bowl)
   ++  on-init  on-init:def
   ++  on-save  !>(state)
-  ++  on-load
-    |=  =vase
-    ^-  (quip card _this)
-    `this(state !<(state-0 vase))
-  ::
+  ++  on-load  |=(=vase `this(state !<(state-0 vase)))
   ++  on-poke
     |=  [=mark =vase]
     ^-  (quip card _this)
@@ -96,11 +92,11 @@
     |=  =(pole knot)
     ^-  (unit (unit cage))
     ?+    pole  (on-peek:def pole)
-    ::  /desk peek
+    ::  /desk
     ::
         [%x %desk desk=@ ~]
       ``noun+!>((~(get by store) (slav %tas desk.pole)))
-    ::  /desk/key peek
+    ::  /desk/key
     ::
         [%x %desk %key desk=@ key=@ ~]
       =/  =desk    (slav %tas desk.pole)
@@ -120,7 +116,6 @@
       =/  arena  (slav %tas arena.pole)
       ``noun+!>((~(gut bi roll) desk arena ~))
     ==
-  ::  +on-watch, send them the value as a gift
   ::
   ++  on-watch
     |=  =(pole knot)
@@ -132,10 +127,9 @@
       =/  =desk  (slav %tas desk.pole)
       ?>  (can-read:aux desk src.bowl)
       :_  this  :_  ~
-      :*  %give  %fact
-          ~
+      :*  %give  %fact  ~
           %global-store-update
-          !>(`update:gs`desk+(~(get by store) desk))
+          !>(desk+(~(get by store) desk))
       ==
     ::  key subscription, just send the (unitized) value
     ::
@@ -144,10 +138,9 @@
       ?>  (can-read:aux desk src.bowl)
       =/  =key:gs  (slav %tas key.pole)
       :_  this  :_  ~
-      :*  %give  %fact
-          ~
+      :*  %give  %fact  ~
           %global-store-update
-          !>(`update:gs`value+(~(get bi store) desk key))
+          !>(value+(~(get bi store) desk key))
       ==
     ==
   ::
@@ -163,7 +156,7 @@
   |=  =ship
   ^-  ?
   ?:  =(our.bowl ship)
-    %&
+    &
   ?&  =(%earl (clan:title our.bowl))
       =(ship (sein:title [our now our]:bowl))
   ==
@@ -184,6 +177,7 @@
       ==
     (~(got bi roll) desk %moon)
   (~(gut bi roll) desk %public ~)
+::  XX  give ~ %fact on kick?
 ::
 ++  give-kicks
   |=  =desk
@@ -210,42 +204,35 @@
       ::  desk update
       ::    /desk and /desk/*
       ::
-      ::  keys for this desk
-      ::
-      =/  keys=(set key:gs)
-        %-  sy
-        %+  murn  ~(val by sup.bowl)
-        |=  [* =(pole knot)]
-        ?.  ?&  ?=([desk=@ key=@ ~] pole)
-                =(desk.pole desk.arg)
-            ==
-          ~
-        `key.pole
-      ::  desk update card
-      ::
       :-  (desk-update desk.arg)
-      ::  value update cards
-      ::
-      %+  turn  ~(tap in keys)
+      %+  turn  ~(tap in (desk-keys desk.arg))
       |=  =key:gs
       (value-update desk.arg key)
+  ::
+  ++  desk-keys
+    |=  =desk
+    ^-  (set key:gs)
+    %-  sy
+    %+  murn  ~(val by sup.bowl)
+    |=  [* =(pole knot)]
+    ?.  &(?=([desk=@ key=@ ~] pole) =(desk.pole desk))
+      ~
+    `key.pole
   ::
   ++  desk-update
     |=  =desk
     ^-  card
-    :*  %give  %fact
-        [[desk ~] ~]
+    :*  %give  %fact  [[desk ~] ~]
         %global-store-update
-        !>(`update:gs`desk+(~(get by store) desk))
+        !>(desk+(~(get by store) desk))
     ==
   ::
   ++  value-update
     |=  [=desk =key:gs]
     ^-  card
-    :*  %give  %fact
-        [[desk key ~] ~]
+    :*  %give  %fact  [[desk key ~] ~]
         %global-store-update
-        !>(`update:gs`value+(~(get bi store) desk key))
+        !>(value+(~(get bi store) desk key))
     ==
   --
 --
