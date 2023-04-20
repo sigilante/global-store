@@ -11,7 +11,7 @@
 +$  arena  ?(%moon %orbit %public)
 +$  whom   ?(ship arena)
 ::
-+$  store  (mip desk key value)
++$  store  (axal value)
 +$  roll   (mip desk whom perm)
 ::
 +$  action
@@ -26,6 +26,6 @@
 +$  update
   $%  [%desk (pair desk ?)]
       [%key p=desk q=(pair key ?)]
-      [%value p=(unit value)]
+      [%value p=value]
   ==
 --
