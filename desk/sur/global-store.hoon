@@ -5,8 +5,8 @@
 ::
 /+  *mip
 |%
-+$  key    @tas
-+$  value  vase
++$  key    path
++$  value  (unit cage)
 +$  perm   (unit ?(%r %w))
 +$  arena  ?(%moon %orbit %public)
 +$  whom   ?(ship arena)
