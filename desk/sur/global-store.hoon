@@ -24,7 +24,8 @@
   ==
 ::
 +$  update
-  $%  [%desk res=(unit (map key value))]
-      [%value res=(unit value)]
+  $%  [%desk (pair desk ?)]
+      [%key p=desk q=(pair key ?)]
+      [%value p=(unit value)]
   ==
 --

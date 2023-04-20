@@ -102,6 +102,23 @@
       =/  =desk    (slav %tas desk.pole)
       =/  =key:gs  (slav %tas key.pole)
       ``noun+!>((~(get bi store) desk key))
+    ::  existance
+    ::
+    ::  /desk
+    ::
+        [%x %u %desk desk=@ ~]
+      ``noun+!>((~(has by store) (slav %tas desk.pole)))
+    ::
+    ::  /desk/key
+    ::
+        [%x %u %desk %key desk=@ key=@ ~]
+      =/  =desk    (slav %tas desk.pole)
+      =/  =key:gs  (slav %tas key.pole)
+      ``noun+!>((~(has bi store) desk key))
+    ::  /desk
+    ::
+        [%x %desk desk=@ ~]
+      ``noun+!>((~(get by store) (slav %tas desk.pole)))
     ::  permissions
     ::
         [%x %roll ~]  ``noun+!>(roll)
@@ -121,19 +138,30 @@
     |=  =(pole knot)
     ^-  (quip card _this)
     ?+    pole  (on-watch:def pole)
-    ::  desk subscription (not common), send all values in (unitized) desk kvs
+    ::  desk subscription: existance of a desk
     ::
-        [desk=@ ~]
+        [%u desk=@ ~]
       =/  =desk  (slav %tas desk.pole)
       ?>  (can-read:aux desk src.bowl)
       :_  this  :_  ~
       :*  %give  %fact  ~
           %global-store-update
-          !>(desk+(~(get by store) desk))
+          !>(desk+[desk (~(has by store) desk)])
+      ==
+    ::  key subscription: existance of a key
+    ::
+        [%u desk=@ key=@ ~]
+      =/  =desk  (slav %tas desk.pole)
+      ?>  (can-read:aux desk src.bowl)
+      =/  =key:gs  (slav %tas key.pole)
+      :_  this  :_  ~
+      :*  %give  %fact  ~
+          %global-store-update
+          !>(key+[desk [key (~(has bi store) desk key)]])
       ==
     ::  key subscription, just send the (unitized) value
     ::
-        [desk=@ key=@ ~]
+        [%x desk=@ key=@ ~]
       =/  =desk    (slav %tas desk.pole)
       ?>  (can-read:aux desk src.bowl)
       =/  =key:gs  (slav %tas key.pole)
@@ -220,13 +248,23 @@
     ?.  &(?=([desk=@ key=@ ~] pole) =(desk.pole desk))
       ~
     `key.pole
+  ::  existance of a key
+  ::
+  ++  key-update
+    |=  [=desk =key:gs]
+    ^-  card
+    :*  %give  %fact  [[desk ~] ~]
+        %global-store-update
+        !>(key+[key (~(has bi store) desk key)])
+    ==
+  ::  existance of a desk
   ::
   ++  desk-update
     |=  =desk
     ^-  card
     :*  %give  %fact  [[desk ~] ~]
         %global-store-update
-        !>(desk+(~(get by store) desk))
+        !>(desk+[desk (~(has by store) desk)])
     ==
   ::
   ++  value-update
