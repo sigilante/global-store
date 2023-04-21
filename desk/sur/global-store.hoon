@@ -17,10 +17,10 @@
 +$  action
   $%  [%put =desk =key =value]
       [%del =desk =key]
-      [%lie =desk]
+      [%lop =desk =key]
       [%enroll =whom =desk =key =perm]
       [%unroll =whom =desk =key]
-      [%lockdown =desk]
+      [%lockdown =desk =key]
   ==
 ::
 +$  update

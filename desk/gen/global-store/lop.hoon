@@ -1,4 +1,4 @@
-::  :global-store|lockdown %desk path
+::  :global-store|lop %desk path
 ::
 /-  gs=global-store
 :-  %say
@@ -6,4 +6,4 @@
         [=desk =path ~]
         ~
     ==
-[%global-store-action [%lockdown desk path]]
+[%global-store-action [%lop desk path]]

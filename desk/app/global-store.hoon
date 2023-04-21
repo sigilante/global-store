@@ -8,8 +8,8 @@
 ::
 ::    pokes:
 ::    %put - put a value with a key onto a desk's kvs
-::    %del - delete a key in a desk's kvs
-::    %lie - delete a desk kvs
+::    %del - delete a key in a desk's kvs (rm)
+::    %lop - delete a key in a desk's kvs (rm -r)
 ::    %enroll - put a ?(ship arena) on the roll
 ::    %unroll - remove a ?(ship arena) from the roll
 ::    %lockdown - set only self to read-write perms for a desk
@@ -63,9 +63,9 @@
       :_  this
       (give-updates:aux desk.act key.act)
     ::
-        %lie
-      ?>  (can-write:aux src.bowl desk.act ~)
-      =.  store  (~(del of store) /[desk.act])
+        %lop
+      ?>  (can-write:aux src.bowl desk.act key.act)
+      =.  store  (~(lop of store) [desk.act key.act])
       :_  this
       (give-updates:aux desk.act)
     ::
@@ -89,9 +89,9 @@
     ::
         %lockdown
       ?>  (can-change-roll:aux src.bowl)
-      =.  roll  (~(lop of roll) /[desk.act])
+      =.  roll  (~(lop of roll) [desk.act key.act])
       :_  this
-      (give-kicks:aux desk.act ~)
+      (give-kicks:aux desk.act key.act)
     ==
   ::
   ++  on-peek
