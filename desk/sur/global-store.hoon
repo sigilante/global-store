@@ -6,20 +6,20 @@
 /+  *mip
 |%
 +$  key    path
-+$  value  (unit cage)
++$  value  cage
 +$  perm   (unit ?(%r %w))
 +$  arena  ?(%moon %orbit %public)
-+$  whom   ?(ship arena)
++$  whom   ?((unit ship) arena)
 ::
 +$  store  (axal value)
-+$  roll   (mip desk whom perm)
++$  roll   (axal perm)
 ::
 +$  action
   $%  [%put =desk =key =value]
       [%del =desk =key]
       [%lie =desk]
-      [%enroll =desk =whom =perm]
-      [%unroll =desk =whom]
+      [%enroll =whom =desk =key =perm]
+      [%unroll =whom =desk =key]
       [%lockdown =desk]
   ==
 ::
