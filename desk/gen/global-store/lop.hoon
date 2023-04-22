@@ -1,9 +1,9 @@
-::  :global-store|lop %desk path
+::  :global-store|lop %desk /key
 ::
 /-  gs=global-store
 :-  %say
 |=  $:  ^
-        [=desk =path ~]
+        [=desk key=path ~]
         ~
     ==
-[%global-store-action [%lop desk path]]
+[%global-store-action [%lop desk key]]

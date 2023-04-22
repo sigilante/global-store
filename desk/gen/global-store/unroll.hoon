@@ -1,12 +1,10 @@
-::  :global-store|unroll whom:gs %desk key=path
-::    :global-store|unroll `~zod %desk /
-::    :global-store|unroll %moon %desk /config
-::  
+::  :global-store|unroll arena %desk /foo
+::    :global-store|unroll [%ship ~zod] %kids /foo
 ::
 /-  gs=global-store
 :-  %say
 |=  $:  ^
-        [=whom:gs =desk key=path ~]
+        [=arena:gs =desk key=path ~]
         ~
     ==
-[%global-store-action [%unroll whom desk key]]
+[%global-store-action [%unroll arena desk key]]

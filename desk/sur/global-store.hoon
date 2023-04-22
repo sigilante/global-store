@@ -8,8 +8,12 @@
 +$  key    path
 +$  value  cage
 +$  perm   (unit ?(%r %w))
-+$  arena  ?(%moon %orbit %public)
-+$  whom   ?((unit ship) arena)
++$  arena
+  $%  [%moon ~]
+      [%orbit ~]
+      [%public ~]
+      [%ship =ship]
+  ==
 ::
 +$  store  (axal value)
 +$  roll   (axal perm)
@@ -18,14 +22,13 @@
   $%  [%put =desk =key =value]
       [%del =desk =key]
       [%lop =desk =key]
-      [%enroll =whom =desk =key =perm]
-      [%unroll =whom =desk =key]
+      [%enroll =arena =perm =desk =key]
+      [%unroll =arena =desk =key]
       [%lockdown =desk =key]
   ==
 ::
 +$  update
-  $%  [%desk (pair desk ?)]
-      [%key p=desk q=(pair key ?)]
-      [%value p=value]
+  $%  [%key p=desk q=(pair key ?)]
+      [%value p=(unit value)]
   ==
 --
