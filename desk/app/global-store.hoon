@@ -30,7 +30,7 @@
 =>
   |%
   +$  card  card:agent:gall
-  +$  state-0  [%0 =store =roll]
+  +$  state-0  [%0 =store =roll =objs =refs]
   --
 =|  state-0
 =*  state  -
@@ -53,19 +53,36 @@
     ?-    -.act
         %put
       ?>  (can-write:aux src.bowl desk.act key.act)
-      =.  store  (~(put of store) [desk.act key.act] value.act)
+      =/  hash   (shax (jam value.act))
+      =/  old-hash  (~(get of store) [desk.act key.act])
+      =.  store  (~(put of store) [desk.act key.act] hash)
+      =.  refs   (~(put ju refs) hash [desk.act key.act])
+      =?  objs  !(~(has by objs) hash)
+        (~(put by objs) hash value.act)
+      =?  refs  ?=(^ old-hash)
+        (~(del ju refs) u.old-hash [desk.act key.act])
+      =?  objs  &(?=(^ old-hash) =(~ (~(get ju refs) u.old-hash)))
+        (~(del by objs) u.old-hash)
       :_  this
       (give-updates:aux desk.act key.act)
     ::
         %del
       ?>  (can-write:aux src.bowl desk.act key.act)
+      =/  hash=(unit @uvI)  (~(get of store) [desk.act key.act])
       =.  store  (~(del of store) [desk.act key.act])
+      =?  refs  ?=(^ hash)
+        (~(del ju refs) u.hash [desk.act key.act])
+      =?  objs  &(?=(^ hash) =(~ (~(get ju refs) u.hash)))
+        (~(del by objs) u.hash)
       :_  this
       (give-updates:aux desk.act key.act)
     ::
         %lop
       ?>  (can-write:aux src.bowl desk.act key.act)
-      =.  store  (~(lop of store) [desk.act key.act])
+      ::  get all hashes at leaves
+      ::  remove from refs
+      ::  cleanup objects
+      ::=.  store  (~(lop of store) [desk.act key.act])
       :_  this
       (give-updates:aux desk.act)
     ::
@@ -162,7 +179,7 @@
       :_  this  :_  ~
       :*  %give  %fact  ~
           %global-store-update
-          !>(value+(~(get of store) [desk key.pole]))
+          !>(`update`value+(key-to-val desk key.pole))
       ==
     ==
   ::
@@ -216,6 +233,17 @@
     u.per
   ~
 ::
+++  key-to-val
+  |=  [=desk =key]
+  ^-  (unit value)
+  =/  val-key  (~(get of store) [desk key])
+  ~&  >  val-key
+  ?~  val-key
+    ~
+  =/  val  (~(get by objs) u.val-key)
+  ~&  >  val
+  val
+::
 ++  give-kicks
   |=  [=desk =key]
   ~&  >  %giving-kicks
@@ -268,7 +296,7 @@
     ^-  card
     :*  %give  %fact  [[desk key] ~]
         %global-store-update
-        !>(`update`value+(~(get of store) [desk key]))
+        !>(`update`value+(key-to-val desk key))
     ==
   --
 --

@@ -14,8 +14,10 @@
       [%ship =ship]
   ==
 ::
-+$  store  (axal value)
 +$  roll   (axal perm)
++$  store  (axal @uvI)
++$  objs   (map @uvI value)
++$  refs   (jug @uvI path)
 ::
 +$  action
   $%  [%put =desk =key =value]
