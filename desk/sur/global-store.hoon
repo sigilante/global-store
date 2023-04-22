@@ -3,7 +3,6 @@
 ::    a simple key-value storage solution for ship-global values
 ::    with a straightforward permissions model
 ::
-/+  *mip
 |%
 +$  key    path
 +$  value  cage

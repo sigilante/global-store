@@ -25,12 +25,12 @@
 ::
 ::    the advantage of subscribing is that you receive changes to the value
 ::
-/-  gs=global-store
+/-  *global-store
 /+  verb, dbug, default-agent
 =>
   |%
   +$  card  card:agent:gall
-  +$  state-0  [%0 =store:gs =roll:gs]
+  +$  state-0  [%0 =store =roll]
   --
 =|  state-0
 =*  state  -
@@ -49,7 +49,7 @@
     |=  [=mark =vase]
     ^-  (quip card _this)
     ?.  =(%global-store-action mark)  (on-poke:def mark vase)
-    =+  !<(act=action:gs vase)
+    =+  !<(act=action vase)
     ?-    -.act
         %put
       ?>  (can-write:aux src.bowl desk.act key.act)
@@ -105,7 +105,6 @@
   ++  on-peek
     |=  =(pole knot)
     ^-  (unit (unit cage))
-    ~&  >  %on-peek
     ?+    pole  (on-peek:def pole)
     ::  /desk
     ::
@@ -187,17 +186,17 @@
   ++  on-fail   on-fail:def
   --
 |_  =bowl:gall
-++  can-read   |=([=ship =desk key=path] !=(~ (what-perm ship desk key)))
-++  can-write  |=([=ship =desk key=path] =(`%w (what-perm ship desk key)))
+++  can-read   |=([=ship =desk =key] !=(~ (what-perm ship desk key)))
+++  can-write  |=([=ship =desk =key] =(`%w (what-perm ship desk key)))
 ++  can-change-roll  |=(=ship |(=(our.bowl ship) (moon:title ship our.bowl)))
-++  is-moon   |=(=ship =(%earl (clan:title ship)))
-++  our-moon  |=(=ship (moon:title our.bowl ship))
+++  is-moon    |=(=ship =(%earl (clan:title ship)))
+++  our-moon   |=(=ship (moon:title our.bowl ship))
 ++  our-sponsor   (get-sponsor our.bowl)
 ++  get-sponsor   |=(=ship (sein:title our.bowl now.bowl ship))
 ++  same-sponsor  |=([a=ship b=ship] =((get-sponsor a) (get-sponsor b)))
 ++  what-perm
-  |=  [=ship =desk key=path]
-  ^-  perm:gs
+  |=  [=ship =desk =key]
+  ^-  perm
   ::  our
   ~&  >  %checking-our
   ?:  =(our.bowl ship)  `%w
@@ -207,18 +206,18 @@
     `%w
   ::  explicitly set
   ~&  >  %checking-explicit
-  =/  per=(unit perm:gs)  +:(~(fit of roll) [desk (scot %p ship) key])
+  =/  per=(unit perm)  +:(~(fit of roll) [desk (scot %p ship) key])
   ?^  per
     u.per
   ::  our moons
   ~&  >  %checking-moon
-  =/  per=(unit perm:gs)  +:(~(fit of roll) [desk %moon key])
+  =/  per=(unit perm)  +:(~(fit of roll) [desk %moon key])
   ?:  &((our-moon ship) ?=(^ per))
   ~&  >  [%got-moon-perm u.per]
     u.per
   ::::  fellow moons
   ~&  >  %checking-fellow-moons
-  =/  per=(unit perm:gs)  +:(~(fit of roll) [desk %orbit key])
+  =/  per=(unit perm)  +:(~(fit of roll) [desk %orbit key])
   ?:  ?&  (is-moon our.bowl)
           (same-sponsor ship our.bowl)
           ?=(^ per)
@@ -226,13 +225,13 @@
     u.per
   ::::  public
   ~&  >  %checking-public
-  =/  per=(unit perm:gs)  +:(~(fit of roll) [desk %public key])
+  =/  per=(unit perm)  +:(~(fit of roll) [desk %public key])
   ?^  per
     u.per
   ~
 ::
 ++  give-kicks
-  |=  [=desk key=path]
+  |=  [=desk =key]
   ~&  >  %giving-kicks
   ^-  (list card)
   %+  murn  ~(val by sup.bowl)
@@ -256,7 +255,7 @@
       ::    /desk and /desk/*
       ::
       %+  turn  ~(tap in (desk-keys desk.arg))
-      |=  key=path
+      |=  =key
       (value-update desk.arg key)
   ::
   ++  desk-keys
@@ -271,19 +270,19 @@
   ::  existance of a path
   ::
   ++  key-update
-    |=  [=desk key=path]
+    |=  [=desk =key]
     ^-  card
     :*  %give  %fact  [[%u desk key] ~]
         %global-store-update
-        !>(`update:gs`key+[desk [key (~(has of store) [desk key])]])
+        !>(`update`key+[desk [key (~(has of store) [desk key])]])
     ==
   ::
   ++  value-update
-    |=  [=desk key=path]
+    |=  [=desk =key]
     ^-  card
     :*  %give  %fact  [[%x desk key] ~]
         %global-store-update
-        !>(`update:gs`value+(~(get of store) [desk key]))
+        !>(`update`value+(~(get of store) [desk key]))
     ==
   --
 --
