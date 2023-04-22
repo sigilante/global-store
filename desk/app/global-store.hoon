@@ -145,26 +145,12 @@
     |=  =(pole knot)
     ^-  (quip card _this)
     ?+    pole  (on-watch:def pole)
-    ::  desk subscription: existance of a desk
-    ::
-        [%u desk=@ ~]
-      =/  =desk  (slav %tas desk.pole)
-      ?>  (can-read:aux src.bowl desk ~)
-      :_  this  :_  ~
-      :*  %give  %fact  ~
-          %global-store-update
-          !>(desk+[desk (~(has of store) /[desk])])
-      ==
     ::  key subscription: existance of a key
     ::
         [%u desk=@ key=*]
       =/  =desk  (slav %tas desk.pole)
       ?>  (can-read:aux src.bowl desk key.pole)
-      :_  this  :_  ~
-      :*  %give  %fact  ~
-          %global-store-update
-          !>(key+[desk [key.pole (~(has of store) [desk key.pole])]])
-      ==
+      `this
     ::  key subscription, just send the (unitized) value
     ::
         [desk=@ key=*]
@@ -280,7 +266,7 @@
   ++  value-update
     |=  [=desk =key]
     ^-  card
-    :*  %give  %fact  [[%x desk key] ~]
+    :*  %give  %fact  [[desk key] ~]
         %global-store-update
         !>(`update`value+(~(get of store) [desk key]))
     ==

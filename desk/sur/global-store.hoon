@@ -27,7 +27,7 @@
   ==
 ::
 +$  update
-  $%  [%key p=desk q=(pair key ?)]
+  $%  [%key p=desk q=key r=?]
       [%value p=(unit value)]
   ==
 --
