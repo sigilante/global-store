@@ -1,6 +1,6 @@
-  ::  %global-store
+::    %global-store
 ::::
-::    a simple key-value storage solution for ship-global values
+  ::  a simple key-value storage solution for ship-global values
 ::    with a straightforward permissions model
 ::
 ::    stores values as a (mip desk key vase)
@@ -53,8 +53,8 @@
     ?-    -.act
         %put
       ?>  (can-write:aux src.bowl desk.act key.act)
-      =/  hash   (shax (jam value.act))
-      =/  old-hash  (~(get of store) [desk.act key.act])
+      =/  hash=@uvI  (shax (jam value.act))
+      =/  old-hash   (~(get of store) [desk.act key.act])
       =.  store  (~(put of store) [desk.act key.act] hash)
       =.  refs   (~(put ju refs) hash [desk.act key.act])
       =?  objs  !(~(has by objs) hash)
@@ -85,7 +85,7 @@
         (~(dip of store) [desk.act key.act])
       ::  update store
       =.  store  (~(lop of store) [desk.act key.act])
-      ::  remove from refs, cleanup objects
+      ::  remove from refs, cleanup objs
       =.  state
         |-
         ?~  old
@@ -130,7 +130,7 @@
       ?>  (can-change-roll:aux src.bowl)
       =.  roll  (~(lop of roll) /[desk.act])
       :_  this
-      (give-kicks:aux desk.act /)
+      (give-kicks:aux desk.act ~)
     ==
   ::
   ++  on-peek
@@ -273,7 +273,7 @@
         ::  value update
         ::    /desk and /desk/path
         ::
-            (value-update desk.arg key.arg)^~
+          (value-update desk.arg key.arg)^~
       ::  desk update
       ::    /desk and /desk/*
       ::
