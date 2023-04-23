@@ -10,6 +10,7 @@
 +$  arena
   $%  [%moon ~]
       [%orbit ~]
+      [%kids ~]
       [%public ~]
       [%ship =ship]
   ==
@@ -23,8 +24,8 @@
   $%  [%put =desk =key =value]
       [%del =desk =key]
       [%lop =desk =key]
-      [%enroll =arena =perm =desk =key]
-      [%unroll =arena =desk =key]
+      [%enroll =desk =key =arena =perm]
+      [%unroll =desk =key =arena]
       [%lockdown =desk =key]
   ==
 ::

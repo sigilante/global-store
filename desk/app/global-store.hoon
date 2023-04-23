@@ -93,6 +93,7 @@
         ?-  -.arena.act
           %moon    :-  [desk.act %moon key.act]    perm.act
           %orbit   :-  [desk.act %orbit key.act]   perm.act
+          %kids    :-  [desk.act %kids key.act]    perm.act
           %public  :-  [desk.act %public key.act]  perm.act
           %ship    :-  [desk.act (scot %p ship.arena.act) key.act]  perm.act
         ==
@@ -106,6 +107,7 @@
         ?-  -.arena.act
           %moon    [desk.act %moon key.act]
           %orbit   [desk.act %orbit key.act]
+          %kids    [desk.act %kids key.act]
           %public  [desk.act %public key.act]
           %ship    [desk.act (scot %p ship.arena.act) key.act]
         ==
@@ -173,9 +175,7 @@
         [desk=@ key=*]
       =/  =desk    (slav %tas desk.pole)
       ?>  (can-read:aux src.bowl desk key.pole)
-      ~&  >  %passed-can-read-chck-on-watch
-      ~&  >>  [desk key.pole]
-      ::`this
+      ~&  >  %passed-can-read-check-on-watch
       :_  this  :_  ~
       :*  %give  %fact  ~
           %global-store-update
@@ -204,6 +204,7 @@
   ~&  >  %checking-our
   ?:  =(our.bowl ship)  `%w
   ~&  >  %checking-parent
+  ::  XX remove?
   ::  our parent ship, if moon
   ?:  &((is-moon our.bowl) =(ship our-sponsor))
     `%w
@@ -225,6 +226,11 @@
           (same-sponsor ship our.bowl)
           ?=(^ per)
       ==
+    u.per
+  ~&  >  %checking-kids
+  =/  per=(unit perm)  +:(~(fit of roll) [desk %kids key])
+  ?:  &(=(our.bowl (get-sponsor ship)) ?=(^ per))
+  ~&  >  [%got-kids-perm u.per]
     u.per
   ::::  public
   ~&  >  %checking-public

@@ -1,9 +1,9 @@
 ::  :global-store|del %desk /key
 ::
-/-  gs=global-store
+/-  *global-store
 :-  %say
 |=  $:  ^
-        [=desk key=path ~]
+        [=desk =key ~]
         ~
     ==
 [%global-store-action [%del desk key]]

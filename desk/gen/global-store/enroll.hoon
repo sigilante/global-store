@@ -1,10 +1,10 @@
-::  :global-store|enroll arena perm %desk /foo
-::    :global-store|enroll [%ship ~zod] `%r %kids /foo
+::  :global-store|enroll %desk /foo arena perm
+::    :global-store|enroll %kids /foo [%ship ~zod] `%r
 ::
-/-  gs=global-store
+/-  *global-store
 :-  %say
 |=  $:  ^
-        [=arena:gs =perm:gs =desk key=path ~]
+        [=desk =key =arena =perm ~]
         ~
     ==
-[%global-store-action [%enroll arena perm desk key]]
+[%global-store-action [%enroll desk key arena perm]]

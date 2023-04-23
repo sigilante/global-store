@@ -1,9 +1,9 @@
 ::  :global-store|put %desk /key noun+!>(42)
 ::
-/-  gs=global-store
+/-  *global-store
 :-  %say
 |=  $:  ^
-        [=desk key=path =value:gs ~]
+        [=desk =key =value ~]
         ~
     ==
 [%global-store-action [%put desk key value]]
