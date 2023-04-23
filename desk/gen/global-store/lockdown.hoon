@@ -1,9 +1,9 @@
-::  :global-store|lockdown %desk path
+::  :global-store|lockdown %desk
 ::
 /-  *global-store
 :-  %say
 |=  $:  ^
-        [=desk =key ~]
+        [=desk ~]
         ~
     ==
-[%global-store-action [%lockdown desk key]]
+[%global-store-action [%lockdown desk]]

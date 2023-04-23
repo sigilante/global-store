@@ -116,9 +116,9 @@
     ::
         %lockdown
       ?>  (can-change-roll:aux src.bowl)
-      =.  roll  (~(lop of roll) [desk.act key.act])
+      =.  roll  (~(lop of roll) /[desk.act])
       :_  this
-      (give-kicks:aux desk.act key.act)
+      (give-kicks:aux desk.act /)
     ==
   ::
   ++  on-peek
@@ -234,10 +234,7 @@
     u.per
   ::::  public
   ~&  >  %checking-public
-  =/  per=(unit perm)  +:(~(fit of roll) [desk %public key])
-  ?^  per
-    u.per
-  ~
+  (fall +:(~(fit of roll) [desk %public key]) ~)
 ::
 ++  key-to-val
   |=  [=desk =key]

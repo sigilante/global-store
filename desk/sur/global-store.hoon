@@ -26,7 +26,7 @@
       [%lop =desk =key]
       [%enroll =desk =key =arena =perm]
       [%unroll =desk =key =arena]
-      [%lockdown =desk =key]
+      [%lockdown =desk]
   ==
 ::
 +$  update
