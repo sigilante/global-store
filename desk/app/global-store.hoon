@@ -10,8 +10,8 @@
 ::    %put - put a value with a key onto a desk's kvs
 ::    %del - delete a key in a desk's kvs (rm)
 ::    %lop - delete a key in a desk's kvs (rm -r)
-::    %enroll - put a ?(ship arena) on the roll
-::    %unroll - remove a ?(ship arena) from the roll
+::    %enroll - put an arena on the roll
+::    %unroll - remove an arena from the roll
 ::    %lockdown - set only self to read-write perms for a desk
 ::
 ::    your basic use pattern will be to put important global
@@ -132,8 +132,7 @@
     ::  /desk/key
     ::
         [%x %desk %key desk=@ key=*]
-        ~&  >  %here
-      =/  =desk    (slav %tas desk.pole)
+      =/  =desk  (slav %tas desk.pole)
       ``noun+!>((~(get of store) [desk key.pole]))
     ::  existance
     ::
@@ -144,7 +143,7 @@
     ::  /desk/key
     ::
         [%x %u %desk %key desk=@ key=*]
-      =/  =desk    (slav %tas desk.pole)
+      =/  =desk  (slav %tas desk.pole)
       ``noun+!>((~(has of store) [desk key.pole]))
     ::  /desk
     ::
@@ -173,7 +172,7 @@
     ::  key subscription, just send the (unitized) value
     ::
         [desk=@ key=*]
-      =/  =desk    (slav %tas desk.pole)
+      =/  =desk  (slav %tas desk.pole)
       ?>  (can-read:aux src.bowl desk key.pole)
       ~&  >  %passed-can-read-check-on-watch
       :_  this  :_  ~
@@ -216,21 +215,19 @@
   ::  our moons
   ~&  >  %checking-moon
   =/  per=(unit perm)  +:(~(fit of roll) [desk %moon key])
-  ?:  &((our-moon ship) ?=(^ per))
-  ~&  >  [%got-moon-perm u.per]
+  ?:  &(?=(^ per) (our-moon ship))
     u.per
   ::::  fellow moons
   ~&  >  %checking-fellow-moons
   =/  per=(unit perm)  +:(~(fit of roll) [desk %orbit key])
-  ?:  ?&  (is-moon our.bowl)
+  ?:  ?&  ?=(^ per)
+          (is-moon our.bowl)
           (same-sponsor ship our.bowl)
-          ?=(^ per)
       ==
     u.per
   ~&  >  %checking-kids
   =/  per=(unit perm)  +:(~(fit of roll) [desk %kids key])
-  ?:  &(=(our.bowl (get-sponsor ship)) ?=(^ per))
-  ~&  >  [%got-kids-perm u.per]
+  ?:  &(?=(^ per) =(our.bowl (get-sponsor ship)))
     u.per
   ::::  public
   ~&  >  %checking-public
@@ -240,12 +237,9 @@
   |=  [=desk =key]
   ^-  (unit value)
   =/  val-key  (~(get of store) [desk key])
-  ~&  >  val-key
   ?~  val-key
     ~
-  =/  val  (~(get by objs) u.val-key)
-  ~&  >  val
-  val
+  (~(get by objs) u.val-key)
 ::
 ++  give-kicks
   |=  [=desk =key]
@@ -291,7 +285,7 @@
     ^-  card
     :*  %give  %fact  [[%u desk key] ~]
         %global-store-update
-        !>(`update`key+[desk [key (~(has of store) [desk key])]])
+        !>(`update`key+[desk key (~(has of store) [desk key])])
     ==
   ::
   ++  value-update

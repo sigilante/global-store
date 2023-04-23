@@ -30,7 +30,7 @@
   ==
 ::
 +$  update
-  $%  [%key p=desk q=key r=?]
+  $%  [%key (trel desk key ?)]
       [%value p=(unit value)]
   ==
 --
