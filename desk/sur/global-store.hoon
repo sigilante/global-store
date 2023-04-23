@@ -5,7 +5,7 @@
 ::
 |%
 +$  key    path
-+$  value  cage
++$  value  vase
 +$  perm   (unit ?(%r %w))
 +$  arena
   $%  [%moon ~]

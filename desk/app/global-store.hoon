@@ -79,10 +79,29 @@
     ::
         %lop
       ?>  (can-write:aux src.bowl desk.act key.act)
-      ::  get all hashes at leaves
+      ::  get all relevant paths and hashes
+      =/  old=(list (pair path @uvI))
+        %~  tap  of
+        (~(dip of store) [desk.act key.act])
+      ::  update store
+      =.  store  (~(lop of store) [desk.act key.act])
       ::  remove from refs
+      =.  refs
+        |-  ^+  refs
+        ?~  old
+          refs
+        =/  pax=path  [[desk.act] (weld key.act p.i.old)]
+        =.  refs
+          (~(del ju refs) q.i.old pax)
+        $(old t.old)
       ::  cleanup objects
-      ::=.  store  (~(lop of store) [desk.act key.act])
+      =.  objs
+        |-  ^+  objs
+        ?~  old  objs
+        =?   objs  =(~ (~(get ju refs) q.i.old))
+          (~(del by objs) q.i.old)
+        $(old t.old)
+      ::
       :_  this
       (give-updates:aux desk.act)
     ::
