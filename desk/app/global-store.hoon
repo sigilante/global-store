@@ -261,23 +261,23 @@
   `[%give %kick [pole ~] `ship]
 ::
 ++  give-updates
-  |=  arg=$@(=desk [=desk =path])
+  |=  arg=$@(=desk [=desk =key])
   |^  ^-  (list card)
       ?^  arg
         ::  value update
         ::    /desk and /desk/path
         ::
-            (value-update desk.arg path.arg)^~
+            (value-update desk.arg key.arg)^~
       ::  desk update
       ::    /desk and /desk/*
       ::
-      %+  turn  ~(tap in (desk-keys desk.arg))
+      %+  turn  ~(tap in (watched-keys desk.arg))
       |=  =key
       (value-update desk.arg key)
   ::
-  ++  desk-keys
+  ++  watched-keys
     |=  =desk
-    ^-  (set path)
+    ^-  (set key)
     %-  sy
     %+  murn  ~(val by sup.bowl)
     |=  [* =(pole knot)]
