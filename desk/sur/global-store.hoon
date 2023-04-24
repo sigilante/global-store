@@ -1,6 +1,6 @@
-  ::  %global-store
+::    %global-store
 ::::
-::    a simple key-value storage solution for ship-global values
+  ::  a simple key-value storage solution for ship-global values
 ::    with a straightforward permissions model
 ::
 |%

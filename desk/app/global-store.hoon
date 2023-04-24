@@ -175,6 +175,7 @@
       =/  =ship  (slav %p ship.pole)
       ``noun+!>((what-perm:aux ship desk key.pole))
     ==
+  ::  XX  subscriptions are broken. use poke / sss.
   ::
   ++  on-watch
     |=  =(pole knot)
@@ -191,7 +192,6 @@
         [desk=@ key=*]
       =/  =desk  (slav %tas desk.pole)
       ?>  (can-read:aux src.bowl desk key.pole)
-      ~&  >  %passed-can-read-check-on-watch
       :_  this  :_  ~
       :*  %give  %fact  ~
           %global-store-update
@@ -219,18 +219,19 @@
   ::  our
   ~&  >  %checking-our
   ?:  =(our.bowl ship)  `%w
-  ~&  >  %checking-parent
   ::  XX remove?
   ::  our parent ship, if moon
+  ~&  >  %checking-parent
   ?:  &((is-moon our.bowl) =(ship our-sponsor))
     `%w
   ::  explicitly set
   ~&  >  %checking-explicit
   =/  per=(unit perm)  +:(~(fit of roll) [desk (scot %p ship) key])
+  ~&  >>>  per
   ?^  per
     u.per
   ::  our moons
-  ~&  >  %checking-moon
+  ~&  >  %checking-moons
   =/  per=(unit perm)  +:(~(fit of roll) [desk %moon key])
   ?:  &(?=(^ per) (our-moon ship))
     u.per
@@ -257,6 +258,7 @@
   ?~  val-key
     ~
   (~(get by objs) u.val-key)
+::  XX fix - moon kicking binnec on %gossip /gossip with `%r
 ::
 ++  give-kicks
   |=  [=desk =key]
@@ -264,11 +266,14 @@
   ^-  (list card)
   %+  murn  ~(val by sup.bowl)
   |=  [=ship =(pole knot)]
+  ~&  >  [ship=ship path=`path`pole]
   ^-  (unit card)
   ?.  &(?=([desk=@ *] pole) =(desk desk.pole))
     ~
   ?:  (can-read ship desk key)
+  ~&  >  %can-read
     ~
+  ~&  >  %cant-read
   `[%give %kick [pole ~] `ship]
 ::
 ++  give-updates
