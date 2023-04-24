@@ -58,6 +58,8 @@
       ?>  (can-write:aux src.bowl desk.act key.act)
       =/  hash=@uvI  (shax (jam value.act))
       =/  old-hash   (~(get of store) [desk.act key.act])
+      ?:  &(?=(^ old-hash) =(hash u.old-hash))
+        [~ this]
       =.  store  (~(put of store) [desk.act key.act] hash)
       =.  refs   (~(put ju refs) hash [desk.act key.act])
       =?  objs  !(~(has by objs) hash)
