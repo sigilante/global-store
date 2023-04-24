@@ -3,13 +3,16 @@
   ::  a simple key-value storage solution for ship-global values
 ::    with a straightforward permissions model
 ::
-::    stores values as a (mip desk key vase)
+::    permissions are stored as an (axal perm)
+::    keys are stored as an (axal @uvI)
+::    objects are stored as a (map @uvI vase)
+::    references are stored as a (jug @uvI path)
 ::    returns values as (unit vase)
 ::
 ::    pokes:
 ::    %put - put a value with a key onto a desk's kvs
 ::    %del - delete a key in a desk's kvs (rm)
-::    %lop - delete a key in a desk's kvs (rm -r)
+::    %lop - delete keys in a desk's kvs (rm -r)
 ::    %enroll - put an arena on the roll
 ::    %unroll - remove an arena from the roll
 ::    %lockdown - set only self to read-write perms for a desk
@@ -229,7 +232,7 @@
   =/  per=(unit perm)  +:(~(fit of roll) [desk %moon key])
   ?:  &(?=(^ per) (our-moon ship))
     u.per
-  ::::  fellow moons
+  ::  fellow moons
   ~&  >  %checking-fellow-moons
   =/  per=(unit perm)  +:(~(fit of roll) [desk %orbit key])
   ?:  ?&  ?=(^ per)
@@ -241,7 +244,7 @@
   =/  per=(unit perm)  +:(~(fit of roll) [desk %kids key])
   ?:  &(?=(^ per) =(our.bowl (get-sponsor ship)))
     u.per
-  ::::  public
+  ::  public
   ~&  >  %checking-public
   (fall +:(~(fit of roll) [desk %public key]) ~)
 ::
