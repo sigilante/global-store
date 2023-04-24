@@ -62,7 +62,7 @@
       =.  refs   (~(put ju refs) hash [desk.act key.act])
       =?  objs  !(~(has by objs) hash)
         (~(put by objs) hash value.act)
-      =?  refs  ?=(^ old-hash)
+      =?  refs  &(?=(^ old-hash) !=(u.old-hash hash))
         (~(del ju refs) u.old-hash [desk.act key.act])
       =?  objs  &(?=(^ old-hash) =(~ (~(get ju refs) u.old-hash)))
         (~(del by objs) u.old-hash)
