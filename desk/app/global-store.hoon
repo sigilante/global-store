@@ -28,13 +28,22 @@
 ::
 ::    the advantage of subscribing is that you receive changes to the value
 ::
-/-  *global-store
-/+  verb, dbug, default-agent
+/-  *global-store, update
+/+  verb, dbug, default-agent, sss
 =>
   |%
   +$  card  card:agent:gall
-  +$  state-0  [%0 =store =roll =objs =refs]
+  +$  state-0
+    $:  %0
+        =store
+        =roll
+        =objs
+        =refs
+        subs=_(mk-subs:sss update ,[@tas *])
+        pubs=_(mk-pubs:sss update ,[@tas *])
+    ==
   --
+
 =|  state-0
 =*  state  -
 %+  verb  &
@@ -45,97 +54,108 @@
   +*  this  .
       def   ~(. (default-agent this %|) bowl)
       aux   ~(. +> bowl)
+      das   =/  da  (da:sss update ,[@tas *])
+            (da subs bowl -:!>(*result:da) -:!>(*from:da) -:!>(*fail:da))
+      dup   =/  du  (du:sss update ,[@tas *])
+            (du pubs bowl -:!>(*result:du))
   ++  on-init  on-init:def
   ++  on-save  !>(state)
-  ++  on-load  |=(=vase `this(state !<(state-0 vase)))
+  ++  on-load
+    |=  =vase
+    `this(state !<(state-0 vase))
   ++  on-poke
     |=  [=mark =vase]
     ^-  (quip card _this)
-    ?.  =(%global-store-action mark)  (on-poke:def mark vase)
-    =+  !<(act=action vase)
-    ?-    -.act
-        %put
-      ?>  (can-write:aux src.bowl desk.act key.act)
-      =/  hash=@uvI  (shax (jam value.act))
-      =/  old-hash   (~(get of store) [desk.act key.act])
-      ?:  &(?=(^ old-hash) =(hash u.old-hash))
+    ?+    mark  (on-poke:def mark vase)
+        %global-store-action
+      =+  !<(act=action vase)
+      ?-    -.act
+          %put
+        ?>  (can-write:aux src.bowl desk.act key.act)
+        =/  hash=@uvI  (shax (jam value.act))
+        =/  old-hash   (~(get of store) [desk.act key.act])
+        ?:  &(?=(^ old-hash) =(hash u.old-hash))
+          [~ this]
+        =.  store  (~(put of store) [desk.act key.act] hash)
+        =.  refs   (~(put ju refs) hash [desk.act key.act])
+        =?  objs  !(~(has by objs) hash)
+          (~(put by objs) hash value.act)
+        =?  refs  &(?=(^ old-hash) !=(u.old-hash hash))
+          (~(del ju refs) u.old-hash [desk.act key.act])
+        =?  objs  &(?=(^ old-hash) =(~ (~(get ju refs) u.old-hash)))
+          (~(del by objs) u.old-hash)
         [~ this]
-      =.  store  (~(put of store) [desk.act key.act] hash)
-      =.  refs   (~(put ju refs) hash [desk.act key.act])
-      =?  objs  !(~(has by objs) hash)
-        (~(put by objs) hash value.act)
-      =?  refs  &(?=(^ old-hash) !=(u.old-hash hash))
-        (~(del ju refs) u.old-hash [desk.act key.act])
-      =?  objs  &(?=(^ old-hash) =(~ (~(get ju refs) u.old-hash)))
-        (~(del by objs) u.old-hash)
-      :_  this
-      (give-updates:aux desk.act key.act)
-    ::
-        %del
-      ?>  (can-write:aux src.bowl desk.act key.act)
-      =/  hash=(unit @uvI)  (~(get of store) [desk.act key.act])
-      =.  store  (~(del of store) [desk.act key.act])
-      =?  refs  ?=(^ hash)
-        (~(del ju refs) u.hash [desk.act key.act])
-      =?  objs  &(?=(^ hash) =(~ (~(get ju refs) u.hash)))
-        (~(del by objs) u.hash)
-      :_  this
-      (give-updates:aux desk.act key.act)
-    ::
-        %lop
-      ?>  (can-write:aux src.bowl desk.act key.act)
-      ::  get all relevant keys and hashes
-      =/  old=(list (pair path @uvI))
-        %~  tap  of
-        (~(dip of store) [desk.act key.act])
-      ::  update store
-      =.  store  (~(lop of store) [desk.act key.act])
-      ::  remove from refs, cleanup objs
-      =.  state
-        |-
-        ?~  old
-          state
-        =/  =path  [desk.act (weld key.act p.i.old)]
-        =.  refs   (~(del ju refs) q.i.old path)
-        =?  objs  =(~ (~(get ju refs) q.i.old))
-          (~(del by objs) q.i.old)
-        $(old t.old)
-      :_  this
-      (give-updates:aux desk.act)
-    ::
-        %enroll
-      ?>  (can-change-roll:aux src.bowl)
-      =.  roll
-        %-  ~(put of roll)
-        ?-  -.arena.act
-          %moon    :-  [desk.act %moon key.act]    perm.act
-          %orbit   :-  [desk.act %orbit key.act]   perm.act
-          %kids    :-  [desk.act %kids key.act]    perm.act
-          %public  :-  [desk.act %public key.act]  perm.act
-          %ship    :-  [desk.act (scot %p ship.arena.act) key.act]  perm.act
-        ==
-      :_  this
-      ?~(perm.act (give-kicks:aux desk.act ~) ~)
-    ::
-        %unroll
-      ?>  (can-change-roll:aux src.bowl)
-      =.  roll
-        %-  ~(del of roll)
-        ?-  -.arena.act
-          %moon    [desk.act %moon key.act]
-          %orbit   [desk.act %orbit key.act]
-          %kids    [desk.act %kids key.act]
-          %public  [desk.act %public key.act]
-          %ship    [desk.act (scot %p ship.arena.act) key.act]
-        ==
-      :_  this
-      (give-kicks:aux desk.act ~)
-    ::
-        %lockdown
-      ?>  (can-change-roll:aux src.bowl)
-      =.  roll  (~(lop of roll) /[desk.act])
-      :_  this
-      (give-kicks:aux desk.act ~)
+        :::_  this
+        ::(give-updates:aux desk.act key.act)
+      ::
+          %del
+        ?>  (can-write:aux src.bowl desk.act key.act)
+        =/  hash=(unit @uvI)  (~(get of store) [desk.act key.act])
+        =.  store  (~(del of store) [desk.act key.act])
+        =?  refs  ?=(^ hash)
+          (~(del ju refs) u.hash [desk.act key.act])
+        =?  objs  &(?=(^ hash) =(~ (~(get ju refs) u.hash)))
+          (~(del by objs) u.hash)
+        [~ this]
+        :::_  this
+        ::(give-updates:aux desk.act key.act)
+      ::
+          %lop
+        ?>  (can-write:aux src.bowl desk.act key.act)
+        ::  get all relevant keys and hashes
+        =/  old=(list (pair path @uvI))
+          %~  tap  of
+          (~(dip of store) [desk.act key.act])
+        ::  update store
+        =.  store  (~(lop of store) [desk.act key.act])
+        ::  remove from refs, cleanup objs
+        =.  state
+          |-
+          ?~  old
+            state
+          =/  =path  [desk.act (weld key.act p.i.old)]
+          =.  refs   (~(del ju refs) q.i.old path)
+          =?  objs  =(~ (~(get ju refs) q.i.old))
+            (~(del by objs) q.i.old)
+          $(old t.old)
+        [~ this]
+        :::_  this
+        ::(give-updates:aux desk.act)
+      ::
+          %enroll
+        ?>  (can-change-roll:aux src.bowl)
+        =.  roll
+          %-  ~(put of roll)
+          ?-  -.arena.act
+            %moon    :-  [desk.act %moon key.act]    perm.act
+            %orbit   :-  [desk.act %orbit key.act]   perm.act
+            %kids    :-  [desk.act %kids key.act]    perm.act
+            %public  :-  [desk.act %public key.act]  perm.act
+            %ship    :-  [desk.act (scot %p ship.arena.act) key.act]  perm.act
+          ==
+        :_  this
+        ?~(perm.act (give-kicks:aux desk.act ~) ~)
+      ::
+          %unroll
+        ?>  (can-change-roll:aux src.bowl)
+        =.  roll
+          %-  ~(del of roll)
+          ?-  -.arena.act
+            %moon    [desk.act %moon key.act]
+            %orbit   [desk.act %orbit key.act]
+            %kids    [desk.act %kids key.act]
+            %public  [desk.act %public key.act]
+            %ship    [desk.act (scot %p ship.arena.act) key.act]
+          ==
+        :_  this
+        (give-kicks:aux desk.act ~)
+      ::
+          %lockdown
+        ?>  (can-change-roll:aux src.bowl)
+        =.  roll  (~(lop of roll) /[desk.act])
+        :_  this
+        (give-kicks:aux desk.act ~)
+      ==
     ==
   ::
   ++  on-peek
@@ -175,30 +195,7 @@
       =/  =ship  (slav %p ship.pole)
       ``noun+!>((what-perm:aux ship desk key.pole))
     ==
-  ::  XX  subscriptions are broken. use poke / sss.
-  ::
-  ++  on-watch
-    |=  =(pole knot)
-    ^-  (quip card _this)
-    ?+    pole  (on-watch:def pole)
-    ::  key subscription: existance of a key
-    ::
-        [%u desk=@ key=*]
-      =/  =desk  (slav %tas desk.pole)
-      ?>  (can-read:aux src.bowl desk key.pole)
-      `this
-    ::  key subscription, just send the (unitized) value
-    ::
-        [desk=@ key=*]
-      =/  =desk  (slav %tas desk.pole)
-      ?>  (can-read:aux src.bowl desk key.pole)
-      :_  this  :_  ~
-      :*  %give  %fact  ~
-          %global-store-update
-          !>(`update`value+(key-to-val desk key.pole))
-      ==
-    ==
-  ::
+  ++  on-watch  on-watch:def
   ++  on-agent  on-agent:def
   ++  on-arvo   on-arvo:def
   ++  on-leave  on-leave:def
@@ -258,7 +255,6 @@
   ?~  val-key
     ~
   (~(get by objs) u.val-key)
-::  XX fix - moon kicking binnec on %gossip /gossip with `%r
 ::
 ++  give-kicks
   |=  [=desk =key]
@@ -275,47 +271,4 @@
     ~
   ~&  >  %cant-read
   `[%give %kick [pole ~] `ship]
-::
-++  give-updates
-  |=  arg=$@(=desk [=desk =key])
-  |^  ^-  (list card)
-      ?^  arg
-        ::  value update
-        ::    /desk and /desk/path
-        ::
-          (value-update desk.arg key.arg)^~
-      ::  desk update
-      ::    /desk and /desk/*
-      ::
-      %+  turn  ~(tap in (watched-keys desk.arg))
-      |=  =key
-      (value-update desk.arg key)
-  ::
-  ++  watched-keys
-    |=  =desk
-    ^-  (set key)
-    %-  sy
-    %+  murn  ~(val by sup.bowl)
-    |=  [* =(pole knot)]
-    ?.  &(?=([desk=@ path=*] pole) =(desk.pole desk))
-      ~
-    `path.pole
-  ::  existance of a path
-  ::
-  ++  key-update
-    |=  [=desk =key]
-    ^-  card
-    :*  %give  %fact  [[%u desk key] ~]
-        %global-store-update
-        !>(`update`key+[desk key (~(has of store) [desk key])])
-    ==
-  ::
-  ++  value-update
-    |=  [=desk =key]
-    ^-  card
-    :*  %give  %fact  [[desk key] ~]
-        %global-store-update
-        !>(`update`value+(key-to-val desk key))
-    ==
-  --
 --
