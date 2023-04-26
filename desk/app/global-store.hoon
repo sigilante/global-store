@@ -114,9 +114,8 @@
           =?  objs  =(~ (~(get ju refs) q.i.old))
             (~(del by objs) q.i.old)
           $(old t.old)
+        ::  XX  update all paths
         [~ this]
-        :::_  this
-        ::(give-updates:aux desk.act)
       ::
           %enroll
         ?>  (can-change-roll:aux src.bowl)
@@ -129,8 +128,9 @@
             %public  :-  [desk.act %public key.act]  perm.act
             %ship    :-  [desk.act (scot %p ship.arena.act) key.act]  perm.act
           ==
-        :_  this
-        ?~(perm.act (give-kicks:aux desk.act ~) ~)
+        =?  pubs  ?=(~ perm.act)
+          (give-kicks:aux desk.act ~)
+        [~ this]
       ::
           %unroll
         ?>  (can-change-roll:aux src.bowl)
@@ -143,21 +143,27 @@
             %public  [desk.act %public key.act]
             %ship    [desk.act (scot %p ship.arena.act) key.act]
           ==
-        :_  this
-        (give-kicks:aux desk.act ~)
+        =.  pubs  (give-kicks:aux desk.act ~)
+        [~ this]
       ::
           %lockdown
         ?>  (can-change-roll:aux src.bowl)
         =.  roll  (~(lop of roll) /[desk.act])
-        :_  this
-        (give-kicks:aux desk.act ~)
+        ::  XX  all paths
+        =.  pubs  (kill:dup [desk.act *]~)
+        `this
       ::
           %watch
         ?>  (can-read src.bowl desk.act key.act)
-        [~ this]
+        =.  pubs  (allow:dup [src.bowl ~] [desk.act key.act]~)
+        =^  cards  pubs
+          (give:dup [desk.act key.act]~ [%value (key-to-val desk.act key.act)])
+          ~&  >  "pubs is: {<read:dup>}"
+        [cards this]
       ::
           %leave
         =.  pubs  (block:dup [src.bowl ~] [desk.act key.act]~)
+        ~&  >  "pubs is: {<read:dup>}"
         [~ this]
       ==
     ::  sss - required w/o crashing
@@ -214,6 +220,8 @@
   ++  on-fail   on-fail:def
   --
 |_  =bowl:gall
++*  dup   =/  du  (du:sss update ,[* *])
+          (du pubs bowl -:!>(*result:du))
 ++  can-read   |=([=ship =desk =key] !=(~ (what-perm ship desk key)))
 ++  can-write  |=([=ship =desk =key] =(`%w (what-perm ship desk key)))
 ++  can-change-roll  |=(=ship |(=(our.bowl ship) (moon:title ship our.bowl)))
@@ -267,45 +275,20 @@
   ?~  val-key
     ~
   (~(get by objs) u.val-key)
+::  XX
 ::
 ++  give-kicks
   |=  [=desk =key]
-  ~&  >  %giving-kicks
-  ^-  (list card)
-  %+  murn  ~(val by sup.bowl)
-  |=  [=ship =(pole knot)]
-  ~&  >  [ship=ship path=`path`pole]
-  ^-  (unit card)
-  ?.  &(?=([desk=@ *] pole) =(desk desk.pole))
-    ~
-  ?:  (can-read ship desk key)
-  ~&  >  %can-read
-    ~
-  ~&  >  %cant-read
-  `[%give %kick [pole ~] `ship]
-++  send-it
-  !!
-    ::  Here we use `+give:du` to publish a wave through the `sum`-publication,
-    ::  using the only possible path, `/sum/foo`. Think of this as analogous to
-    ::  current `[%give %fact paths cage]` cards.
-    ::  %add
-    ::=^  cards  pub-sum  (give:du-sum [%sum %foo ~] !<(@ud vase))
-    ::~&  >  "pub-sum is: {<read:du-sum>}"
-    ::[cards this]
-++  add-watcher
-  !!
-  ::  =.  pub-sum  (allow:du-sum !<((list ship) vase) [%sum %foo ~]~)
-  ::  ~&  >  "pub-sum is: {<read:du-sum>}"
-  ::  `this
-  ::
-++  del-watcher
-  !!
-  ::  =.  pub-sum  (block:du-sum !<((list ship) vase) [%sum %foo ~]~)
-  ::  ~&  >  "pub-sum is: {<read:du-sum>}"
-  ::  `this
-++  kill-list-path
-  !!
-  ::  =.  pub-sum  (kill:du-sum [%sum %foo ~]~)
-  ::  ~&  >  "pub-sum is: {<read:du-sum>}"
-  ::  `this
+  ^+  pubs
+  =/  sbus=(map paths=* [allowed=(unit (set ship)) *])
+    read:dup
+  ~&  >  ~(key by sbus)
+  =/  whos=(list [paths=* [allowed=(unit (set ship)) *]])
+    ~(tap by sbus)
+  ::?.  &(?=([desk=@ *] pole) =(desk desk.pole))
+  ::  pubs
+  ::?:  (can-read s desk key)
+  ::  pubs
+  ::=.  pubs  (block:dup [s ~] [desk pole]~)
+  pubs
 --
