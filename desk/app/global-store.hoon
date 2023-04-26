@@ -7,7 +7,7 @@
 ::    keys are stored as an (axal @uvI)
 ::    objects are stored as a (map @uvI vase)
 ::    references are stored as a (jug @uvI path)
-::    returns values as (unit vase)
+::    returns values as (unit cage)
 ::
 ::    pokes:
 ::    %put - put a value with a key onto a desk's kvs
@@ -16,6 +16,8 @@
 ::    %enroll - put an arena on the roll
 ::    %unroll - remove an arena from the roll
 ::    %lockdown - set only self to read-write perms for a desk
+::    %watch - watch a %desk /key
+::    %leave - leave a %desk /key
 ::
 ::    your basic use pattern will be to put important global
 ::    values into your desk's store with `%put`
@@ -39,7 +41,6 @@
         pubs=_(mk-pubs:sss update ,[* *])
     ==
   --
-
 =|  state-0
 =*  state  -
 %+  verb  &
@@ -189,7 +190,7 @@
         [%x %desk %key desk=@ key=*]
       =/  =desk  (slav %tas desk.pole)
       ``noun+!>((~(get of store) [desk key.pole]))
-    ::  existance
+    ::  existence
     ::
     ::  /desk
     ::
@@ -280,11 +281,9 @@
 ++  give-kicks
   |=  [=desk =key]
   ^+  pubs
-  =/  sbus=(map paths=* [allowed=(unit (set ship)) *])
-    read:dup
-  ~&  >  ~(key by sbus)
-  =/  whos=(list [paths=* [allowed=(unit (set ship)) *]])
-    ~(tap by sbus)
+  =/  subs=(list [paths=* [allowed=(unit (set ship)) *]])
+    ~(tap by read:dup)
+  ::|-  ^+  pubs
   ::?.  &(?=([desk=@ *] pole) =(desk desk.pole))
   ::  pubs
   ::?:  (can-read s desk key)
