@@ -32,15 +32,11 @@
 /+  verb, dbug, default-agent, sss
 =>
   |%
-  +$  card  card:agent:gall
+  +$  card  $+(card card:agent:gall)
   +$  state-0
     $:  %0
-        =store
-        =roll
-        =objs
-        =refs
-        subs=_(mk-subs:sss update ,[@tas *])
-        pubs=_(mk-pubs:sss update ,[@tas *])
+        =store  =roll  =objs  =refs
+        pubs=_(mk-pubs:sss update ,[* *])
     ==
   --
 
@@ -54,18 +50,15 @@
   +*  this  .
       def   ~(. (default-agent this %|) bowl)
       aux   ~(. +> bowl)
-      das   =/  da  (da:sss update ,[@tas *])
-            (da subs bowl -:!>(*result:da) -:!>(*from:da) -:!>(*fail:da))
-      dup   =/  du  (du:sss update ,[@tas *])
+      dup   =/  du  (du:sss update ,[* *])
             (du pubs bowl -:!>(*result:du))
   ++  on-init  on-init:def
   ++  on-save  !>(state)
-  ++  on-load
-    |=  =vase
-    `this(state !<(state-0 vase))
+  ++  on-load  |=(=vase `this(state !<(state-0 vase)))
   ++  on-poke
     |=  [=mark =vase]
     ^-  (quip card _this)
+    ~&  >>  "pubs was: {<read:dup>}"
     ?+    mark  (on-poke:def mark vase)
         %global-store-action
       =+  !<(act=action vase)
@@ -84,9 +77,11 @@
           (~(del ju refs) u.old-hash [desk.act key.act])
         =?  objs  &(?=(^ old-hash) =(~ (~(get ju refs) u.old-hash)))
           (~(del by objs) u.old-hash)
-        [~ this]
-        :::_  this
-        ::(give-updates:aux desk.act key.act)
+        =.  pubs  (rule:dup [[desk.act key.act]~ 0 0])  
+        =^  cards  pubs
+          (give:dup [desk.act key.act]~ [%value (key-to-val desk.act key.act)])
+          ~&  >  "pubs is: {<read:dup>}"
+        [cards this]
       ::
           %del
         ?>  (can-write:aux src.bowl desk.act key.act)
@@ -96,9 +91,10 @@
           (~(del ju refs) u.hash [desk.act key.act])
         =?  objs  &(?=(^ hash) =(~ (~(get ju refs) u.hash)))
           (~(del by objs) u.hash)
-        [~ this]
-        :::_  this
-        ::(give-updates:aux desk.act key.act)
+        =^  cards  pubs
+          (give:dup [desk.act key.act]~ [%value (key-to-val desk.act key.act)])
+          ~&  >  "pubs is: {<read:dup>}"
+        [cards this]
       ::
           %lop
         ?>  (can-write:aux src.bowl desk.act key.act)
@@ -155,7 +151,23 @@
         =.  roll  (~(lop of roll) /[desk.act])
         :_  this
         (give-kicks:aux desk.act ~)
+      ::
+          %watch
+        ?>  (can-read src.bowl desk.act key.act)
+        [~ this]
+      ::
+          %leave
+        =.  pubs  (block:dup [src.bowl ~] [desk.act key.act]~)
+        [~ this]
       ==
+    ::  sss - required w/o crashing
+    ::    %sss-to-pub   Information to be handled by a du-core (i.e. a publication).
+    ::
+        %sss-to-pub
+      ~&  >  %sss-to-pub
+      =+  msg=!<($%(into:dup) (fled:sss vase))
+      =^  cards  pubs  (apply:dup msg)
+      [cards this]
     ==
   ::
   ++  on-peek
@@ -271,4 +283,29 @@
     ~
   ~&  >  %cant-read
   `[%give %kick [pole ~] `ship]
+++  send-it
+  !!
+    ::  Here we use `+give:du` to publish a wave through the `sum`-publication,
+    ::  using the only possible path, `/sum/foo`. Think of this as analogous to
+    ::  current `[%give %fact paths cage]` cards.
+    ::  %add
+    ::=^  cards  pub-sum  (give:du-sum [%sum %foo ~] !<(@ud vase))
+    ::~&  >  "pub-sum is: {<read:du-sum>}"
+    ::[cards this]
+++  add-watcher
+  !!
+  ::  =.  pub-sum  (allow:du-sum !<((list ship) vase) [%sum %foo ~]~)
+  ::  ~&  >  "pub-sum is: {<read:du-sum>}"
+  ::  `this
+  ::
+++  del-watcher
+  !!
+  ::  =.  pub-sum  (block:du-sum !<((list ship) vase) [%sum %foo ~]~)
+  ::  ~&  >  "pub-sum is: {<read:du-sum>}"
+  ::  `this
+++  kill-list-path
+  !!
+  ::  =.  pub-sum  (kill:du-sum [%sum %foo ~]~)
+  ::  ~&  >  "pub-sum is: {<read:du-sum>}"
+  ::  `this
 --

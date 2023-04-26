@@ -27,6 +27,8 @@
       [%enroll =desk =key =arena =perm]
       [%unroll =desk =key =arena]
       [%lockdown =desk]
+      [%watch =desk =key]
+      [%leave =desk =key]
   ==
 ::
 +$  update
