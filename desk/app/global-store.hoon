@@ -276,18 +276,27 @@
   ?~  val-key
     ~
   (~(get by objs) u.val-key)
-::  XX
 ::
 ++  give-kicks
   |=  [=desk =key]
   ^+  pubs
   =/  subs=(list [paths=* [allowed=(unit (set ship)) *]])
     ~(tap by read:dup)
-  ::|-  ^+  pubs
+  ~&  >>  subs
+  |-  ^+  pubs
+  =*  top  $
+  ?~  subs
+    pubs
+  ?@  allowed.i.subs
+    top(subs t.subs)
+  =/  ships=(list ship)  ~(tap in u.allowed.i.subs)
+  |-
+  =*  bot  $
+  ?~  ships
+    top(subs t.subs)
+  ::  XX  TODO
   ::?.  &(?=([desk=@ *] pole) =(desk desk.pole))
-  ::  pubs
-  ::?:  (can-read s desk key)
-  ::  pubs
-  ::=.  pubs  (block:dup [s ~] [desk pole]~)
-  pubs
+  =?  pubs  (can-read i.ships desk key)
+    (block:dup [i.ships ~] [desk key]~)
+  bot(ships t.ships)
 --
