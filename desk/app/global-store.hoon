@@ -72,10 +72,10 @@
           [~ this]
         =.  store  (~(put of store) [desk.act key.act] hash)
         =.  refs   (~(put ju refs) hash [desk.act key.act])
-        =?  objs  !(~(has by objs) hash)
-          (~(put by objs) hash value.act)
         =?  refs  &(?=(^ old-hash) !=(u.old-hash hash))
           (~(del ju refs) u.old-hash [desk.act key.act])
+        =?  objs  !(~(has by objs) hash)
+          (~(put by objs) hash value.act)
         =?  objs  &(?=(^ old-hash) =(~ (~(get ju refs) u.old-hash)))
           (~(del by objs) u.old-hash)
         =.  pubs  (rule:dup [[desk.act key.act]~ 0 0])  
@@ -129,7 +129,7 @@
             %public  :-  [desk.act %public key.act]  perm.act
             %ship    :-  [desk.act (scot %p ship.arena.act) key.act]  perm.act
           ==
-        =?  pubs  ?=(~ perm.act)
+        =?  pubs  =(~ perm.act)
           (give-kicks:aux desk.act ~)
         [~ this]
       ::
@@ -287,7 +287,7 @@
   =*  top  $
   ?~  subs
     pubs
-  ?@  allowed.i.subs
+  ?~  allowed.i.subs
     top(subs t.subs)
   =/  ships=(list ship)  ~(tap in u.allowed.i.subs)
   |-
