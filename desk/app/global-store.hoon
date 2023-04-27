@@ -273,9 +273,7 @@
   |=  [=desk =key]
   ^-  (unit value)
   =/  val-key  (~(get of store) [desk key])
-  ?~  val-key
-    ~
-  (~(get by objs) u.val-key)
+  ?~(val-key ~ (~(get by objs) u.val-key))
 ::
 ++  give-kicks
   |=  [=desk =key]
