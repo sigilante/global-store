@@ -78,11 +78,10 @@
           (~(put by objs) hash value.act)
         =?  objs  &(?=(^ old-hash) =(~ (~(get ju refs) u.old-hash)))
           (~(del by objs) u.old-hash)
-        ::=/  =path  [desk.act key.act ~]
-
-        =.  pubs  (rule:dup [desk.act key.act ~] 0 0)  
+        =/  =path  (make-path desk.act key.act)
+        =.  pubs  (rule:dup path 0 0)
         =^  cards  pubs
-          (give:dup [desk.act key.act ~] [%value (key-to-val desk.act key.act)])
+          (give:dup path [%value (key-to-val desk.act key.act)])
           ~&  >  "pubs is: {<read:dup>}"
         [cards this]
       ::
@@ -95,7 +94,8 @@
         =?  objs  &(?=(^ hash) =(~ (~(get ju refs) u.hash)))
           (~(del by objs) u.hash)
         =^  cards  pubs
-          (give:dup [desk.act key.act ~] [%value (key-to-val desk.act key.act)])
+          =/  =path  (make-path desk.act key.act)
+          (give:dup path [%value (key-to-val desk.act key.act)])
           ~&  >  "pubs is: {<read:dup>}"
         [cards this]
       ::
