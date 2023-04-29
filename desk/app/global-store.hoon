@@ -38,7 +38,7 @@
   +$  state-0
     $:  %0
         =store  =roll  =objs  =refs
-        pubs=_(mk-pubs:sss update ,[@tas * ~])
+        pubs=_(mk-pubs:sss update ,[*])
     ==
   --
 =|  state-0
@@ -51,7 +51,7 @@
   +*  this  .
       def   ~(. (default-agent this %|) bowl)
       aux   ~(. +> bowl)
-      dup   =/  du  (du:sss update ,[@tas * ~])
+      dup   =/  du  (du:sss update ,[*])
             (du pubs bowl -:!>(*result:du))
   ++  on-init  on-init:def
   ++  on-save  !>(state)
@@ -79,6 +79,7 @@
         =?  objs  &(?=(^ old-hash) =(~ (~(get ju refs) u.old-hash)))
           (~(del by objs) u.old-hash)
         ::=/  =path  [desk.act key.act ~]
+
         =.  pubs  (rule:dup [desk.act key.act ~] 0 0)  
         =^  cards  pubs
           (give:dup [desk.act key.act ~] [%value (key-to-val desk.act key.act)])
@@ -158,14 +159,16 @@
           %watch
         ?>  (can-read:aux src.bowl desk.act key.act)
         ~&  >  [%watch %passed-can-read]
-        =.  pubs  (allow:dup [src.bowl ~] [[desk.act key.act ~] ~])
+        =/  =path  (make-path desk.act key.act)
+        =.  pubs  (allow:dup [src.bowl ~] [path ~])
         =^  cards  pubs
-          (give:dup [desk.act key.act ~] [%value (key-to-val desk.act key.act)])
+          (give:dup path [%value (key-to-val desk.act key.act)])
           ~&  >  "pubs is: {<read:dup>}"
         [cards this]
       ::
           %leave
-        =.  pubs  (block:dup [src.bowl ~] [[desk.act key.act ~] ~])
+        =/  =path  (make-path desk.act key.act)
+        =.  pubs  (block:dup [src.bowl ~] [path ~])
         ~&  >  "pubs is: {<read:dup>}"
         [~ this]
       ==
@@ -224,7 +227,7 @@
   ++  on-fail   on-fail:def
   --
 |_  =bowl:gall
-+*  dup   =/  du  (du:sss update ,[@ *])
++*  dup   =/  du  (du:sss update ,[*])
           (du pubs bowl -:!>(*result:du))
 ++  can-read   |=([=ship =desk =key] !=(~ (what-perm ship desk key)))
 ++  can-write  |=([=ship =desk =key] =(`%w (what-perm ship desk key)))
@@ -234,6 +237,7 @@
 ++  our-sponsor   (get-sponsor our.bowl)
 ++  get-sponsor   |=(=ship (sein:title our.bowl now.bowl ship))
 ++  same-sponsor  |=([a=ship b=ship] =((get-sponsor a) (get-sponsor b)))
+++  make-path  |=([=desk =key] `path`[desk key])
 ++  what-perm
   |=  [=ship =desk =key]
   ^-  perm
@@ -297,8 +301,8 @@
     top(subs t.subs)
   ::  XX  TODO
   ::?.  &(?=([desk=@ *] pole) =(desk desk.pole))
-  =/  cr=?  (can-read i.ships desk key)
-  ::=?  pubs  (can-read i.ships desk key)
-  ::  (block:dup [i.ships ~] [[desk key ~] ~])
+  =/  =path  (make-path desk key)
+  =?  pubs  (can-read i.ships desk key)
+    (block:dup [i.ships ~] [path ~])
   bot(ships t.ships)
 --
