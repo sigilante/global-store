@@ -38,7 +38,7 @@
   +$  state-0
     $:  %0
         =store  =roll  =objs  =refs
-        pubs=_(mk-pubs:sss update ,[* *])
+        pubs=_(mk-pubs:sss update ,[@tas * ~])
     ==
   --
 =|  state-0
@@ -51,7 +51,7 @@
   +*  this  .
       def   ~(. (default-agent this %|) bowl)
       aux   ~(. +> bowl)
-      dup   =/  du  (du:sss update ,[* *])
+      dup   =/  du  (du:sss update ,[@tas * ~])
             (du pubs bowl -:!>(*result:du))
   ++  on-init  on-init:def
   ++  on-save  !>(state)
@@ -78,9 +78,10 @@
           (~(put by objs) hash value.act)
         =?  objs  &(?=(^ old-hash) =(~ (~(get ju refs) u.old-hash)))
           (~(del by objs) u.old-hash)
-        =.  pubs  (rule:dup [[desk.act key.act]~ 0 0])  
+        ::=/  =path  [desk.act key.act ~]
+        =.  pubs  (rule:dup [desk.act key.act ~] 0 0)  
         =^  cards  pubs
-          (give:dup [desk.act key.act]~ [%value (key-to-val desk.act key.act)])
+          (give:dup [desk.act key.act ~] [%value (key-to-val desk.act key.act)])
           ~&  >  "pubs is: {<read:dup>}"
         [cards this]
       ::
@@ -93,7 +94,7 @@
         =?  objs  &(?=(^ hash) =(~ (~(get ju refs) u.hash)))
           (~(del by objs) u.hash)
         =^  cards  pubs
-          (give:dup [desk.act key.act]~ [%value (key-to-val desk.act key.act)])
+          (give:dup [desk.act key.act ~] [%value (key-to-val desk.act key.act)])
           ~&  >  "pubs is: {<read:dup>}"
         [cards this]
       ::
@@ -151,19 +152,20 @@
         ?>  (can-change-roll:aux src.bowl)
         =.  roll  (~(lop of roll) /[desk.act])
         ::  XX  all paths
-        =.  pubs  (kill:dup [desk.act *]~)
+        ::=.  pubs  (kill:dup [desk.act *]~)
         `this
       ::
           %watch
-        ?>  (can-read src.bowl desk.act key.act)
-        =.  pubs  (allow:dup [src.bowl ~] [desk.act key.act]~)
+        ?>  (can-read:aux src.bowl desk.act key.act)
+        ~&  >  [%watch %passed-can-read]
+        =.  pubs  (allow:dup [src.bowl ~] [[desk.act key.act ~] ~])
         =^  cards  pubs
-          (give:dup [desk.act key.act]~ [%value (key-to-val desk.act key.act)])
+          (give:dup [desk.act key.act ~] [%value (key-to-val desk.act key.act)])
           ~&  >  "pubs is: {<read:dup>}"
         [cards this]
       ::
           %leave
-        =.  pubs  (block:dup [src.bowl ~] [desk.act key.act]~)
+        =.  pubs  (block:dup [src.bowl ~] [[desk.act key.act ~] ~])
         ~&  >  "pubs is: {<read:dup>}"
         [~ this]
       ==
@@ -212,7 +214,8 @@
         [%x %perm %ship %desk %key ship=@ desk=@ key=*]
       =/  =desk  (slav %tas desk.pole)
       =/  =ship  (slav %p ship.pole)
-      ``noun+!>((what-perm:aux ship desk key.pole))
+      =/  =path  ;;(path key.pole)
+      ``noun+!>((what-perm:aux ship desk path))
     ==
   ++  on-watch  on-watch:def
   ++  on-agent  on-agent:def
@@ -221,7 +224,7 @@
   ++  on-fail   on-fail:def
   --
 |_  =bowl:gall
-+*  dup   =/  du  (du:sss update ,[* *])
++*  dup   =/  du  (du:sss update ,[@ *])
           (du pubs bowl -:!>(*result:du))
 ++  can-read   |=([=ship =desk =key] !=(~ (what-perm ship desk key)))
 ++  can-write  |=([=ship =desk =key] =(`%w (what-perm ship desk key)))
@@ -294,7 +297,8 @@
     top(subs t.subs)
   ::  XX  TODO
   ::?.  &(?=([desk=@ *] pole) =(desk desk.pole))
-  =?  pubs  (can-read i.ships desk key)
-    (block:dup [i.ships ~] [desk key]~)
+  =/  cr=?  (can-read i.ships desk key)
+  ::=?  pubs  (can-read i.ships desk key)
+  ::  (block:dup [i.ships ~] [[desk key ~] ~])
   bot(ships t.ships)
 --
