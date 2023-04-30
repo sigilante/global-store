@@ -1,7 +1,7 @@
-/-  *global-store
+::/-  *global-store
 |%
 ++  name  %update
-+$  rock  ~
-+$  wave  update
-++  wash  |=([=rock =wave] ~)
++$  rock  (unit cage)
++$  wave  (unit cage)
+++  wash  |=([=rock =wave] wave)
 --

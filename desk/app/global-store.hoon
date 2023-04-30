@@ -38,7 +38,7 @@
   +$  state-0
     $:  %0
         =store  =roll  =objs  =refs
-        pubs=_(mk-pubs:sss update ,*)
+        pubs=_(mk-pubs:sss update ,[*])
     ==
   --
 =|  state-0
@@ -51,7 +51,7 @@
   +*  this  .
       def   ~(. (default-agent this %|) bowl)
       aux   ~(. +> bowl)
-      dup   =/  du  (du:sss update ,*)
+      dup   =/  du  (du:sss update ,[*])
             (du pubs bowl -:!>(*result:du))
   ++  on-init  on-init:def
   ++  on-save  !>(state)
@@ -81,7 +81,8 @@
         =/  =path  [desk.act key.act]
         =.  pubs  (rule:dup path 0 0)
         =^  cards  pubs
-          (give:dup path [%value (key-to-val desk.act key.act)])
+          ::(give:dup path [%value (key-to-val desk.act key.act)])
+          (give:dup path (key-to-val desk.act key.act))
           ~&  >  "pubs is: {<read:dup>}"
         [cards this]
       ::
@@ -95,7 +96,8 @@
           (~(del by objs) u.hash)
         =^  cards  pubs
           =/  =path  [desk.act key.act]
-          (give:dup path [%value (key-to-val desk.act key.act)])
+          ::(give:dup path [%value (key-to-val desk.act key.act)])
+          (give:dup path (key-to-val desk.act key.act))
           ~&  >  "pubs is: {<read:dup>}"
         [cards this]
       ::
@@ -162,7 +164,8 @@
         =/  =path  [desk.act key.act]
         =.  pubs  (allow:dup [src.bowl ~] [path ~])
         =^  cards  pubs
-          (give:dup path [%value (key-to-val desk.act key.act)])
+          ::(give:dup path [%value (key-to-val desk.act key.act)])
+          (give:dup path (key-to-val desk.act key.act))
           ~&  >  "pubs is: {<read:dup>}"
         [cards this]
       ::
