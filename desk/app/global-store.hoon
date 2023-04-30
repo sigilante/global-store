@@ -79,11 +79,11 @@
         =?  objs  &(?=(^ old-hash) =(~ (~(get ju refs) u.old-hash)))
           (~(del by objs) u.old-hash)
         =/  =path  [desk.act key.act]
-        =.  pubs  (rule:dup path 0 0)
         =^  cards  pubs
           ::(give:dup path [%value (key-to-val desk.act key.act)])
           (give:dup path (key-to-val desk.act key.act))
-          ~&  >  "pubs is: {<read:dup>}"
+        =.  pubs  (rule:dup path 0 0)
+        ~&  >  "pubs is: {<read:dup>}"
         [cards this]
       ::
           %del
