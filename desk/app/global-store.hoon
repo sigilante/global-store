@@ -16,8 +16,6 @@
 ::    %enroll - put an arena on the roll
 ::    %unroll - remove an arena from the roll
 ::    %lockdown - set only self to read-write perms for a desk
-::    %watch - watch a %desk /key
-::    %leave - leave a %desk /key
 ::
 ::    your basic use pattern will be to put important global
 ::    values into your desk's store with `%put`
@@ -157,23 +155,6 @@
         ::  XX  all paths
         ::=.  pubs  (kill:dup [desk.act *]~)
         `this
-      ::
-          %watch
-        ?>  (can-read:aux src.bowl desk.act key.act)
-        ~&  >  [%watch %passed-can-read]
-        =/  =path  [desk.act key.act]
-        =.  pubs  (allow:dup [src.bowl ~] [path ~])
-        =^  cards  pubs
-          ::(give:dup path [%value (key-to-val desk.act key.act)])
-          (give:dup path (key-to-val desk.act key.act))
-          ~&  >  "pubs is: {<read:dup>}"
-        [cards this]
-      ::
-          %leave
-        =/  =path  [desk.act key.act]
-        =.  pubs  (block:dup [src.bowl ~] [path ~])
-        ~&  >  "pubs is: {<read:dup>}"
-        [~ this]
       ==
     ::  sss - required w/o crashing
     ::    %sss-to-pub   Information to be handled by a du-core (i.e. a publication).
@@ -181,6 +162,7 @@
         %sss-to-pub
       ~&  >  %sss-to-pub
       =+  msg=!<($%(into:dup) (fled:sss vase))
+      ~&  >  [%sss-to-pub msg=msg src.bowl]
       =^  cards  pubs  (apply:dup msg)
       [cards this]
     ==
@@ -220,8 +202,8 @@
         [%x %perm %ship %desk %key ship=@ desk=@ key=*]
       =/  =desk  (slav %tas desk.pole)
       =/  =ship  (slav %p ship.pole)
-      =/  =path  ;;(path key.pole)
-      ``noun+!>((what-perm:aux ship desk path))
+      =/  =key   ;;(key key.pole)
+      ``noun+!>((what-perm:aux ship desk key))
     ==
   ++  on-watch  on-watch:def
   ++  on-agent  on-agent:def
