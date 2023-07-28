@@ -1,5 +1,7 @@
-  ::  global-store.hoon
-::::
+  ::  /sur/global-store.hoon
+::::  ~lagrev-nocfep
+::    Version ~2023.7.28
+::
 ::    a simple key-value storage solution for ship-global values
 ::    with a straightforward permissions model
 ::
@@ -14,7 +16,8 @@
 +$  roll   (map [=desk ?(=ship =arena)] =perm)
 ::
 +$  action
-  $%  [%lie =desk]
+  $%  [%let =desk]
+      [%lie =desk]
       [%put =desk =key =value]
       [%del =desk =key]
       [%mode =desk =arena =perm]

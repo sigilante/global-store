@@ -49,22 +49,22 @@ there's not currently a per-agent permissions model altho i'm not averse to that
 
 right now you can set perms by:
 
-1. `%me` - always `%w` so you can write (`%w` implies `%r`)
-2. `%team` - by default your team can `%w` write
-3. `%whitelist` - you can add ships to a whitelist to `%r` read or `%w` write
+1. `our` - always `%w` so you can write (`%w` implies `%r`)
+2. `%moon` - by default your team can `%w` write
+3. `roll` - you can add ships to a whitelist to `%r` read or `%w` write
 4. `%public` - or you can let everyone `%r` read
 
 ###### some useful snippets
 
 ```hoon
 =global -build-file /=global-store=/sur/global-store/hoon
-:global-store &global-action [%let %example]
-:global-store &global-action [%put %example %message !>('hello world')]
-:global-store &global-action [%put %example %locale !>('en-US-Dsrt')]
+:global-store &global-store-action [%let %example]
+:global-store &global-store-action [%put %example %message !>('hello world')]
+:global-store &global-store-action [%put %example %locale !>('en-US-Dsrt')]
 :global-store +dbug
 .^((unit (map @tas vase)) %gx /=global-store=/example/noun)
 .^((unit vase) %gx /=global-store=/example/message/noun)
-:global-store &global-action [%lie %example]
+:global-store &global-store-action [%lie %example]
 :global-store +dbug
 ```
 
