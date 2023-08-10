@@ -29,7 +29,7 @@
 ::    the advantage of subscribing is that you receive changes to the value
 ::
 /-  gs=global-store
-/+  dbug, default-agent, *mip, verb
+/+  dbug, default-agent, mip, verb
 ::
 |%
 +$  versioned-state
@@ -44,8 +44,8 @@
 =|  state-0
 =*  state  -
 ::
-%-  agent:dbug
 %+  verb  &
+%-  agent:dbug
 ^-  agent:gall
 =<
 |_  =bowl:gall
@@ -75,7 +75,7 @@
     ::
         %let
       ?>  (can-write:aux desk.act src.bowl)
-      =.  store  (~(put bi store) desk.act %name !>(desk.act))
+      =.  store  (~(put bi:mip store) desk.act %name !>(desk.act))
       :_  this
       (give-updates:aux desk.act)
     ::
@@ -87,13 +87,13 @@
     ::
         %put
       ?>  (can-write:aux desk.act src.bowl)
-      =.  store  (~(put bi store) desk.act key.act value.act)
+      =.  store  (~(put bi:mip store) desk.act key.act value.act)
       :_  this
       (give-updates:aux desk.act key.act)
     ::
         %del
       ?>  (can-write:aux desk.act src.bowl)
-      =.  store  (~(del bi store) desk.act key.act)
+      =.  store  (~(del bi:mip store) desk.act key.act)
       :_  this
       (give-updates:aux desk.act key.act)
     ::  XX probably wrong
@@ -158,17 +158,17 @@
   ?+    pole  (on-peek:def pole)
   ::  desk peek
   ::
-      [%x desk=@ ~]
+      [%x %desk desk=@ ~]
     =/  =desk  (slav %tas desk.pole)
     ?>  (can-read:aux desk src.bowl)
     ``noun+!>((~(get by store) desk))
   ::  key peek
   ::
-      [%x desk=@ key=@ ~]
+      [%x %key desk=@ key=@ ~]
     =/  =desk    (slav %tas desk.pole)
     ?>  (can-read:aux desk src.bowl)
     =/  =key:gs  (slav %tas key.pole)
-    ``noun+!>((~(get bi store) desk key))
+    ``noun+!>((~(get bi:mip store) desk key))
   ==
 ::
 ++  on-agent  on-agent:def
@@ -193,7 +193,7 @@
     ?>  (can-read:aux desk src.bowl)
     =/  =key:gs  (slav %tas key.pole)
     :_  this  :_  ~
-    [%give %fact ~ %noun !>((~(get bi store) desk key))]
+    [%give %fact ~ %noun !>((~(get bi:mip store) desk key))]
   ==
 ::
 ++  on-leave  on-leave:def
@@ -268,7 +268,7 @@
     :*  %give  %fact
         [[desk key ~] ~]
         %global-store-update
-        !>(`update:gs`value+(~(get bi store) desk key))
+        !>(`update:gs`value+(~(get bi:mip store) desk key))
     ==
   --
 --
