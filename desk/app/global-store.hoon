@@ -28,7 +28,7 @@
 ::
 ::    for a value you'll peek to
 ::    /x/desk/[desk] or /x/desk/key/[desk]/[key]
-::    or subscribe to /[desk] or /[desk]/[key]
+::    or subscribe to /desk/[desk] or /desk/key/[desk]/[key]
 ::
 ::    the advantage of subscribing is that you receive changes to the value
 ::
@@ -80,7 +80,11 @@
         =?  objs  &(?=(^ old-hash) =(~ (~(get ju refs) u.old-hash)))
           (~(del by objs) u.old-hash)
         =/  =path  [desk.act key.act]
-        [~ this]
+        :_  this
+        :~  [%give %fact ~[/desk/[desk.act]] %update !>(desk+(export-values desk.act))]
+            [%give %fact ~[/u/desk/key/[desk.act]/[key.act]] %update !>(key+[desk.act key.act &])]
+            [%give %fact ~[/desk/key/[desk.act]/[key.act]] %update !>(value+value.act)]
+        ==
       ::
           %del
         ?>  (can-write:aux src.bowl desk.act key.act)
@@ -90,7 +94,11 @@
           (~(del ju refs) u.hash [desk.act key.act])
         =?  objs  &(?=(^ hash) =(~ (~(get ju refs) u.hash)))
           (~(del by objs) u.hash)
-        [~ this]
+        :_  this
+        :~  [%give %fact ~[/desk/[desk.act]] %update !>(desk+(export-values desk.act))]
+            [%give %fact ~[/u/desk/key/[desk.act]/[key.act]] %update !>(key+[desk.act key.act |])]
+            [%give %fact ~[/desk/key/[desk.act]/[key.act]] %update !>(value+~)]
+        ==
       ::
           %lop
         ?>  (can-write:aux src.bowl desk.act key.act)
@@ -111,7 +119,14 @@
             (~(del by objs) q.i.old)
           $(old t.old)
         ::  XX  update all paths
-        [~ this]
+        :_  this
+        ::  return desk empty, all keys empty, all key /u false, kicks
+        :~  [%give %fact ~[/desk/[desk.act]] %update !>(desk+(export-values desk.act))]
+            [%give %fact ~[/u/desk/key/[desk.act]/[key.act]] %update !>(key+[desk.act key.act |])]
+            [%give %fact ~[/desk/key/[desk.act]/[key.act]] %update !>(value+value.act)]
+            (give-updates desk.act)
+            (give-kicks desk.act)
+        ==
       ::
           %enroll
         ?>  (can-change-roll:aux src.bowl)
@@ -181,7 +196,36 @@
       =/  =key   ;;(key key.pole)
       ``noun+!>((what-perm:aux ship desk key))
     ==
-  ++  on-watch  on-watch:def
+  ++  on-watch
+    |=  =(pole knot)
+    ^-  (quip card _this)
+    ?+    pole  (on-watch:def pole)
+    ::  /desk
+    ::
+        [%desk desk=@ ~]
+      =/  response  (export-values desk.pole)
+      :_  this
+      :~  [%give %fact ~ %update !>(desk+response)]
+      ==
+    ::  /desk/key
+    ::
+        [%desk %key desk=@ key=*]
+      ?.  (can-read src.bowl desk.pole key.pole)
+        [~ this]
+      =/  response  (key-to-val desk.pole key.pole)
+      :_  this
+      :~  [%give %fact ~ %update !>(value+response)]
+      ==
+    ::  /u/desk/key
+    ::
+        [%u %desk %key desk=@ key=*]
+      ?.  (can-read src.bowl desk.pole key.pole)
+        [~ this]
+      =/  response  (~(has of store) desk.pole key.pole)
+      :_  this
+      :~  [%give %fact ~ %update !>(key+[desk.pole key.pole response])]
+      ==
+    ==
   ++  on-agent  on-agent:def
   ++  on-arvo   on-arvo:def
   ++  on-leave  on-leave:def
@@ -196,6 +240,17 @@
 ++  our-sponsor   (get-sponsor our.bowl)
 ++  get-sponsor   |=(=ship (sein:title our.bowl now.bowl ship))
 ++  same-sponsor  |=([a=ship b=ship] =((get-sponsor a) (get-sponsor b)))
+++  export-values
+  |=  [=desk]
+  ^-  (map key value)
+  =/  all-keys-hashes  ~(tap of store)
+  =/  keys-hashes
+    %+  murn  all-keys-hashes
+    |=  [=path hash=@uvI]
+    ?.  =(desk -.path)  ~
+    ?.  (can-read src.bowl desk (tail path))  ~
+    `[path hash]
+  *(map key value)
 ++  what-perm
   |=  [=ship =desk =key]
   ^-  perm
@@ -239,56 +294,59 @@
   ^-  (unit value)
   =/  val-key  (~(get of store) [desk key])
   ?~(val-key ~ (~(get by objs) u.val-key))
+++  give-kicks
+  |=  =desk
+  ^-  (list card)
+  %+  murn  ~(val by sup.bowl)
+  |=  [=ship =(pole knot)]
+  ^-  (unit card)
+  ?.  &(?=([desk=@ *] pole) =(desk desk.pole))
+    ~
+  ?:  (can-read desk ship)
+    ~
+  `[%give %kick [pole ~] `ship]
 ::
-:: ++  give-updates
-::   |=  arg=$@(=desk [=desk =key:gs])
-::   |^  ^-  (list card)
-::       ?^  arg
-::         ::  value update
-::         ::    /desk and /desk/key
-::         ::
-::         :~  (desk-update desk.arg)
-::             (value-update desk.arg key.arg)
-::         ==
-::       ::  desk update
-::       ::    /desk and /desk/*
-::       ::
-::       ::  keys for this desk
-::       ::
-::       =/  keys=(set key:gs)
-::         %-  sy
-::         %+  murn  ~(val by sup.bowl)
-::         |=  [* =(pole knot)]
-::         ?.  ?&  ?=([desk=@ key=@ ~] pole)
-::                 =(desk.pole desk.arg)
-::             ==
-::           ~
-::         `key.pole
-::       ::  desk update card
-::       ::
-::       :-  (desk-update desk.arg)
-::       ::  value update cards
-::       ::
-::       %+  turn  ~(tap in keys)
-::       |=  =key:gs
-::       (value-update desk.arg key)
-::   ::
-::   ++  desk-update
-::     |=  =desk
-::     ^-  card
-::     :*  %give  %fact
-::         [[desk ~] ~]
-::         %global-store-update
-::         !>(`update:gs`desk+(~(get by store) desk))
-::     ==
-::   ::
-::   ++  value-update
-::     |=  [=desk =key:gs]
-::     ^-  card
-::     :*  %give  %fact
-::         [[desk key ~] ~]
-::         %global-store-update
-::         !>(`update:gs`value+(~(get bi:mip store) desk key))
-::     ==
-::  --
+++  give-updates
+  |=  arg=$@(=desk [=desk =key])
+  |^  ^-  (list card)
+      ?^  arg
+        ::  value update
+        ::    /desk and /desk/key
+        ::
+        :~  (desk-update desk.arg)
+            (value-update desk.arg key.arg)
+        ==
+      ::  desk update
+      ::    /desk and /desk/*
+      ::
+      :-  (desk-update desk.arg)
+      %+  turn  ~(tap in (desk-keys desk.arg))
+      |=  =key
+      (value-update desk.arg key)
+  ::
+  ++  desk-keys
+    |=  =desk
+    ^-  (set key)
+    %-  sy
+    %+  murn  ~(val by sup.bowl)
+    |=  [* =(pole knot)]
+    ?.  &(?=([desk=@ key=@ ~] pole) =(desk.pole desk))
+      ~
+    `key.pole
+  ::
+  ++  desk-update
+    |=  =desk
+    ^-  card
+    :*  %give  %fact  [[desk ~] ~]
+        %update
+        !>(desk+(~(get of store) desk))
+    ==
+  ::
+  ++  value-update
+    |=  [=desk =key]
+    ^-  card
+    :*  %give  %fact  [[desk key ~] ~]
+        %update
+        !>(value+(~(get of store) [desk key]))
+    ==
 --

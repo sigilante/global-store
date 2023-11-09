@@ -33,7 +33,8 @@
   ==
 ::
 +$  update
-  $%  [%key (trel desk key ?)]
+  $%  [%desk (map key value)]
+      [%key (trel desk key ?)]
       [%value p=(unit value)]
   ==
 --
