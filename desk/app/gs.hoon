@@ -1,6 +1,8 @@
-  ::  /sur/global-store.hoon
+  ::  /app/gs.hoon
 ::::  ~lagrev-nocfep & ~midden-fabler
 ::    Version ~2023.11.9
+::
+::    GLOBAL STORE
 ::
 ::    a simple key-value storage solution for ship-global values
 ::    with a straightforward permissions model
@@ -27,12 +29,18 @@
 ::    receiving a gift in return
 ::
 ::    for a value you'll peek to
-::    /x/desk/[desk] or /x/desk/key/[desk]/[key]
-::    or subscribe to /desk/[desk] or /desk/key/[desk]/[key]
+::    /x/desk/[desk]
+::    /x/desk/key/[desk]/[key]
+::    /x/u/desk/[desk]
+::    /x/u/desk/key/[desk]/[key]
+::
+::    or subscribe to
+::    /desk/[desk]
+::    /desk/key/[desk]/[key]
 ::
 ::    the advantage of subscribing is that you receive changes to the value
 ::
-/-  *global-store,
+/-  *gs,
     update
 /+  dbug,
     default-agent,
@@ -62,7 +70,7 @@
     |=  [=mark =vase]
     ^-  (quip card _this)
     ?+    mark  (on-poke:def mark vase)
-        %global-store-action
+        %gs-action
       =+  !<(act=action vase)
       ?-    -.act
           %put
@@ -81,9 +89,10 @@
           (~(del by objs) u.old-hash)
         =/  =path  [desk.act key.act]
         :_  this
-        :~  [%give %fact ~[/desk/[desk.act]] %update !>(desk+(export-values desk.act))]
-            [%give %fact ~[/u/desk/key/[desk.act]/[key.act]] %update !>(key+[desk.act key.act &])]
-            [%give %fact ~[/desk/key/[desk.act]/[key.act]] %update !>(value+value.act)]
+        :~  [%give %fact ~[[%desk desk.act ~]] %update !>(desk+(export-values desk.act))]
+            [%give %fact ~[[%u %desk desk.act ~]] %update !>(has-desk+[desk.act &])]
+            [%give %fact ~[[%u %desk %key desk.act key.act]] %update !>(has-key+[desk.act key.act &])]
+            [%give %fact ~[[%desk %key desk.act key.act]] %update !>(value+value.act)]
         ==
       ::
           %del
@@ -95,9 +104,9 @@
         =?  objs  &(?=(^ hash) =(~ (~(get ju refs) u.hash)))
           (~(del by objs) u.hash)
         :_  this
-        :~  [%give %fact ~[/desk/[desk.act]] %update !>(desk+(export-values desk.act))]
-            [%give %fact ~[/u/desk/key/[desk.act]/[key.act]] %update !>(key+[desk.act key.act |])]
-            [%give %fact ~[/desk/key/[desk.act]/[key.act]] %update !>(value+~)]
+        :~  [%give %fact ~[[%desk desk.act ~]] %update !>(desk+(export-values desk.act))]
+            [%give %fact ~[[%u %desk %key desk.act key.act]] %update !>(has-key+[desk.act key.act |])]
+            [%give %fact ~[[%desk %key desk.act key.act]] %update !>(value+~)]
         ==
       ::
           %lop
@@ -121,11 +130,13 @@
         ::  XX  update all paths
         :_  this
         ::  return desk empty, all keys empty, all key /u false, kicks
-        :~  [%give %fact ~[/desk/[desk.act]] %update !>(desk+(export-values desk.act))]
-            [%give %fact ~[/u/desk/key/[desk.act]/[key.act]] %update !>(key+[desk.act key.act |])]
-            [%give %fact ~[/desk/key/[desk.act]/[key.act]] %update !>(value+value.act)]
-            (give-updates desk.act)
-            (give-kicks desk.act)
+        ;:  welp
+          (cull-keys [desk.act key.act])
+          (give-updates desk.act)
+          (give-kicks desk.act)
+          :~  [%give %fact ~[[%desk desk.act ~]] %update !>(desk+(export-values desk.act))]
+              [%give %fact ~[[%u %desk desk.act ~]] %update !>(has-desk+[desk.act (~(has of store) /[desk.act])])]
+          ==
         ==
       ::
           %enroll
@@ -216,6 +227,13 @@
       :_  this
       :~  [%give %fact ~ %update !>(value+response)]
       ==
+    ::  /u/desk
+    ::
+        [%u %desk desk=@ ~]
+      =/  response  (~(has of store) /[desk.pole])
+      :_  this
+      :~  [%give %fact ~ %update !>(has-desk+response)]
+      ==
     ::  /u/desk/key
     ::
         [%u %desk %key desk=@ key=*]
@@ -223,7 +241,7 @@
         [~ this]
       =/  response  (~(has of store) desk.pole key.pole)
       :_  this
-      :~  [%give %fact ~ %update !>(key+[desk.pole key.pole response])]
+      :~  [%give %fact ~ %update !>(has-key+[desk.pole key.pole response])]
       ==
     ==
   ++  on-agent  on-agent:def
@@ -302,9 +320,24 @@
   ^-  (unit card)
   ?.  &(?=([desk=@ *] pole) =(desk desk.pole))
     ~
-  ?:  (can-read desk ship)
+  ?:  (can-read ship pole)
     ~
   `[%give %kick [pole ~] `ship]
+++  cull-keys
+  |=  [=desk =key]
+  ^-  (list card)
+  %-  zing
+  %+  murn  ~(val by sup.bowl)
+  |=  [=ship =(pole knot)]
+  ^-  (unit (list card))
+  ?.  &(?=([desk=@ *] pole) =(desk desk.pole))
+    ~
+  ?:  (can-read ship pole)
+    ~
+  :-  ~
+  :~  [%give %fact ~[`path`[%u %desk %key desk key]] %update !>(has-key+[desk key |])]
+      [%give %fact ~[`path`[%desk %key desk key]] %update !>(value+~)]
+  ==
 ::
 ++  give-updates
   |=  arg=$@(=desk [=desk =key])
@@ -330,23 +363,27 @@
     %-  sy
     %+  murn  ~(val by sup.bowl)
     |=  [* =(pole knot)]
-    ?.  &(?=([desk=@ key=@ ~] pole) =(desk.pole desk))
+    ?.  &(?=([desk=@ key=*] pole) =(desk.pole desk))
       ~
     `key.pole
   ::
   ++  desk-update
     |=  =desk
     ^-  card
-    :*  %give  %fact  [[desk ~] ~]
+    :*  %give  %fact  ~[/desk/[desk]]
         %update
-        !>(desk+(~(get of store) desk))
+        !>(desk+(export-values desk))
     ==
   ::
   ++  value-update
     |=  [=desk =key]
     ^-  card
-    :*  %give  %fact  [[desk key ~] ~]
+    :*  %give  %fact  ~[:(welp /desk/key /[desk] key)]
         %update
-        !>(value+(~(get of store) [desk key]))
+        !>(`^update`[value+(key-to-val desk key)])
     ==
+  --
 --
+
+:: -need.?(%~ [i=/ t=it(/)])
+:: -have.[[@tas @tas @tas / %~] %~]

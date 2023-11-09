@@ -1,19 +1,19 @@
-  ::  /tests/global-store.hoon
+  ::  /tests/gs.hoon
 ::::  ~lagrev-nocfep
 ::    Version ~2023.7.28
 ::
-/-  gs=global-store
+/-  gs=gs
 /+  *test, *mip
-/=  agent  /app/global-store
+/=  agent  /app/gs
 |%
 ::  Build an example bowl manually.
 ::
 ++  bowl
   |=  run=@ud
   ^-  bowl:gall
-  :*  [~zod ~zod %global-store] :: (our src dap)
+  :*  [~zod ~zod %gs] :: (our src dap)
       [~ ~]                     :: (wex sup)
-      [run `@uvJ`(shax run) *time [~zod %global-store ud+run]]
+      [run `@uvJ`(shax run) *time [~zod %gs ud+run]]
                                 :: (act eny now byk)
   ==
 ::  Build a reference state mold.
@@ -28,7 +28,7 @@
 |%
 ++  test-add-single-desk
   =|  run=@ud
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%let %surf]))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%let %surf]))
   =+  !<(state=state-zero on-save:agent)
   %+  expect-eq
     !>  :*  %zero
@@ -39,8 +39,8 @@
     !>  state
 ++  test-add-two-desks
   =|  run=@ud
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%let %surf]))
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%let %turf]))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%let %surf]))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%let %turf]))
   =+  !<(state=state-zero on-save:agent)
   %+  expect-eq
     =|  sto=store:gs
@@ -54,9 +54,9 @@
     !>  state
 ++  test-delete-desk
   =|  run=@ud
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%let %surf]))
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%let %turf]))
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%lie %surf]))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%let %surf]))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%let %turf]))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%lie %surf]))
   =+  !<(state=state-zero on-save:agent)
   %+  expect-eq
     =|  sto=store:gs
@@ -71,10 +71,10 @@
     !>  state
 ++  test-add-values-to-desk
   =|  run=@ud
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%let %home]))
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%put %home %city 'Champaign']))
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%put %home %state 'Illinois']))
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%put %home %zip '61801']))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%let %home]))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%put %home %city 'Champaign']))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%put %home %state 'Illinois']))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%put %home %zip '61801']))
   =+  !<(state=state-zero on-save:agent)
   %+  expect-eq
     =|  sto=store:gs
@@ -90,12 +90,12 @@
     !>  state
 ++  test-delete-values-in-desk
   =|  run=@ud
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%let %home]))
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%put %home %city 'Champaign']))
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%put %home %state 'Illinois']))
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%put %home %zip '61801']))
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%del %home %city]))
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%del %home %zip]))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%let %home]))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%put %home %city 'Champaign']))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%put %home %state 'Illinois']))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%put %home %zip '61801']))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%del %home %city]))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%del %home %zip]))
   =+  !<(state=state-zero on-save:agent)
   %+  expect-eq
     =|  sto=store:gs
@@ -109,10 +109,10 @@
     !>  state
 ++  test-set-perms
   =|  run=@ud
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%mode %public %r]))
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%mode %whitelist %w]))
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%mode %team %w]))
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%mode %me %w]))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%mode %public %r]))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%mode %whitelist %w]))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%mode %team %w]))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%mode %me %w]))
   =+  !<(state=state-zero on-save:agent)
   %+  expect-eq
     =|  per=perms:gs
@@ -130,11 +130,11 @@
 ::++  test-blacklist
 ++  test-lockdown
   =|  run=@ud
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%mode %public %r]))
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%mode %whitelist %w]))
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%mode %team %w]))
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%mode %me %w]))
-  =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%lockdown ~]))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%mode %public %r]))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%mode %whitelist %w]))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%mode %team %w]))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%mode %me %w]))
+  =^  move  agent  (~(on-poke agent (bowl run)) %gs-action !>([%lockdown ~]))
   =+  !<(state=state-zero on-save:agent)
   %+  expect-eq
     =|  per=perms:gs

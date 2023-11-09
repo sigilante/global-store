@@ -1,3 +1,3 @@
-/-  *global-store
+/-  *gs
 /+  sss
 (mk-mar:sss action)

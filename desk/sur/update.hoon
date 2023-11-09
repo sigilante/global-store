@@ -1,4 +1,4 @@
-/-  *global-store
+/-  *gs
 |%
 ++  name  %update
 +$  rock  (unit value)

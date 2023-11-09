@@ -1,4 +1,4 @@
-  ::  /sur/global-store.hoon
+  ::  /sur/gs.hoon
 ::::  ~lagrev-nocfep & ~midden-fabler
 ::    Version ~2023.11.9
 ::
@@ -34,7 +34,8 @@
 ::
 +$  update
   $%  [%desk (map key value)]
-      [%key (trel desk key ?)]
+      [%has-desk (pair desk ?)]
+      [%has-key (trel desk key ?)]
       [%value p=(unit value)]
   ==
 --

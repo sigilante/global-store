@@ -1,79 +1,77 @@
-#   `%global-store`
+#   `%gs` Global Store
 
 _a simple key-value storage solution for ship-global values_
 
 _"making people behave like they care about integration by giving them easier inroads" (~rabsef-bicrym)_
 
-`%global-store` intends to solve the problem of ship-wide configuration and
+`%gs` intends to solve the problem of ship-wide configuration and
 settings without any json compatibility overhead
 
 it's simply a map for desks and keys to vases of values.
 
 some things you could use it for:
 
-- [`l10n`](https://github.com/sigilante/l10n) localization settings like
-  preferred language or script or currency
-- secret keys (pending urbit security)
+- localization settings
+- visual preferences (dark mode)
+- secret keys (pending hardened urbit security)
 - profile features beyond `%groups`
 
-just set and scry
+just set and scry (or subscribe)
 
 ###### pokes
 
-- `[%let =desk]` creates a desk key-value store (kvs)
-- `[%lie =desk]` removes a desk kvs
-- `[%put =desk =key =value]` puts a key in a desk's kvs (key is a vase)
-- `[%del =desk =key]` removes a key
-- `[%mode =arena =perm]` sets perms (see below)
-- `[%whitelist =ship =perm]` add a ship to whitelist for perms (see below)
-- `[%blacklist =ship]` removes a ship from whitelist (so not really a true blacklist)
-- `[%lockdown ~]` removes all perms except yours
+- `%put` - put a value with a key onto a desk's kvs
+- `%del` - delete a key in a desk's kvs (rm)
+- `%lop` - delete keys in a desk's kvs (rm -r)
+::
+- `%enroll` - put an arena on the roll
+- `%unroll` - remove an arena from the roll
+- `%lockdown` - set only self to read-write perms for a desk
 
 ###### peeks
 
-you can peek for a value at `/[desk]/[key]` which returns a `(unit vase)`
-
-you can peek for all of a desk's values at `/[desk]` which returns a
-`(unit (map @tas vase))`
+- `/x/desk/[desk]`
+- `/x/desk/key/[desk]/[key]`
+- `/x/u/desk/[desk]` existence check
+- `/x/u/desk/key/[desk]/[key]` existence check
 
 ###### subscriptions
 
-you can subscribe to a value at `/[desk]/[key]` for a gift every time it changes
-
-you can subscribe to all of a desk's values at `/[desk]` for a gift every time
-any value changes
+- `/desk/[desk]`
+- `/desk/key/[desk]/[key]`
+- `/u/desk/[desk]`
+- `/u/desk/key/[desk]/[key]`
 
 ###### perms
 
-there's not currently a per-agent permissions model altho i'm not averse to that
-
 right now you can set perms by:
 
-1. `our` - always `%w` so you can write (`%w` implies `%r`)
-2. `%moon` - by default your team can `%w` write
-3. `roll` - you can add ships to a whitelist to `%r` read or `%w` write
-4. `%public` - or you can let everyone `%r` read
+- `%moon` - moons if you're a planet
+- `%orbit` - moons under same parent (if you're a moon)
+- `%kids` - sponsees (azimuth sense)
+- `%public` - free for all
+- `%ship` - whitelist
+
+set types:
+
+- `%r` - read
+- `%w` - write
 
 ###### some useful snippets
 
 ```hoon
-=global -build-file /=global-store=/sur/global-store/hoon
-:global-store &global-store-action [%let %example]
-:global-store &global-store-action [%put %example %message !>('hello world')]
-:global-store &global-store-action [%put %example %locale !>('en-US-Dsrt')]
-:global-store +dbug
-.^((unit (map @tas vase)) %gx /=global-store=/example/noun)
-.^((unit vase) %gx /=global-store=/example/message/noun)
-:global-store &global-store-action [%lie %example]
-:global-store +dbug
+=gs -build-file /=gs=/sur/gs/hoon
+::
+:gs|put       ::  :gs|put %desk /key/to noun+!>(42)
+:gs|del       ::  :gs|del %desk /key/to
+:gs|lop       ::  :gs|lop %desk /key/to
+::
+:gs|enroll    ::  :gs|enroll %desk /key/to arena perm
+:gs|unroll    ::  :gs|unroll %desk /key/to arena :gs|lockdown  ::  :gs|lockdown %desk
+::
+:gs +dbug
 ```
 
-###### status (wip ~2023.3.4)
+###### changelog
 
-- [x] main code (pokes, peeks) works
-- [ ] test subs
-- [ ] decide about return marks/units
-- [ ] write generators to use pokes
-- [ ] use whitelist for real tho
-
-- [ ] version `%one` should rework perms to be per-desk instead of global
+- `[1 0 0]` first public release, pokes/peeks/subs
