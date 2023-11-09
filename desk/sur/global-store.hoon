@@ -1,6 +1,8 @@
-::    %global-store
-::::
-  ::  a simple key-value storage solution for ship-global values
+  ::  /sur/global-store.hoon
+::::  ~lagrev-nocfep & ~midden-fabler
+::    Version ~2023.11.9
+::
+::    a simple key-value storage solution for ship-global values
 ::    with a straightforward permissions model
 ::
 |%

@@ -1,6 +1,8 @@
-::    %global-store
-::::
-  ::  a simple key-value storage solution for ship-global values
+  ::  /sur/global-store.hoon
+::::  ~lagrev-nocfep & ~midden-fabler
+::    Version ~2023.11.9
+::
+::    a simple key-value storage solution for ship-global values
 ::    with a straightforward permissions model
 ::
 ::    permissions are stored as an (axal perm)
@@ -10,9 +12,11 @@
 ::    returns values as (unit cage)
 ::
 ::    pokes:
+::
 ::    %put - put a value with a key onto a desk's kvs
 ::    %del - delete a key in a desk's kvs (rm)
 ::    %lop - delete keys in a desk's kvs (rm -r)
+::
 ::    %enroll - put an arena on the roll
 ::    %unroll - remove an arena from the roll
 ::    %lockdown - set only self to read-write perms for a desk
@@ -28,15 +32,17 @@
 ::
 ::    the advantage of subscribing is that you receive changes to the value
 ::
-/-  *global-store, update
-/+  verb, dbug, default-agent, sss
+/-  *global-store,
+    update
+/+  dbug,
+    default-agent,
+    verb
 =>
   |%
   +$  card  $+(card card:agent:gall)
   +$  state-0
     $:  %0
         =store  =roll  =objs  =refs
-        pubs=_(mk-pubs:sss update ,[*])
     ==
   --
 =|  state-0
@@ -49,15 +55,12 @@
   +*  this  .
       def   ~(. (default-agent this %|) bowl)
       aux   ~(. +> bowl)
-      dup   =/  du  (du:sss update ,[*])
-            (du pubs bowl -:!>(*result:du))
   ++  on-init  on-init:def
   ++  on-save  !>(state)
   ++  on-load  |=(=vase `this(state !<(state-0 vase)))
   ++  on-poke
     |=  [=mark =vase]
     ^-  (quip card _this)
-    ~&  >>  "pubs was: {<read:dup>}"
     ?+    mark  (on-poke:def mark vase)
         %global-store-action
       =+  !<(act=action vase)
@@ -289,4 +292,55 @@
   =?  pubs  (can-read i.ships desk key)
     (block:dup [i.ships ~] [path ~])
   bot(ships t.ships)
+++  give-updates
+  |=  arg=$@(=desk [=desk =key:gs])
+  |^  ^-  (list card)
+      ?^  arg
+        ::  value update
+        ::    /desk and /desk/key
+        ::
+        :~  (desk-update desk.arg)
+            (value-update desk.arg key.arg)
+        ==
+      ::  desk update
+      ::    /desk and /desk/*
+      ::
+      ::  keys for this desk
+      ::
+      =/  keys=(set key:gs)
+        %-  sy
+        %+  murn  ~(val by sup.bowl)
+        |=  [* =(pole knot)]
+        ?.  ?&  ?=([desk=@ key=@ ~] pole)
+                =(desk.pole desk.arg)
+            ==
+          ~
+        `key.pole
+      ::  desk update card
+      ::
+      :-  (desk-update desk.arg)
+      ::  value update cards
+      ::
+      %+  turn  ~(tap in keys)
+      |=  =key:gs
+      (value-update desk.arg key)
+  ::
+  ++  desk-update
+    |=  =desk
+    ^-  card
+    :*  %give  %fact
+        [[desk ~] ~]
+        %global-store-update
+        !>(`update:gs`desk+(~(get by store) desk))
+    ==
+  ::
+  ++  value-update
+    |=  [=desk =key:gs]
+    ^-  card
+    :*  %give  %fact
+        [[desk key ~] ~]
+        %global-store-update
+        !>(`update:gs`value+(~(get bi:mip store) desk key))
+    ==
+  --
 --

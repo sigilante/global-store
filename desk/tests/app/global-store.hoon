@@ -1,4 +1,8 @@
-/-  global=global-store
+  ::  /tests/global-store.hoon
+::::  ~lagrev-nocfep
+::    Version ~2023.7.28
+::
+/-  gs=global-store
 /+  *test, *mip
 /=  agent  /app/global-store
 |%
@@ -16,9 +20,9 @@
 ::
 +$  state-zero
   $:  %zero
-      =store:global
-      =perms:global
-      =whitelist:global
+      =store:gs
+      =perms:gs
+      =whitelist:gs
   ==
 --
 |%
@@ -28,9 +32,9 @@
   =+  !<(state=state-zero on-save:agent)
   %+  expect-eq
     !>  :*  %zero
-            store=(~(put bi *store:global) %surf %name !>(`@tas`%surf))
-            perms=*perms:global
-            whitelist=*whitelist:global
+            store=(~(put bi *store:gs) %surf %name !>(`@tas`%surf))
+            perms=*perms:gs
+            whitelist=*whitelist:gs
         ==
     !>  state
 ++  test-add-two-desks
@@ -39,13 +43,13 @@
   =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%let %turf]))
   =+  !<(state=state-zero on-save:agent)
   %+  expect-eq
-    =|  sto=store:global
+    =|  sto=store:gs
     =/  sto  (~(put bi sto) %surf %name !>(`@tas`%surf))
     =/  sto  (~(put bi sto) %turf %name !>(`@tas`%turf))
     !>  :*  %zero
             store=sto
-            perms=*perms:global
-            whitelist=*whitelist:global
+            perms=*perms:gs
+            whitelist=*whitelist:gs
         ==
     !>  state
 ++  test-delete-desk
@@ -55,14 +59,14 @@
   =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%lie %surf]))
   =+  !<(state=state-zero on-save:agent)
   %+  expect-eq
-    =|  sto=store:global
+    =|  sto=store:gs
     =/  sto  (~(put bi sto) %surf %name !>(`@tas`%surf))
     =/  sto  (~(put bi sto) %turf %name !>(`@tas`%turf))
     =/  sto  (~(del bi sto) %surf %name)
     !>  :*  %zero
             store=sto
-            perms=*perms:global
-            whitelist=*whitelist:global
+            perms=*perms:gs
+            whitelist=*whitelist:gs
         ==
     !>  state
 ++  test-add-values-to-desk
@@ -73,15 +77,15 @@
   =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%put %home %zip '61801']))
   =+  !<(state=state-zero on-save:agent)
   %+  expect-eq
-    =|  sto=store:global
+    =|  sto=store:gs
     =/  sto  (~(put bi sto) %home %name !>(%home))
     =/  sto  (~(put bi sto) %home %city !>('Champaign'))
     =/  sto  (~(put bi sto) %home %state !>('Illinois'))
     =/  sto  (~(put bi sto) %home %zip !>('61801'))
     !>  :*  %zero
             store=sto
-            perms=*perms:global
-            whitelist=*whitelist:global
+            perms=*perms:gs
+            whitelist=*whitelist:gs
         ==
     !>  state
 ++  test-delete-values-in-desk
@@ -94,13 +98,13 @@
   =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%del %home %zip]))
   =+  !<(state=state-zero on-save:agent)
   %+  expect-eq
-    =|  sto=store:global
+    =|  sto=store:gs
     =/  sto  (~(put bi sto) %home %name !>(%home))
     =/  sto  (~(put bi sto) %home %state !>('Illinois'))
     !>  :*  %zero
             store=sto
-            perms=*perms:global
-            whitelist=*whitelist:global
+            perms=*perms:gs
+            whitelist=*whitelist:gs
         ==
     !>  state
 ++  test-set-perms
@@ -111,15 +115,15 @@
   =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%mode %me %w]))
   =+  !<(state=state-zero on-save:agent)
   %+  expect-eq
-    =|  per=perms:global
+    =|  per=perms:gs
     =/  per  (~(put by per) %public %r)
     =/  per  (~(put by per) %whitelist %w)
     =/  per  (~(put by per) %team %w)
     =/  per  (~(put by per) %me %w)
     !>  :*  %zero
-            store=*store:global
+            store=*store:gs
             perms=per
-            whitelist=*whitelist:global
+            whitelist=*whitelist:gs
         ==
     !>  state
 ::++  test-whitelist
@@ -133,15 +137,15 @@
   =^  move  agent  (~(on-poke agent (bowl run)) %global-store-action !>([%lockdown ~]))
   =+  !<(state=state-zero on-save:agent)
   %+  expect-eq
-    =|  per=perms:global
+    =|  per=perms:gs
     =/  per  (~(put by per) %public %$)
     =/  per  (~(put by per) %whitelist %$)
     =/  per  (~(put by per) %team %$)
     =/  per  (~(put by per) %me %w)
     !>  :*  %zero
-            store=*store:global
+            store=*store:gs
             perms=per
-            whitelist=*whitelist:global
+            whitelist=*whitelist:gs
         ==
     !>  state
 --
