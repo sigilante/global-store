@@ -80,12 +80,7 @@
         =?  objs  &(?=(^ old-hash) =(~ (~(get ju refs) u.old-hash)))
           (~(del by objs) u.old-hash)
         =/  =path  [desk.act key.act]
-        =^  cards  pubs
-          ::(give:dup path [%value (key-to-val desk.act key.act)])
-          (give:dup path (key-to-val desk.act key.act))
-        =.  pubs  (rule:dup path 0 0)
-        ~&  >  "pubs is: {<read:dup>}"
-        [cards this]
+        [~ this]
       ::
           %del
         ?>  (can-write:aux src.bowl desk.act key.act)
@@ -95,12 +90,7 @@
           (~(del ju refs) u.hash [desk.act key.act])
         =?  objs  &(?=(^ hash) =(~ (~(get ju refs) u.hash)))
           (~(del by objs) u.hash)
-        =^  cards  pubs
-          =/  =path  [desk.act key.act]
-          ::(give:dup path [%value (key-to-val desk.act key.act)])
-          (give:dup path (key-to-val desk.act key.act))
-          ~&  >  "pubs is: {<read:dup>}"
-        [cards this]
+        [~ this]
       ::
           %lop
         ?>  (can-write:aux src.bowl desk.act key.act)
@@ -134,8 +124,6 @@
             %public  :-  [desk.act %public key.act]  perm.act
             %ship    :-  [desk.act (scot %p ship.arena.act) key.act]  perm.act
           ==
-        =?  pubs  =(~ perm.act)
-          (give-kicks:aux desk.act ~)
         [~ this]
       ::
           %unroll
@@ -149,25 +137,14 @@
             %public  [desk.act %public key.act]
             %ship    [desk.act (scot %p ship.arena.act) key.act]
           ==
-        =.  pubs  (give-kicks:aux desk.act ~)
         [~ this]
       ::
           %lockdown
         ?>  (can-change-roll:aux src.bowl)
         =.  roll  (~(lop of roll) /[desk.act])
         ::  XX  all paths
-        ::=.  pubs  (kill:dup [desk.act *]~)
-        `this
+        [~ this]
       ==
-    ::  sss - required w/o crashing
-    ::    %sss-to-pub   Information to be handled by a du-core (i.e. a publication).
-    ::
-        %sss-to-pub
-      ~&  >  %sss-to-pub
-      =+  msg=!<($%(into:dup) (fled:sss vase))
-      ~&  >  [%sss-to-pub msg=msg src.bowl]
-      =^  cards  pubs  (apply:dup msg)
-      [cards this]
     ==
   ::
   ++  on-peek
@@ -194,10 +171,6 @@
         [%x %u %desk %key desk=@ key=*]
       =/  =desk  (slav %tas desk.pole)
       ``noun+!>((~(has of store) [desk key.pole]))
-    ::  /desk
-    ::
-        [%x %desk desk=@ ~]
-      ``noun+!>((~(get of store) /[desk.pole]))
     ::  permissions
     ::
         [%x %roll ~]  ``noun+!>(roll)
@@ -215,8 +188,6 @@
   ++  on-fail   on-fail:def
   --
 |_  =bowl:gall
-+*  dup   =/  du  (du:sss update ,[*])
-          (du pubs bowl -:!>(*result:du))
 ++  can-read   |=([=ship =desk =key] !=(~ (what-perm ship desk key)))
 ++  can-write  |=([=ship =desk =key] =(`%w (what-perm ship desk key)))
 ++  can-change-roll  |=(=ship |(=(our.bowl ship) (moon:title ship our.bowl)))
@@ -269,78 +240,55 @@
   =/  val-key  (~(get of store) [desk key])
   ?~(val-key ~ (~(get by objs) u.val-key))
 ::
-++  give-kicks
-  |=  [=desk =key]
-  ^+  pubs
-  =/  subs=(list [paths=* [allowed=(unit (set ship)) *]])
-    ~(tap by read:dup)
-  ~&  >>  subs
-  |-  ^+  pubs
-  =*  top  $
-  ?~  subs
-    pubs
-  ?~  allowed.i.subs
-    top(subs t.subs)
-  =/  ships=(list ship)  ~(tap in u.allowed.i.subs)
-  |-
-  =*  bot  $
-  ?~  ships
-    top(subs t.subs)
-  ::  XX  TODO
-  ::?.  &(?=([desk=@ *] pole) =(desk desk.pole))
-  =/  =path  [desk key]
-  =?  pubs  (can-read i.ships desk key)
-    (block:dup [i.ships ~] [path ~])
-  bot(ships t.ships)
-++  give-updates
-  |=  arg=$@(=desk [=desk =key:gs])
-  |^  ^-  (list card)
-      ?^  arg
-        ::  value update
-        ::    /desk and /desk/key
-        ::
-        :~  (desk-update desk.arg)
-            (value-update desk.arg key.arg)
-        ==
-      ::  desk update
-      ::    /desk and /desk/*
-      ::
-      ::  keys for this desk
-      ::
-      =/  keys=(set key:gs)
-        %-  sy
-        %+  murn  ~(val by sup.bowl)
-        |=  [* =(pole knot)]
-        ?.  ?&  ?=([desk=@ key=@ ~] pole)
-                =(desk.pole desk.arg)
-            ==
-          ~
-        `key.pole
-      ::  desk update card
-      ::
-      :-  (desk-update desk.arg)
-      ::  value update cards
-      ::
-      %+  turn  ~(tap in keys)
-      |=  =key:gs
-      (value-update desk.arg key)
-  ::
-  ++  desk-update
-    |=  =desk
-    ^-  card
-    :*  %give  %fact
-        [[desk ~] ~]
-        %global-store-update
-        !>(`update:gs`desk+(~(get by store) desk))
-    ==
-  ::
-  ++  value-update
-    |=  [=desk =key:gs]
-    ^-  card
-    :*  %give  %fact
-        [[desk key ~] ~]
-        %global-store-update
-        !>(`update:gs`value+(~(get bi:mip store) desk key))
-    ==
-  --
+:: ++  give-updates
+::   |=  arg=$@(=desk [=desk =key:gs])
+::   |^  ^-  (list card)
+::       ?^  arg
+::         ::  value update
+::         ::    /desk and /desk/key
+::         ::
+::         :~  (desk-update desk.arg)
+::             (value-update desk.arg key.arg)
+::         ==
+::       ::  desk update
+::       ::    /desk and /desk/*
+::       ::
+::       ::  keys for this desk
+::       ::
+::       =/  keys=(set key:gs)
+::         %-  sy
+::         %+  murn  ~(val by sup.bowl)
+::         |=  [* =(pole knot)]
+::         ?.  ?&  ?=([desk=@ key=@ ~] pole)
+::                 =(desk.pole desk.arg)
+::             ==
+::           ~
+::         `key.pole
+::       ::  desk update card
+::       ::
+::       :-  (desk-update desk.arg)
+::       ::  value update cards
+::       ::
+::       %+  turn  ~(tap in keys)
+::       |=  =key:gs
+::       (value-update desk.arg key)
+::   ::
+::   ++  desk-update
+::     |=  =desk
+::     ^-  card
+::     :*  %give  %fact
+::         [[desk ~] ~]
+::         %global-store-update
+::         !>(`update:gs`desk+(~(get by store) desk))
+::     ==
+::   ::
+::   ++  value-update
+::     |=  [=desk =key:gs]
+::     ^-  card
+::     :*  %give  %fact
+::         [[desk key ~] ~]
+::         %global-store-update
+::         !>(`update:gs`value+(~(get bi:mip store) desk key))
+::     ==
+::  --
 --
