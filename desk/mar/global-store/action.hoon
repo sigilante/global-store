@@ -1,12 +1,3 @@
 /-  *global-store
-|_  act=action
-++  grow
-  |%
-  ++  noun  act
-  --
-++  grab
-  |%
-  ++  noun  action
-  --
-++  grad  %noun
---
+/+  sss
+(mk-mar:sss action)

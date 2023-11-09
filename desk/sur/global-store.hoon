@@ -1,32 +1,39 @@
   ::  /sur/global-store.hoon
-::::  ~lagrev-nocfep
-::    Version ~2023.7.28
+::::  ~lagrev-nocfep & ~midden-fabler
+::    Version ~2023.11.9
 ::
 ::    a simple key-value storage solution for ship-global values
 ::    with a straightforward permissions model
 ::
-/+  *mip
 |%
-+$  key    @tas
-+$  value  vase
-+$  perm  (unit ?(%r %w))
-+$  arena  ?(%moon %public)
++$  key    path
++$  value  cage
++$  perm   (unit ?(%r %w))
++$  arena
+  $%  [%moon ~]
+      [%orbit ~]
+      [%kids ~]
+      [%public ~]
+      [%ship =ship]
+  ==
 ::
-+$  store  (mip =desk =key =value)
-+$  roll   (map [=desk ?(=ship =arena)] =perm)
++$  roll   (axal perm)
++$  store  (axal @uvI)
++$  objs   (map @uvI value)
++$  refs   (jug @uvI path)
 ::
 +$  action
-  $%  [%let =desk]
-      [%lie =desk]
-      [%put =desk =key =value]
+  $%  [%put =desk =key =value]
       [%del =desk =key]
-      [%mode =desk =arena =perm]
-      [%enroll =desk wut=?(=ship =arena) =perm]
-      [%unroll =desk wut=?(=ship =arena)]
+      [%lop =desk =key]
+    ::
+      [%enroll =desk =key =arena =perm]
+      [%unroll =desk =key =arena]
       [%lockdown =desk]
   ==
+::
 +$  update
-  $%  [%desk (unit (map key value))]
-      [%value (unit value)]
+  $%  [%key (trel desk key ?)]
+      [%value p=(unit value)]
   ==
 --

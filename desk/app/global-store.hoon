@@ -1,225 +1,297 @@
   ::  /sur/global-store.hoon
-::::  ~lagrev-nocfep
-::    Version ~2023.7.28
+::::  ~lagrev-nocfep & ~midden-fabler
+::    Version ~2023.11.9
 ::
 ::    a simple key-value storage solution for ship-global values
 ::    with a straightforward permissions model
 ::
-::    stores values as a (mip desk key vase)
-::    returns values as (unit vase)
+::    permissions are stored as an (axal perm)
+::    keys are stored as an (axal @uvI)
+::    objects are stored as a (map @uvI vase)
+::    references are stored as a (jug @uvI path)
+::    returns values as (unit cage)
 ::
 ::    pokes:
-::    %let - create a desk kvs
-::    %lie - delete a desk kvs
+::
 ::    %put - put a value with a key onto a desk's kvs
-::    %del - delete a key in a desk's kvs
-::    %mode - change access perms for the specified group
-::    %enroll - put a ship on the roll
-::    %unroll - remove a ship from the roll
-::    %lockdown - set only self to read-write perms for a desk (by default moon)
+::    %del - delete a key in a desk's kvs (rm)
+::    %lop - delete keys in a desk's kvs (rm -r)
+::
+::    %enroll - put an arena on the roll
+::    %unroll - remove an arena from the roll
+::    %lockdown - set only self to read-write perms for a desk
 ::
 ::    your basic use pattern will be to put important global
 ::    values into your desk's store with `%put`
 ::    or to read out an important value by peeking or subscribing and
 ::    receiving a gift in return
 ::
-::    you'll either peek to /x/[desk]/[key] for a value or
-::    subscribe to /[desk]/[key] for a value
+::    for a value you'll peek to
+::    /x/desk/[desk] or /x/desk/key/[desk]/[key]
+::    or subscribe to /[desk] or /[desk]/[key]
 ::
 ::    the advantage of subscribing is that you receive changes to the value
 ::
-/-  gs=global-store
-/+  dbug, default-agent, mip, verb
-::
-|%
-+$  versioned-state
-  $%  state-0
-  ==
-+$  state-0
-  $:  [%0 =store:gs =roll:gs]
-  ==
-+$  card  card:agent:gall
---
-::
+/-  *global-store,
+    update
+/+  dbug,
+    default-agent,
+    verb
+=>
+  |%
+  +$  card  $+(card card:agent:gall)
+  +$  state-0
+    $:  %0
+        =store  =roll  =objs  =refs
+    ==
+  --
 =|  state-0
 =*  state  -
-::
 %+  verb  &
 %-  agent:dbug
 ^-  agent:gall
 =<
-|_  =bowl:gall
-+*  this  .
-    def   ~(. (default-agent this %|) bowl)
-    aux   ~(. +> bowl)
-++  on-init  on-init:def
-++  on-save  !>(state)
-++  on-load
-  |=  =vase
-  ^-  (quip card _this)
-  =+  !<(old=versioned-state vase)
-  ?-  -.old
-    %0  `this(state old)
-  ==
-::
-++  on-poke
-  |=  [=mark =vase]
-  ^-  (quip card _this)
-  ?+    mark  (on-poke:def mark vase)
-      %global-store-action
-    =+  !<(act=action:gs vase)
-    ?-    -.act
-    ::  when we produce a new desk key-value store, we "bunt" it w/ its name
-    ::  strictly speaking, put could duplicate this functionality but
-    ::  we want put to fail if there's a typo in the desk name
-    ::
-        %let
-      ?>  (can-write:aux desk.act src.bowl)
-      =.  store  (~(put bi:mip store) desk.act %name !>(desk.act))
-      :_  this
-      (give-updates:aux desk.act)
-    ::
-        %lie
-      ?>  (can-write:aux desk.act src.bowl)
-      =.  store  (~(del by store) desk.act)
-      :_  this
-      (give-updates:aux desk.act)
-    ::
-        %put
-      ?>  (can-write:aux desk.act src.bowl)
-      =.  store  (~(put bi:mip store) desk.act key.act value.act)
-      :_  this
-      (give-updates:aux desk.act key.act)
-    ::
-        %del
-      ?>  (can-write:aux desk.act src.bowl)
-      =.  store  (~(del bi:mip store) desk.act key.act)
-      :_  this
-      (give-updates:aux desk.act key.act)
-    ::  XX probably wrong
-    ::
-        %mode
-      ?>  =(our src):bowl
-      :_  this(roll (~(put by roll) [desk.act arena.act] perm.act))
-      ^-  (list card)
-      ::  not removing access
-      ?.  =(~ perm.act)
-        ~
-      ::  ~ for %moon, %roll, %public
-      %+  murn  ~(val by sup.bowl)
-      |=  [=ship =path]
-      ^-  (unit card)
-      ?.  ?|  &(=(%moon arena.act) (moon:title our.bowl ship))
-              &(=(%enroll arena.act) (~(has by roll) [desk.act ship]))
-              =(%public arena.act)
+  |_  =bowl:gall
+  +*  this  .
+      def   ~(. (default-agent this %|) bowl)
+      aux   ~(. +> bowl)
+  ++  on-init  on-init:def
+  ++  on-save  !>(state)
+  ++  on-load  |=(=vase `this(state !<(state-0 vase)))
+  ++  on-poke
+    |=  [=mark =vase]
+    ^-  (quip card _this)
+    ?+    mark  (on-poke:def mark vase)
+        %global-store-action
+      =+  !<(act=action vase)
+      ?-    -.act
+          %put
+        ?>  (can-write:aux src.bowl desk.act key.act)
+        =/  hash=@uvI  (shax (jam value.act))
+        =/  old-hash   (~(get of store) [desk.act key.act])
+        ?:  &(?=(^ old-hash) =(hash u.old-hash))
+          [~ this]
+        =.  store  (~(put of store) [desk.act key.act] hash)
+        =.  refs   (~(put ju refs) hash [desk.act key.act])
+        =?  refs  &(?=(^ old-hash) !=(u.old-hash hash))
+          (~(del ju refs) u.old-hash [desk.act key.act])
+        =?  objs  !(~(has by objs) hash)
+          (~(put by objs) hash value.act)
+        =?  objs  &(?=(^ old-hash) =(~ (~(get ju refs) u.old-hash)))
+          (~(del by objs) u.old-hash)
+        =/  =path  [desk.act key.act]
+        =^  cards  pubs
+          ::(give:dup path [%value (key-to-val desk.act key.act)])
+          (give:dup path (key-to-val desk.act key.act))
+        =.  pubs  (rule:dup path 0 0)
+        ~&  >  "pubs is: {<read:dup>}"
+        [cards this]
+      ::
+          %del
+        ?>  (can-write:aux src.bowl desk.act key.act)
+        =/  hash=(unit @uvI)  (~(get of store) [desk.act key.act])
+        =.  store  (~(del of store) [desk.act key.act])
+        =?  refs  ?=(^ hash)
+          (~(del ju refs) u.hash [desk.act key.act])
+        =?  objs  &(?=(^ hash) =(~ (~(get ju refs) u.hash)))
+          (~(del by objs) u.hash)
+        =^  cards  pubs
+          =/  =path  [desk.act key.act]
+          ::(give:dup path [%value (key-to-val desk.act key.act)])
+          (give:dup path (key-to-val desk.act key.act))
+          ~&  >  "pubs is: {<read:dup>}"
+        [cards this]
+      ::
+          %lop
+        ?>  (can-write:aux src.bowl desk.act key.act)
+        ::  get all relevant keys and hashes
+        =/  old=(list (pair path @uvI))
+          %~  tap  of
+          (~(dip of store) [desk.act key.act])
+        ::  update store
+        =.  store  (~(lop of store) [desk.act key.act])
+        ::  remove from refs, cleanup objs
+        =.  state
+          |-
+          ?~  old
+            state
+          =/  =path  [desk.act (weld key.act p.i.old)]
+          =.  refs   (~(del ju refs) q.i.old path)
+          =?  objs  =(~ (~(get ju refs) q.i.old))
+            (~(del by objs) q.i.old)
+          $(old t.old)
+        ::  XX  update all paths
+        [~ this]
+      ::
+          %enroll
+        ?>  (can-change-roll:aux src.bowl)
+        =.  roll
+          %-  ~(put of roll)
+          ?-  -.arena.act
+            %moon    :-  [desk.act %moon key.act]    perm.act
+            %orbit   :-  [desk.act %orbit key.act]   perm.act
+            %kids    :-  [desk.act %kids key.act]    perm.act
+            %public  :-  [desk.act %public key.act]  perm.act
+            %ship    :-  [desk.act (scot %p ship.arena.act) key.act]  perm.act
           ==
-        ~
-      `[%give %kick ~[path] `ship]
-    ::  ship or arena
-    ::
-        %enroll
-      ?>  (can-write:aux desk.act src.bowl)
-      ?:  ?=(arena:gs wut.act)
-          ~&  >>  %arena
-        `this(roll (~(put by roll) [desk.act wut.act] perm.act))
-      ?>  ?=(ship wut.act)
-      ~&  >>  %ship
-      `this(roll (~(put by roll) [desk.act wut.act] perm.act))
-    ::  ship or arena
-    ::    XX all paths
-    ::
-        %unroll
-      ?>  (can-write:aux desk.act src.bowl)
-      ?:  ?=(arena:gs wut.act)
-          ~&  >>  %arena
-        `this(roll (~(del by roll) [desk.act wut.act]))
-      ?>  ?=(ship wut.act)
-      ~&  >>  %ship
-      :-  [%give %kick [[desk.act ~] ~] `wut.act]~
-      this(roll (~(del by roll) [desk.act wut.act]))
-    ::
-        %lockdown
-      ?>  (can-write:aux desk.act src.bowl)
-      =.  roll  (~(del by roll) desk.act)
-      :_  this
-      ^-  (list card)
-      %+  murn  ~(val by sup.bowl)
-      |=  [=ship =path]
-      ^-  (unit card)
-      ?:  =(ship our.bowl)
-        ~
-      `[%give %kick ~[path] `ship]
-    ==  ::  head tag
-  ==    ::  poke type
-::
-++  on-peek
-  |=  =(pole knot)
-  ^-  (unit (unit cage))
-  ?+    pole  (on-peek:def pole)
-  ::  desk peek
-  ::
-      [%x %desk desk=@ ~]
-    =/  =desk  (slav %tas desk.pole)
-    ?>  (can-read:aux desk src.bowl)
-    ``noun+!>((~(get by store) desk))
-  ::  key peek
-  ::
-      [%x %key desk=@ key=@ ~]
-    =/  =desk    (slav %tas desk.pole)
-    ?>  (can-read:aux desk src.bowl)
-    =/  =key:gs  (slav %tas key.pole)
-    ``noun+!>((~(get bi:mip store) desk key))
-  ==
-::
-++  on-agent  on-agent:def
-++  on-arvo   on-arvo:def
-::  +on-watch, send them the value as a gift
-::
-++  on-watch
-  |=  =(pole knot)
-  ^-  (quip card _this)
-  ?+    pole  (on-watch:def pole)
-  ::  desk subscription (not common), send all values in (unitized) desk ksv
-  ::
-      [desk=@ ~]
-    =/  =desk  (slav %tas desk.pole)
-    ?>  (can-read:aux desk src.bowl)
-    :_  this  :_  ~
-    [%give %fact ~ %noun !>((~(get by store) desk))]
-  ::  key subscription, just send the (unitized) value
-  ::
-      [desk=@ key=@ ~]
-    =/  =desk    (slav %tas desk.pole)
-    ?>  (can-read:aux desk src.bowl)
-    =/  =key:gs  (slav %tas key.pole)
-    :_  this  :_  ~
-    [%give %fact ~ %noun !>((~(get bi:mip store) desk key))]
-  ==
-::
-++  on-leave  on-leave:def
-++  on-fail   on-fail:def
---
-::
-::  helper core
-::
-|_  =bowl:gall
-++  can-read   |=([=desk =ship] !=(~ (what-perm desk ship)))
-++  can-write  |=([=desk =ship] =(`%w (what-perm desk ship)))
-::  we check against the entire arena
-::    our, roll, moon, public
-::
-++  what-perm
-  |=  [=desk =ship]
-  ^-  perm:gs
-  ?:  =(our.bowl ship)  `%w
-  ?:  (~(has by roll) [desk ship])
-    (~(got by roll) [desk ship])
-  ?:  ?&  (moon:title our.bowl ship)
-          (~(has by roll) [desk %moon])
+        =?  pubs  =(~ perm.act)
+          (give-kicks:aux desk.act ~)
+        [~ this]
+      ::
+          %unroll
+        ?>  (can-change-roll:aux src.bowl)
+        =.  roll
+          %-  ~(del of roll)
+          ?-  -.arena.act
+            %moon    [desk.act %moon key.act]
+            %orbit   [desk.act %orbit key.act]
+            %kids    [desk.act %kids key.act]
+            %public  [desk.act %public key.act]
+            %ship    [desk.act (scot %p ship.arena.act) key.act]
+          ==
+        =.  pubs  (give-kicks:aux desk.act ~)
+        [~ this]
+      ::
+          %lockdown
+        ?>  (can-change-roll:aux src.bowl)
+        =.  roll  (~(lop of roll) /[desk.act])
+        ::  XX  all paths
+        ::=.  pubs  (kill:dup [desk.act *]~)
+        `this
       ==
-    (~(got by roll) [desk %moon])
-  (~(gut by roll) [desk %public] ~)
+    ::  sss - required w/o crashing
+    ::    %sss-to-pub   Information to be handled by a du-core (i.e. a publication).
+    ::
+        %sss-to-pub
+      ~&  >  %sss-to-pub
+      =+  msg=!<($%(into:dup) (fled:sss vase))
+      ~&  >  [%sss-to-pub msg=msg src.bowl]
+      =^  cards  pubs  (apply:dup msg)
+      [cards this]
+    ==
+  ::
+  ++  on-peek
+    |=  =(pole knot)
+    ^-  (unit (unit cage))
+    ?+    pole  (on-peek:def pole)
+    ::  /desk
+    ::
+        [%x %desk desk=@ ~]
+      ``noun+!>((~(get of store) /[desk.pole]))
+    ::  /desk/key
+    ::
+        [%x %desk %key desk=@ key=*]
+      =/  =desk  (slav %tas desk.pole)
+      ``noun+!>((~(get of store) [desk key.pole]))
+    ::  existence
+    ::
+    ::  /desk
+    ::
+        [%x %u %desk desk=@ ~]
+      ``noun+!>((~(has of store) /[desk.pole]))
+    ::  /desk/key
+    ::
+        [%x %u %desk %key desk=@ key=*]
+      =/  =desk  (slav %tas desk.pole)
+      ``noun+!>((~(has of store) [desk key.pole]))
+    ::  /desk
+    ::
+        [%x %desk desk=@ ~]
+      ``noun+!>((~(get of store) /[desk.pole]))
+    ::  permissions
+    ::
+        [%x %roll ~]  ``noun+!>(roll)
+    ::
+        [%x %perm %ship %desk %key ship=@ desk=@ key=*]
+      =/  =desk  (slav %tas desk.pole)
+      =/  =ship  (slav %p ship.pole)
+      =/  =key   ;;(key key.pole)
+      ``noun+!>((what-perm:aux ship desk key))
+    ==
+  ++  on-watch  on-watch:def
+  ++  on-agent  on-agent:def
+  ++  on-arvo   on-arvo:def
+  ++  on-leave  on-leave:def
+  ++  on-fail   on-fail:def
+  --
+|_  =bowl:gall
++*  dup   =/  du  (du:sss update ,[*])
+          (du pubs bowl -:!>(*result:du))
+++  can-read   |=([=ship =desk =key] !=(~ (what-perm ship desk key)))
+++  can-write  |=([=ship =desk =key] =(`%w (what-perm ship desk key)))
+++  can-change-roll  |=(=ship |(=(our.bowl ship) (moon:title ship our.bowl)))
+++  is-moon    |=(=ship =(%earl (clan:title ship)))
+++  our-moon   |=(=ship (moon:title our.bowl ship))
+++  our-sponsor   (get-sponsor our.bowl)
+++  get-sponsor   |=(=ship (sein:title our.bowl now.bowl ship))
+++  same-sponsor  |=([a=ship b=ship] =((get-sponsor a) (get-sponsor b)))
+++  what-perm
+  |=  [=ship =desk =key]
+  ^-  perm
+  ::  our
+  ~&  >  %checking-our
+  ?:  =(our.bowl ship)  `%w
+  ::  XX remove?
+  ::  our parent ship, if moon
+  ~&  >  %checking-parent
+  ?:  &((is-moon our.bowl) =(ship our-sponsor))
+    `%w
+  ::  explicitly set
+  ~&  >  %checking-explicit
+  =/  per=(unit perm)  +:(~(fit of roll) [desk (scot %p ship) key])
+  ~&  >>>  per
+  ?^  per
+    u.per
+  ::  our moons
+  ~&  >  %checking-moons
+  =/  per=(unit perm)  +:(~(fit of roll) [desk %moon key])
+  ?:  &(?=(^ per) (our-moon ship))
+    u.per
+  ::  fellow moons
+  ~&  >  %checking-fellow-moons
+  =/  per=(unit perm)  +:(~(fit of roll) [desk %orbit key])
+  ?:  ?&  ?=(^ per)
+          (is-moon our.bowl)
+          (same-sponsor ship our.bowl)
+      ==
+    u.per
+  ~&  >  %checking-kids
+  =/  per=(unit perm)  +:(~(fit of roll) [desk %kids key])
+  ?:  &(?=(^ per) =(our.bowl (get-sponsor ship)))
+    u.per
+  ::  public
+  ~&  >  %checking-public
+  (fall +:(~(fit of roll) [desk %public key]) ~)
 ::
+++  key-to-val
+  |=  [=desk =key]
+  ^-  (unit value)
+  =/  val-key  (~(get of store) [desk key])
+  ?~(val-key ~ (~(get by objs) u.val-key))
+::
+++  give-kicks
+  |=  [=desk =key]
+  ^+  pubs
+  =/  subs=(list [paths=* [allowed=(unit (set ship)) *]])
+    ~(tap by read:dup)
+  ~&  >>  subs
+  |-  ^+  pubs
+  =*  top  $
+  ?~  subs
+    pubs
+  ?~  allowed.i.subs
+    top(subs t.subs)
+  =/  ships=(list ship)  ~(tap in u.allowed.i.subs)
+  |-
+  =*  bot  $
+  ?~  ships
+    top(subs t.subs)
+  ::  XX  TODO
+  ::?.  &(?=([desk=@ *] pole) =(desk desk.pole))
+  =/  =path  [desk key]
+  =?  pubs  (can-read i.ships desk key)
+    (block:dup [i.ships ~] [path ~])
+  bot(ships t.ships)
 ++  give-updates
   |=  arg=$@(=desk [=desk =key:gs])
   |^  ^-  (list card)
