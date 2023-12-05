@@ -1,4 +1,4 @@
-#   `%gs` Global Store
+#   `%gs` global store
 
 _a simple key-value storage solution for ship-global values_
 
@@ -75,3 +75,9 @@ set types:
 ###### changelog
 
 - `[1 0 0]` first public release, pokes/peeks/subs
+- `[1 1 0]` added a mast front-end
+
+=my-axal (~(put of *(axal @)) /path/to/value 1.000)
+=my-axal (~(put of my-axal) /path/to 2.000)
+~(tap of my-axal)
+
