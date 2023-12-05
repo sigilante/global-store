@@ -1,6 +1,6 @@
   ::  /app/gs.hoon
 ::::  ~lagrev-nocfep & ~midden-fabler
-::    Version ~2023.11.9
+::    Version ~2023.12.5
 ::
 ::    GLOBAL STORE
 ::
@@ -42,18 +42,31 @@
 ::
 /-  *gs,
     update
-/+  dbug,
+/+  agentio,
+    dbug,
     default-agent,
+    mast,
     verb
+/=  index  /app/gs/index
+/=  style  /app/gs/style
 =>
   |%
   +$  card  $+(card card:agent:gall)
+  +$  versioned-state
+    $%  state-0
+        state-1
+    ==
   +$  state-0
     $:  %0
         =store  =roll  =objs  =refs
     ==
+  +$  state-1
+    $:  %1
+        =store  =roll  =objs  =refs
+        =view:mast   url=path
+    ==
   --
-=|  state-0
+=|  state-1
 =*  state  -
 %+  verb  &
 %-  agent:dbug
@@ -62,10 +75,30 @@
   |_  =bowl:gall
   +*  this  .
       def   ~(. (default-agent this %|) bowl)
+      io    ~(. agentio bowl)
       aux   ~(. +> bowl)
-  ++  on-init  on-init:def
+      ::  XX this is a weird spot
+      routes  %-  limo
+      :~  [/gs index]
+      ==
+  ++  on-init
+    ^-  (quip card _this)
+    :_  this
+    :~  (~(arvo pass:io /bind) %e %connect `/gs %gs)
+    ==
   ++  on-save  !>(state)
-  ++  on-load  |=(=vase `this(state !<(state-0 vase)))
+  ++  on-load
+    |=  =vase
+    ^-  (quip card _this)
+    =/  old  !<(versioned-state vase)
+    ?-    -.old
+        %0
+      :_  this(state [%1 store.old roll.old objs.old refs.old *view:mast *path])
+      :~  (~(arvo pass:io /bind) %e %connect `/gs %gs)
+      ==
+        %1
+      [~ this(state old)]
+    ==
   ++  on-poke
     |=  [=mark =vase]
     ^-  (quip card _this)
@@ -211,6 +244,16 @@
     |=  =(pole knot)
     ^-  (quip card _this)
     ?+    pole  (on-watch:def pole)
+    ::  /http-response
+    ::
+        [%http-response *]
+      ?>  =(our.bowl src.bowl)
+      [~ this]
+    ::  /display-updates
+    ::
+        [%display-updates *]
+      ?>  =(our.bowl src.bowl)
+      [~ this]
     ::  /desk
     ::
         [%desk desk=@ ~]
@@ -245,7 +288,13 @@
       ==
     ==
   ++  on-agent  on-agent:def
-  ++  on-arvo   on-arvo:def
+  ++  on-arvo
+    |=  [wire=(pole knot) =sign-arvo]
+    ^-  (quip card _this)
+    ?+    sign-arvo  ~|(%bad-arvo-sign [~ this])
+        [%eyre %bound *]
+      [~ this]
+    ==
   ++  on-leave  on-leave:def
   ++  on-fail   on-fail:def
   --
@@ -384,6 +433,3 @@
     ==
   --
 --
-
-:: -need.?(%~ [i=/ t=it(/)])
-:: -have.[[@tas @tas @tas / %~] %~]
