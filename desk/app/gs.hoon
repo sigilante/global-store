@@ -204,7 +204,76 @@
         ::  XX  all paths
         [~ this]
       ==
-    ==
+      ::
+        %handle-http-request
+      |^  (handle-http !<([@ta inbound-request:eyre] vase))
+      ++  handle-http
+        |=  [eyre-id=@ta req=inbound-request:eyre]
+        ^-  (quip card _this)
+        ?.  authenticated.req
+          [(make-auth-redirect:mast eyre-id) this]
+        ?+    method.request.req  [(make-400:mast eyre-id) this]
+            %'GET'
+          =/  url=path  (stab url.request.req)
+          ?:  =(/gs/style url)
+            [(make-css-response:mast eyre-id style) this]
+          =/  new-view  (rig:mast routes url [bowl store roll objs])
+          :-  (plank:mast "gs" /display-updates our.bowl eyre-id new-view)
+          this(view new-view, url url)
+        ==
+      --
+      ::
+        %json
+      ?>  =(our.bowl src.bowl)
+      |^  (handle-client-poke !<(json vase))
+      ++  handle-client-poke
+        |=  json-req=json
+        ^-  (quip card _this)
+        =/  client-poke  (parse-json:mast json-req)
+        :: =event  "/click/kv-input"
+        :: =return  "/kv-mark/value /kv-value/value"
+        ?+    tags.client-poke  ~|(%bad-ui-poke [~ this])
+            [%click %kv-input ~]
+          :: handle input
+          =/  dest  (~(got by data.client-poke) '/kv-desk/value')
+          =/  patt  (~(got by data.client-poke) '/kv-path/value')
+          =/  mart  (~(got by data.client-poke) '/kv-mark/value')
+          =/  valt  (~(got by data.client-poke) '/kv-value/value')
+          =/  des  ;;(cord +.p.p:(need q:(;~(pfix cen nuck:so) [[1 1] (trip dest)])))
+          :: =/  des  -:(stab (crip (weld "/" (trip dest))))
+          =/  pax  `path`;;(path (stab patt))
+          =/  mar  ;;(@tas +.p.p:(need q:(;~(pfix cen nuck:so) [[1 1] (trip mart)])))
+          ~&  >  mar
+          ~&  (ream valt)
+          ~&  (slap !>(~) (ream valt))
+          =/  val  !<(* (slap !>(~) (ream valt)))  :: XX TODO FIXME
+          ~&  >>  val
+          =/  axn  [%put des pax [mar !>(val)]]
+          ?>  (can-write:aux `ship`src.bowl `@tas`des `path`pax)
+          =/  hash=@uvI  (shax (jam val))
+          =/  old-hash   (~(get of store) [des pax])
+          ?:  &(?=(^ old-hash) =(hash u.old-hash))
+            [~ this]
+          =.  store  (~(put of store) [des pax] hash)
+          =.  refs   (~(put ju refs) hash [des pax])
+          =?  refs  &(?=(^ old-hash) !=(u.old-hash hash))
+            (~(del ju refs) u.old-hash [des pax])
+          =?  objs  !(~(has by objs) hash)
+            (~(put by objs) hash [mar !>(val)])
+          =?  objs  &(?=(^ old-hash) =(~ (~(get ju refs) u.old-hash)))
+            (~(del by objs) u.old-hash)
+          =/  =path  [des pax]
+          =/  new-view  (rig:mast routes url [bowl store roll objs])
+          :_  this(view new-view)
+          :~  [%give %fact ~[[%desk des ~]] %update !>(desk+(export-values des))]
+              [%give %fact ~[[%u %desk des ~]] %update !>(has-desk+[des &])]
+              [%give %fact ~[[%u %desk %key des pax]] %update !>(has-key+[des pax &])]
+              [%give %fact ~[[%desk %key des pax]] %update !>(value+val)]
+              (gust:mast /display-updates view new-view)
+          ==
+        ==
+      --
+    ==  ::  mark
   ::
   ++  on-peek
     |=  =(pole knot)

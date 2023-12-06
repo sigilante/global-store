@@ -75,9 +75,6 @@ set types:
 ###### changelog
 
 - `[1 0 0]` first public release, pokes/peeks/subs
-- `[1 1 0]` added a mast front-end
+- `[1 1 0]` added a rudimentary mast front-end at /gs
 
-=my-axal (~(put of *(axal @)) /path/to/value 1.000)
-=my-axal (~(put of my-axal) /path/to 2.000)
-~(tap of my-axal)
-
+- todo:  clean up and add deletion

@@ -18,6 +18,7 @@
   ==
   ;body
     ;+  kv-table
+    ;+  kv-input
   ==
 ==
 ::
@@ -29,8 +30,22 @@
         |=  [key=key hax=@uvI]
         ;tr
           ;td:"{<key>}"
-          ;td:"<(~(got by hax) objs)>"
+          ;td:"{<(~(got by objs) hax)>}"
         ==
+    ==
+  ==
+::
+++  kv-input
+  ^-  manx
+  ;div.input
+    ;input#kv-desk;
+    ;input#kv-path;
+    ;input#kv-mark;
+    ;input#kv-value;
+    ;button
+      =event  "/click/kv-input"
+      =return  "/kv-desk/value /kv-path/value /kv-mark/value /kv-value/value"
+      ;+  ;/  "Create value"
     ==
   ==
 ::
