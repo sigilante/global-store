@@ -55,6 +55,7 @@
   +$  versioned-state
     $%  state-0
         state-1
+        state-2
     ==
   +$  state-0
     $:  %0
@@ -65,8 +66,14 @@
         =store  =roll  =objs  =refs
         =view:mast   url=path
     ==
+  +$  state-2
+    $:  %2
+        =store  =roll  =objs  =refs
+        =view:mast   url=path
+        input-reset=?  selected-desks=(set @t)
+    ==
   --
-=|  state-1
+=|  state-2
 =*  state  -
 %+  verb  &
 %-  agent:dbug
@@ -93,10 +100,12 @@
     =/  old  !<(versioned-state vase)
     ?-    -.old
         %0
-      :_  this(state [%1 store.old roll.old objs.old refs.old *view:mast *path])
+      :_  this(state [%2 store.old roll.old objs.old refs.old *view:mast *path *? *(set @t)])
       :~  (~(arvo pass:io /bind) %e %connect `/gs %gs)
       ==
         %1
+      [~ this(state [%2 store.old roll.old objs.old refs.old view.old url.old *? *(set @t)])]
+        %2
       [~ this(state old)]
     ==
   ++  on-poke
@@ -217,7 +226,7 @@
           =/  url=path  (stab url.request.req)
           ?:  =(/gs/style url)
             [(make-css-response:mast eyre-id style) this]
-          =/  new-view  (rig:mast routes url [bowl store roll objs])
+          =/  new-view  (rig:mast routes url [bowl store objs input-reset selected-desks])
           :-  (plank:mast "gs" /display-updates our.bowl eyre-id new-view)
           this(view new-view, url url)
         ==
@@ -230,10 +239,8 @@
         |=  json-req=json
         ^-  (quip card _this)
         =/  client-poke  (parse-json:mast json-req)
-        :: =event  "/click/kv-input"
-        :: =return  "/kv-mark/value /kv-value/value"
         ?+    tags.client-poke  ~|(%bad-ui-poke [~ this])
-            [%click %kv-input ~]
+            [%click %submit-form ~]
           :: handle input
           =/  dest  (~(got by data.client-poke) '/kv-desk/value')
           =/  patt  (~(got by data.client-poke) '/kv-path/value')
@@ -263,7 +270,8 @@
           =?  objs  &(?=(^ old-hash) =(~ (~(get ju refs) u.old-hash)))
             (~(del by objs) u.old-hash)
           =/  =path  [des pax]
-          =/  new-view  (rig:mast routes url [bowl store roll objs])
+          =.  input-reset  !input-reset
+          =/  new-view  (rig:mast routes url [bowl store objs input-reset selected-desks])
           :_  this(view new-view)
           :~  [%give %fact ~[[%desk des ~]] %update !>(desk+(export-values des))]
               [%give %fact ~[[%u %desk des ~]] %update !>(has-desk+[des &])]
@@ -271,6 +279,15 @@
               [%give %fact ~[[%desk %key des pax]] %update !>(value+val)]
               (gust:mast /display-updates view new-view)
           ==
+            [%click %select-desk ~]
+          =/  desk-name=@t  (~(got by data.client-poke) '/target/id')
+          =.  selected-desks
+            ?:  (~(has in selected-desks) desk-name)
+              (~(del in selected-desks) desk-name)
+            (~(put in selected-desks) desk-name)
+          =/  new-view  (rig:mast routes url [bowl store objs input-reset selected-desks])
+          :-  [(gust:mast /display-updates view new-view) ~]
+          this(view new-view)
         ==
       --
     ==  ::  mark
