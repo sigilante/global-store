@@ -49,6 +49,7 @@ label {
   flex-wrap: wrap;
 }
 .desks-container {
+  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -56,6 +57,7 @@ label {
   flex-wrap: wrap;
 }
 .desk {
+  width: 20rem;
   margin: 1rem;
   border-radius: 1rem;
   background-color: var(--light-color-two);
@@ -75,16 +77,32 @@ label {
 .desk-selector:hover {
   transform: scale(1.03);
 }
+.kv-table {
+  max-height: 20rem;
+  overflow: auto;
+}
 .kv-item {
+  max-width: 15rem;
   margin: 1.5rem;
   padding: 0.9rem;
   border: 1px solid var(--dark-color-two);
   border-radius: 0.7rem;
   display: flex;
   flex-direction: column;
+  word-wrap: break-word;
 }
 .kv-name {
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
+}
+@media only screen and (max-width: 600px) {
+  .gs-form {
+    padding: 1.5rem;
+    flex-direction: column;
+    flex-wrap: unset;
+  }
+  .kv-table {
+    max-height: unset;
+  }
 }
 '''

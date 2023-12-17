@@ -110,32 +110,14 @@
     ==
   ++  on-poke
     |=  [=mark =vase]
-    ^-  (quip card _this)
+    |^  ^-  (quip card _this)
     ?+    mark  (on-poke:def mark vase)
         %gs-action
       =+  !<(act=action vase)
       ?-    -.act
           %put
-        ?>  (can-write:aux src.bowl desk.act key.act)
-        =/  hash=@uvI  (shax (jam value.act))
-        =/  old-hash   (~(get of store) [desk.act key.act])
-        ?:  &(?=(^ old-hash) =(hash u.old-hash))
-          [~ this]
-        =.  store  (~(put of store) [desk.act key.act] hash)
-        =.  refs   (~(put ju refs) hash [desk.act key.act])
-        =?  refs  &(?=(^ old-hash) !=(u.old-hash hash))
-          (~(del ju refs) u.old-hash [desk.act key.act])
-        =?  objs  !(~(has by objs) hash)
-          (~(put by objs) hash value.act)
-        =?  objs  &(?=(^ old-hash) =(~ (~(get ju refs) u.old-hash)))
-          (~(del by objs) u.old-hash)
-        =/  =path  [desk.act key.act]
-        :_  this
-        :~  [%give %fact ~[[%desk desk.act ~]] %update !>(desk+(export-values desk.act))]
-            [%give %fact ~[[%u %desk desk.act ~]] %update !>(has-desk+[desk.act &])]
-            [%give %fact ~[[%u %desk %key desk.act key.act]] %update !>(has-key+[desk.act key.act &])]
-            [%give %fact ~[[%desk %key desk.act key.act]] %update !>(value+value.act)]
-        ==
+        =^  cards  state  (put act)
+        [cards this(state state)]
       ::
           %del
         ?>  (can-write:aux src.bowl desk.act key.act)
@@ -241,56 +223,74 @@
         =/  client-poke  (parse-json:mast json-req)
         ?+    tags.client-poke  ~|(%bad-ui-poke [~ this])
             [%click %submit-form ~]
-          :: handle input
+          :: get input values:
           =/  dest  (~(got by data.client-poke) '/kv-desk/value')
           =/  patt  (~(got by data.client-poke) '/kv-path/value')
           =/  mart  (~(got by data.client-poke) '/kv-mark/value')
           =/  valt  (~(got by data.client-poke) '/kv-value/value')
-          =/  des  ;;(cord +.p.p:(need q:(;~(pfix cen nuck:so) [[1 1] (trip dest)])))
-          :: =/  des  -:(stab (crip (weld "/" (trip dest))))
-          =/  pax  `path`;;(path (stab patt))
-          =/  mar  ;;(@tas +.p.p:(need q:(;~(pfix cen nuck:so) [[1 1] (trip mart)])))
+          ?:  |(=(~ dest) =(~ patt) =(~ mart) =(~ valt))
+            !!  :: TO DO: set message for empty input and send a display update
+          =?  dest  =('%' -:(trip dest))
+            (crip +:(trip dest))
+          =?  mart  =('%' -:(trip mart))
+            (crip +:(trip mart))
+          ?.  ((sane %tas) dest)
+            !!  :: TO DO: set message for invalid desk input and send a display update
+          ?.  ((sane %tas) mart)
+            !!  :: TO DO: set message for invalid mark input and send a display update
+          =/  des=@tas  dest
+          =/  mar=@tas  mart
+          =/  pax=path  (stab patt)
+          =/  val  (slap !>(~) (ream valt))
+          :: TO DO: pax and val both crash when parsing fails; find a way to send a display update instead of crashing
+          ~&  >  des
+          ~&  >  pax
           ~&  >  mar
-          ~&  (ream valt)
-          ~&  (slap !>(~) (ream valt))
-          =/  val  !<(* (slap !>(~) (ream valt)))  :: XX TODO FIXME
           ~&  >>  val
-          =/  axn  [%put des pax [mar !>(val)]]
-          ?>  (can-write:aux `ship`src.bowl `@tas`des `path`pax)
-          =/  hash=@uvI  (shax (jam val))
-          =/  old-hash   (~(get of store) [des pax])
-          ?:  &(?=(^ old-hash) =(hash u.old-hash))
-            [~ this]
-          =.  store  (~(put of store) [des pax] hash)
-          =.  refs   (~(put ju refs) hash [des pax])
-          =?  refs  &(?=(^ old-hash) !=(u.old-hash hash))
-            (~(del ju refs) u.old-hash [des pax])
-          =?  objs  !(~(has by objs) hash)
-            (~(put by objs) hash [mar !>(val)])
-          =?  objs  &(?=(^ old-hash) =(~ (~(get ju refs) u.old-hash)))
-            (~(del by objs) u.old-hash)
-          =/  =path  [des pax]
-          =.  input-reset  !input-reset
-          =/  new-view  (rig:mast routes url [bowl store objs input-reset selected-desks])
-          :_  this(view new-view)
-          :~  [%give %fact ~[[%desk des ~]] %update !>(desk+(export-values des))]
-              [%give %fact ~[[%u %desk des ~]] %update !>(has-desk+[des &])]
-              [%give %fact ~[[%u %desk %key des pax]] %update !>(has-key+[des pax &])]
-              [%give %fact ~[[%desk %key des pax]] %update !>(value+val)]
-              (gust:mast /display-updates view new-view)
-          ==
+          =^  cards  state  (put [%put des pax [mar val]])
+          =/  new-view=manx
+            (rig:mast routes url [bowl store objs input-reset selected-desks])
+          :-  [(gust:mast /display-updates view new-view) cards]
+          this(state state(view new-view))
+          ::
             [%click %select-desk ~]
           =/  desk-name=@t  (~(got by data.client-poke) '/target/id')
           =.  selected-desks
             ?:  (~(has in selected-desks) desk-name)
               (~(del in selected-desks) desk-name)
             (~(put in selected-desks) desk-name)
-          =/  new-view  (rig:mast routes url [bowl store objs input-reset selected-desks])
+          =/  new-view=manx
+            (rig:mast routes url [bowl store objs input-reset selected-desks])
           :-  [(gust:mast /display-updates view new-view) ~]
           this(view new-view)
+          ::
         ==
       --
-    ==  ::  mark
+    ==
+    ++  put
+      |=  [%put =desk =key =value]
+      ^-  (quip card _state)
+      ?>  (can-write:aux src.bowl desk key)
+      =/  hash=@uvI  (shax (jam value))
+      =/  old-hash   (~(get of store) [desk key])
+      ?:  &(?=(^ old-hash) =(hash u.old-hash))
+        [~ state]
+      =.  store  (~(put of store) [desk key] hash)
+      =.  refs   (~(put ju refs) hash [desk key])
+      =?  refs  &(?=(^ old-hash) !=(u.old-hash hash))
+        (~(del ju refs) u.old-hash [desk key])
+      =?  objs  !(~(has by objs) hash)
+        (~(put by objs) hash value)
+      =?  objs  &(?=(^ old-hash) =(~ (~(get ju refs) u.old-hash)))
+        (~(del by objs) u.old-hash)
+      =/  =path  [desk key]
+      :_  state
+      :~  [%give %fact ~[[%desk desk ~]] %update !>(desk+(export-values desk))]
+          [%give %fact ~[[%u %desk desk ~]] %update !>(has-desk+[desk &])]
+          [%give %fact ~[[%u %desk %key desk key]] %update !>(has-key+[desk key &])]
+          [%give %fact ~[[%desk %key desk key]] %update !>(value+value)]
+      ==
+    --
   ::
   ++  on-peek
     |=  =(pole knot)

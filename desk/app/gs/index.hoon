@@ -67,7 +67,7 @@
     ;*  %+  turn  kvs
       |=  [key=key hax=@uvI]
       =/  val=cage  (~(got by objs) hax)
-      =/  name=tape  ?~(key "" ?~(t.key "" (trip i.t.key)))
+      =/  name=tape  ?~(key "" ?~(t.key "" <(path t.key)>))
       ;div
         =class  "kv-item"
         =key  "{(path key)}"
@@ -102,7 +102,7 @@
     acc
   ?.  &(?=(^ p.i.sto) (~(has in selected-desks) i.p.i.sto))
     $(sto t.sto)
-  =/  nacc=(list [@t (list (pair key @uvI))])
+  =.  acc
     |-
     ?~  sto  !!
     ?~  acc
@@ -110,6 +110,6 @@
     ?:  =(desk.i.acc i.p.i.sto)
       [[desk.i.acc [i.sto kvs.i.acc]] $(acc t.acc)]
     [i.acc $(acc t.acc)]
-  $(sto t.sto, acc nacc)
+  $(sto t.sto, acc acc)
 ::
 --
