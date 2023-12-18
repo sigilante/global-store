@@ -36,6 +36,15 @@ label {
   display: flex;
   flex-direction: column;
 }
+.edit-button-on {
+  background-color: orange;
+}
+.delete-button {
+  padding-inline: 0.4rem;
+  padding-block: 0.2rem;
+  margin: 0;
+  border-radius: 1rem;
+}
 .title {
   border-bottom: 0.2rem solid var(--dark-color-one);
 }
@@ -90,6 +99,12 @@ label {
   display: flex;
   flex-direction: column;
   word-wrap: break-word;
+}
+.kv-item-top {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 .kv-name {
   font-size: 1.2rem;

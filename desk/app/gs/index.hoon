@@ -1,5 +1,5 @@
 /-  *gs
-|=  [bol=bowl:gall =store =objs input-reset=? selected-desks=(set @t)]
+|=  [bol=bowl:gall =store =objs input-reset=? selected-desks=(set @t) edit-mode=?]
 |^  ^-  manx
 ::
 ;html
@@ -11,6 +11,15 @@
   ;body
     ;h1(class "title"): Global Store
     ;+  gs-form
+    ;div
+      ;button(event "/click/select-all-desks"): Select All
+      ;button(event "/click/hide-all-desks"): Hide All
+      ;button
+        =class  ?:(edit-mode "edit-button-on" "")
+        =event  "/click/toggle-edit-mode"
+        ;+  ;/  "Edit"
+      ==
+    ==
     ;+  all-desks
   ==
 ==
@@ -71,7 +80,18 @@
       ;div
         =class  "kv-item"
         =key  "{(path key)}"
-        ;div(class "kv-name"): {name}
+        ;div
+          =class  "kv-item-top"
+          ;div(class "kv-name"): {name}
+          ;+  ?.  edit-mode  ;div;
+            ;button
+              =id  <(path key)>
+              =class  "delete-button"
+              =event  "/click/delete"
+              =return  "/target/id"
+              ;+  ;/  "✖"
+            ==
+        ==
         ;div
           ;div: {<p.val>}
           ;div: {<p.q.val>}
