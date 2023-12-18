@@ -1,5 +1,5 @@
 /-  *gs
-|=  [bol=bowl:gall =store =objs input-reset=? selected-desks=(set @t)]
+|=  [bol=bowl:gall =store =objs input-reset=? selected-desks=(set @t) edit-mode=?]
 |^  ^-  manx
 ::
 ;html
@@ -11,6 +11,15 @@
   ;body
     ;h1(class "title"): Global Store
     ;+  gs-form
+    ;div
+      ;button(event "/click/select-all-desks"): Select All
+      ;button(event "/click/hide-all-desks"): Hide All
+      ;button
+        =class  ?:(edit-mode "edit-button-on" "")
+        =event  "/click/toggle-edit-mode"
+        ;+  ;/  "Edit"
+      ==
+    ==
     ;+  all-desks
   ==
 ==
@@ -67,11 +76,22 @@
     ;*  %+  turn  kvs
       |=  [key=key hax=@uvI]
       =/  val=cage  (~(got by objs) hax)
-      =/  name=tape  ?~(key "" ?~(t.key "" (trip i.t.key)))
+      =/  name=tape  ?~(key "" ?~(t.key "" <(path t.key)>))
       ;div
         =class  "kv-item"
         =key  "{(path key)}"
-        ;div(class "kv-name"): {name}
+        ;div
+          =class  "kv-item-top"
+          ;div(class "kv-name"): {name}
+          ;+  ?.  edit-mode  ;div;
+            ;button
+              =id  <(path key)>
+              =class  "delete-button"
+              =event  "/click/delete"
+              =return  "/target/id"
+              ;+  ;/  "✖"
+            ==
+        ==
         ;div
           ;div: {<p.val>}
           ;div: {<p.q.val>}
@@ -102,7 +122,7 @@
     acc
   ?.  &(?=(^ p.i.sto) (~(has in selected-desks) i.p.i.sto))
     $(sto t.sto)
-  =/  nacc=(list [@t (list (pair key @uvI))])
+  =.  acc
     |-
     ?~  sto  !!
     ?~  acc
@@ -110,6 +130,6 @@
     ?:  =(desk.i.acc i.p.i.sto)
       [[desk.i.acc [i.sto kvs.i.acc]] $(acc t.acc)]
     [i.acc $(acc t.acc)]
-  $(sto t.sto, acc nacc)
+  $(sto t.sto, acc acc)
 ::
 --
