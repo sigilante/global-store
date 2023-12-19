@@ -1,5 +1,5 @@
 /-  *gs
-|=  [bol=bowl:gall =store =objs input-reset=? selected-desks=(set @t) edit-mode=?]
+|=  [bol=bowl:gall =store =objs =txts input-reset=? selected-desks=(set @t) edit-mode=?]
 |^  ^-  manx
 ::
 ;html
@@ -9,18 +9,21 @@
     ;link(href "/gs/style", rel "stylesheet");
   ==
   ;body
-    ;h1(class "title"): Global Store
-    ;+  gs-form
-    ;div
-      ;button(event "/click/select-all-desks"): Select All
-      ;button(event "/click/hide-all-desks"): Hide All
-      ;button
-        =class  ?:(edit-mode "edit-button-on" "")
-        =event  "/click/toggle-edit-mode"
-        ;+  ;/  "Edit"
+    ;main(class get-theme)
+      ;h1(class "title"): Global Store
+      ;+  gs-form
+      ;div
+        =class  "desk-buttons"
+        ;button(event "/click/select-all-desks"): Select All
+        ;button(event "/click/hide-all-desks"): Hide All
+        ;button
+          =class  ?:(edit-mode "edit-button-on" "")
+          =event  "/click/toggle-edit-mode"
+          ;+  ;/  "Edit"
+        ==
       ==
+      ;+  all-desks
     ==
-    ;+  all-desks
   ==
 ==
 ::
@@ -75,6 +78,7 @@
   ;div(class "kv-table")
     ;*  %+  turn  kvs
       |=  [key=key hax=@uvI]
+      =/  tval=(unit @t)  (~(get by txts) hax)
       =/  val=cage  (~(got by objs) hax)
       =/  name=tape  ?~(key "" ?~(t.key "" <(path t.key)>))
       ;div
@@ -92,11 +96,14 @@
               ;+  ;/  "✖"
             ==
         ==
-        ;div
-          ;div: {<p.val>}
-          ;div: {<p.q.val>}
-          ;div: {<q.q.val>}
-        ==
+        ;div(class "kv-mark"): {<p.val>}
+        ;+  ?~  tval
+            ;div
+              =class  "kv-value"
+              ;div: {<p.q.val>}
+              ;div: {<q.q.val>}
+            ==
+          ;div(class "kv-value"): {(trip u.tval)}
       ==
   ==
 ::
@@ -131,5 +138,14 @@
       [[desk.i.acc [i.sto kvs.i.acc]] $(acc t.acc)]
     [i.acc $(acc t.acc)]
   $(sto t.sto, acc acc)
+::
+++  get-theme
+  ^-  tape
+  =/  hash=(unit @uvI)  (~(get of store) [%gs %theme ~])
+  ?~  hash  ""
+  =/  val=cage  (~(got by objs) u.hash)
+  ?:  ?=(^ q.q.val)
+    !<(tape q.val)
+  (trip !<(@t q.val))
 ::
 --
