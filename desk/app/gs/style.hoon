@@ -1,17 +1,36 @@
 ^~
 '''
 :root {
-  --light-color-one: #F9FAF9;
-  --light-color-two: lightgray;
-  --dark-color-one: #2A2C33;
-  --dark-color-two: gray;
+  --color-one: #F9FAF9;
+  --color-two: lightgray;
+  --color-three: gray;
+  --color-four: #2A2C33;
+}
+.light {
+  --color-one: #F9FAF9;
+  --color-two: lightgray;
+  --color-three: gray;
+  --color-four: #2A2C33;
+}
+.dark {
+  --color-one: #253237;
+  --color-two: #5C6B73;
+  --color-three: white;
+  --color-four: white;
 }
 body {
   font-family: 'Metamorphous', serif;
-  color: var(--dark-color-one);
-  background-color: var(--light-color-one);
+  height: 100vh;
   margin: 0;
-  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+}
+main {
+  flex-grow: 1;
+  color: var(--color-four);
+  background-color: var(--color-one);
+  padding-top: 3rem;
+  padding-inline: 3rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -22,8 +41,8 @@ button {
   padding-inline: 1rem;
   margin: 0.2rem;
   border-radius: 0.5rem;
-  color: var(--light-color-one);
-  background-color: var(--dark-color-two);
+  color: var(--color-one);
+  background-color: var(--color-three);
   border: none;
   cursor: pointer;
   transition: transform 0.05s ease;
@@ -46,16 +65,19 @@ label {
   border-radius: 1rem;
 }
 .title {
-  border-bottom: 0.2rem solid var(--dark-color-one);
+  border-bottom: 0.2rem solid var(--color-four);
 }
 .gs-form {
   padding: 0.5rem;
   margin: 1rem;
-  background-color: var(--light-color-two);
+  background-color: var(--color-two);
   box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 6px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+}
+.desk-buttons {
+  margin-bottom: 0.7rem;
 }
 .desks-container {
   width: 100%;
@@ -69,7 +91,7 @@ label {
   width: 20rem;
   margin: 1rem;
   border-radius: 1rem;
-  background-color: var(--light-color-two);
+  background-color: var(--color-two);
   box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 6px;
 }
 .desk-selector {
@@ -78,8 +100,8 @@ label {
   padding-block: 1rem;
   padding-inline: 2rem;
   border-radius: 1rem;
-  color: var(--light-color-one);
-  background-color: var(--dark-color-two);
+  color: var(--color-one);
+  background-color: var(--color-three);
   cursor: pointer;
   transition: transform 0.1s ease;
 }
@@ -94,7 +116,7 @@ label {
   max-width: 15rem;
   margin: 1.5rem;
   padding: 0.9rem;
-  border: 1px solid var(--dark-color-two);
+  border: 1px solid var(--color-three);
   border-radius: 0.7rem;
   display: flex;
   flex-direction: column;
@@ -108,7 +130,15 @@ label {
 }
 .kv-name {
   font-size: 1.2rem;
-  margin-bottom: 0.5rem;
+}
+.kv-mark {
+  font-size: 0.9rem;
+  margin-top: 0.4rem;
+  margin-bottom: 0.8rem;
+}
+.kv-value {
+  font-family: monospace;
+  font-size: 1rem;
 }
 @media only screen and (max-width: 600px) {
   .gs-form {
