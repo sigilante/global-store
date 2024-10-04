@@ -1,4 +1,4 @@
-#   `%gs` global store
+#   `%gs` general store
 
 _a simple key-value storage solution for ship-global values_
 
@@ -8,6 +8,8 @@ _"making people behave like they care about integration by giving them easier in
 settings without any json compatibility overhead
 
 it's simply a map for desks and keys to vases of values.
+
+(formerly “global store”)
 
 some things you could use it for:
 
