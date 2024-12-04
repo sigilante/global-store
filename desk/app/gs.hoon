@@ -57,6 +57,7 @@
         state-1
         state-2
         state-3
+        state-4
     ==
   +$  state-0
     $:  %0
@@ -77,13 +78,17 @@
     $:  %3
         =store  =roll  =objs  =refs
     ==
+  +$  state-4
+    $:  %4
+        =store  =roll  =objs  =refs  =txts
+    ==
   +$  front-end
     $:  =view:mast   url=path
         input-reset=?  selected-desks=(set @t)
         edit-mode=$~(%.n ?)
     ==
   --
-=|  [state-3 front-end]
+=|  [state-4 front-end]
 =*  state  -
 %+  verb  &
 %-  agent:dbug
@@ -110,14 +115,16 @@
     =/  old  !<(versioned-state vase)
     ?-    -.old
         %0
-      :_  this(state [[%3 store.old roll.old objs.old refs.old] *front-end])
+      :_  this(state [[%4 store.old roll.old objs.old refs.old *^txts] *front-end])
       :~  (~(arvo pass:io /bind) %e %connect `/gs %gs)
       ==
         %1
-      [~ this(state [[%3 store.old roll.old objs.old refs.old] *front-end])]
+      [~ this(state [[%4 store.old roll.old objs.old refs.old *^txts] *front-end])]
         %2
-      [~ this(state [[%3 store.old roll.old objs.old refs.old] *front-end])]
+      [~ this(state [[%4 store.old roll.old objs.old refs.old *^txts] *front-end])]
         %3
+      [~ this(state [[%4 store.old roll.old objs.old refs.old *^txts] *front-end])]
+        %4
       [~ this(state [old *front-end])]
     ==
   ++  on-poke
@@ -129,11 +136,13 @@
       ?-    -.act
           %put
         =^  cards  state  (put act)
-        [cards this(state state)]
+        [cards this]
       ::
           %del
+        =/  hash=(unit @uvI)  (~(get of store) [desk.act key.act])
+        =?  txts  ?=(^ hash)  (~(del by txts) u.hash)
         =^  cards  state  (del act)
-        [cards this(state state)]
+        [cards this]
       ::
           %lop
         ?>  (can-write:aux src.bowl desk.act key.act)
@@ -211,7 +220,7 @@
           ?:  =(/gs/style url)
             [(make-css-response:mast eyre-id style) this]
           =/  new-view=manx
-            (rig:mast routes url [bowl store objs input-reset selected-desks edit-mode])
+            (rig:mast routes url [bowl store objs txts input-reset selected-desks edit-mode])
           :-  (plank:mast "gs" /display-updates our.bowl eyre-id new-view)
           this(view new-view, url url)
         ==
@@ -250,9 +259,11 @@
           ~&  >  mar
           ~&  >>  val
           =^  cards  state  (put [%put des pax [mar val]])
-          =.  input-reset  !input-reset
+          =:  txts  (~(put by txts) `@uvI`(shax (jam [mar val])) valt)
+              input-reset  !input-reset
+            ==
           =/  new-view=manx
-            (rig:mast routes url [bowl store objs input-reset selected-desks edit-mode])
+            (rig:mast routes url [bowl store objs txts input-reset selected-desks edit-mode])
           :-  [(gust:mast /display-updates view new-view) cards]
           this(state state(view new-view))
           ::
@@ -263,7 +274,7 @@
               (~(del in selected-desks) desk-name)
             (~(put in selected-desks) desk-name)
           =/  new-view=manx
-            (rig:mast routes url [bowl store objs input-reset selected-desks edit-mode])
+            (rig:mast routes url [bowl store objs txts input-reset selected-desks edit-mode])
           :-  [(gust:mast /display-updates view new-view) ~]
           this(view new-view)
           ::
@@ -274,21 +285,21 @@
             ?~  p.v  a
             (~(put in a) i.p.v)
           =/  new-view=manx
-            (rig:mast routes url [bowl store objs input-reset selected-desks edit-mode])
+            (rig:mast routes url [bowl store objs txts input-reset selected-desks edit-mode])
           :-  [(gust:mast /display-updates view new-view) ~]
           this(view new-view)
           ::
             [%click %hide-all-desks ~]
           =.  selected-desks  ~
           =/  new-view=manx
-            (rig:mast routes url [bowl store objs input-reset selected-desks edit-mode])
+            (rig:mast routes url [bowl store objs txts input-reset selected-desks edit-mode])
           :-  [(gust:mast /display-updates view new-view) ~]
           this(view new-view)
           ::
             [%click %toggle-edit-mode ~]
           =.  edit-mode  !edit-mode
           =/  new-view=manx
-            (rig:mast routes url [bowl store objs input-reset selected-desks edit-mode])
+            (rig:mast routes url [bowl store objs txts input-reset selected-desks edit-mode])
           :-  [(gust:mast /display-updates view new-view) ~]
           this(view new-view)
           ::
@@ -296,9 +307,11 @@
           =/  keyt  (~(got by data.client-poke) '/target/id')
           =/  keyp=path  (stab keyt)
           ?~  keyp  ~&('missing delete path from ui' [~ this])
+          =/  hash=(unit @uvI)  (~(get of store) keyp)
           =^  cards  state  (del [%del keyp])
+          =?  txts  ?=(^ hash)  (~(del by txts) u.hash)
           =/  new-view=manx
-            (rig:mast routes url [bowl store objs input-reset selected-desks edit-mode])
+            (rig:mast routes url [bowl store objs txts input-reset selected-desks edit-mode])
           :-  [(gust:mast /display-updates view new-view) cards]
           this(state state(view new-view))
         ==

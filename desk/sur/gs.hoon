@@ -21,6 +21,7 @@
 +$  store  (axal @uvI)
 +$  objs   (map @uvI value)
 +$  refs   (jug @uvI path)
++$  txts   (map @uvI @t)
 ::
 +$  action
   $%  [%put =desk =key =value]
